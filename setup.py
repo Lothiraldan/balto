@@ -3,7 +3,7 @@ Language-Agnostic Test Runner
 """
 from setuptools import find_packages, setup
 
-dependencies = ['click']
+dependencies = ['prompt_toolkit']
 
 setup(
     name='litr',

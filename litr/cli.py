@@ -1,13 +1,21 @@
+from __future__ import unicode_literals
+
 import json
 import os
 import os.path
 import subprocess
 from collections import Counter
 
+from prompt_toolkit import prompt
+from prompt_toolkit.contrib.completers import WordCompleter
+from prompt_toolkit.history import InMemoryHistory
+
 cwd = os.path.abspath("pytest")
 
 default_test_args = "testing/test_cache.py"
 CMD = "py.test %s"
+completer = WordCompleter(
+    ['run', 'r', 'failed', 'f', 'p', 'print'], ignore_case=True)
 
 TESTS = {}
 
@@ -68,8 +76,10 @@ def print_status():
 
 
 def main():
+    history = InMemoryHistory()
+
     while True:
-        command = raw_input("Command: ")
+        command = prompt("> ", history=history, completer=completer)
 
         if command == 'p':
             print_tests()
