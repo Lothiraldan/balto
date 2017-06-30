@@ -1,8 +1,7 @@
-import subprocess
-import os.path
 import json
 import os
-import sys
+import os.path
+import subprocess
 from collections import Counter
 
 cwd = os.path.abspath("pytest")
@@ -15,8 +14,12 @@ TESTS = {}
 
 def run_tests(*args):
     final_cmd = CMD % args
-    p = subprocess.Popen(CMD % args, stdout=subprocess.PIPE,
-                         stderr=subprocess.PIPE, cwd=cwd, shell=True)
+    p = subprocess.Popen(
+        final_cmd,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        cwd=cwd,
+        shell=True)
 
     for line in iter(p.stdout.readline, ''):
         try:
@@ -36,7 +39,10 @@ def run_tests(*args):
 
 def run_failed_tests():
     print("Running only failed tests:")
-    test_names = ["'%s'" % test_name for (test_name, test_data) in TESTS.items() if test_data['outcome'] == 'failed']
+    test_names = [
+        "'%s'" % test_name for (test_name, test_data) in TESTS.items()
+        if test_data['outcome'] == 'failed'
+    ]
 
     run_tests(" ".join(test_names))
 
