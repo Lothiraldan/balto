@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 
+import sys
 import json
 import os
 import os.path
@@ -75,21 +76,25 @@ def print_status():
     print("\n")
 
 
+class LITR(object):
+
+    def __init__(self, repository):
+        self.repository = repository
+        self.history = InMemoryHistory()
+
+    def run(self):
+        while True:
+            command = prompt("> ", history=self.history, completer=completer)
+
+            if command == 'p':
+                print_tests()
+            elif command == 'r':
+                run_tests(default_test_args)
+            elif command == 'f':
+                run_failed_tests()
+
+            print_status()
+
 def main():
-    history = InMemoryHistory()
-
-    while True:
-        command = prompt("> ", history=history, completer=completer)
-
-        if command == 'p':
-            print_tests()
-        elif command == 'r':
-            run_tests(default_test_args)
-        elif command == 'f':
-            run_failed_tests()
-
-        print_status()
-
-
-if __name__ == "__main__":
-    main()
+    litr = LITR(sys.argv[1])
+    litr.run()
