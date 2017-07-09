@@ -21,59 +21,68 @@ completer = WordCompleter(
 TESTS = {}
 
 
-def run_tests(*args):
-    final_cmd = CMD % args
-    p = subprocess.Popen(
-        final_cmd,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        cwd=cwd,
-        shell=True)
+class SubprocessRunner(object):
 
-    for line in iter(p.stdout.readline, ''):
-        try:
-            data = json.loads(line)
+    def __init__(self, base_cmd, working_directory):
+        self.working_directory = working_directory
+        self.base_cmd = base_cmd
+        self.tests = {}
 
-            # Ignore invalid json
-            if 'id' not in data or 'outcome' not in data:
-                continue
+    def run(self, *args):
+        final_cmd = self.base_cmd % args
 
-            TESTS[data['id']] = data
-            print("%r: %s" % (data['id'], data['outcome']))
-        except ValueError:
-            pass
+        p = self.launch_cmd(final_cmd)
 
-    print("Done")
+        for line in iter(p.stdout.readline, ''):
+            try:
+                data = json.loads(line)
 
+                # Ignore invalid json
+                if 'id' not in data or 'outcome' not in data:
+                    continue
 
-def run_failed_tests():
-    print("Running only failed tests:")
-    test_names = [
-        "'%s'" % test_name for (test_name, test_data) in TESTS.items()
-        if test_data['outcome'] == 'failed'
-    ]
+                self.tests[data['id']] = data
+                print("%r: %s" % (data['id'], data['outcome']))
+            except ValueError:
+                pass
 
-    run_tests(" ".join(test_names))
+        print("Done")
 
+    def run_failed_tests(self):
+        print("Running only failed tests:")
+        test_names = [
+            "'%s'" % test_name for (test_name, test_data) in self.tests.items()
+            if test_data['outcome'] == 'failed'
+        ]
 
-def print_tests():
-    print("Tests:")
-    for test_name, test_data in TESTS.items():
-        print("%r: %s" % (test_name, test_data['outcome']))
-    print("")
+        self.run(" ".join(test_names))      
 
+    def launch_cmd(self, cmd):
+        p = subprocess.Popen(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            cwd=self.working_directory,
+            shell=True)
+        return p
 
-def print_status():
-    counter = Counter()
-    for test_name, test_data in TESTS.items():
-        counter[test_data['outcome']] += 1
+    def status(self):
+        print("Tests:")
+        for test_name, test_data in self.tests.items():
+            print("%r: %s" % (test_name, test_data['outcome']))
+        print("")
 
-    print("\n")
-    print("Status:")
-    for outcome, l in counter.items():
-        print("%s\t: %d" % (outcome, l))
+    def status_by_status(self):
+        counter = Counter()
+        for test_name, test_data in self.tests.items():
+            counter[test_data['outcome']] += 1
 
-    print("\n")
+        print("\n")
+        print("Status:")
+        for outcome, l in counter.items():
+            print("%s\t: %d" % (outcome, l))
+
+        print("\n")
 
 
 class LITR(object):
@@ -81,19 +90,20 @@ class LITR(object):
     def __init__(self, repository):
         self.repository = repository
         self.history = InMemoryHistory()
+        self.test_runner = SubprocessRunner(CMD, repository)
 
     def run(self):
         while True:
             command = prompt("> ", history=self.history, completer=completer)
 
             if command == 'p':
-                print_tests()
+                self.test_runner.status()
             elif command == 'r':
-                run_tests(default_test_args)
+                self.test_runner.run(default_test_args)
             elif command == 'f':
-                run_failed_tests()
+                self.test_runner.run_failed_tests()
 
-            print_status()
+            self.test_runner.status_by_status()
 
 def main():
     litr = LITR(sys.argv[1])
