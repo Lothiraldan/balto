@@ -27,26 +27,50 @@ class SubprocessRunner(object):
         self.working_directory = working_directory
         self.base_cmd = base_cmd
         self.tests = {}
+        self.test_number = None
+        self.current_test_number = 0
 
     def run(self, *args):
         final_cmd = self.base_cmd % args
+
+        # Reinitialize variables
+        self.test_number = None
+        self.current_test_number = 0
 
         p = self.launch_cmd(final_cmd)
 
         for line in iter(p.stdout.readline, ''):
             try:
                 data = json.loads(line)
-
-                # Ignore invalid json
-                if 'id' not in data or 'outcome' not in data:
-                    continue
-
-                self.tests[data['id']] = data
-                print("%r: %s" % (data['id'], data['outcome']))
+                self.parse_message(data)
             except ValueError:
                 pass
 
         print("Done")
+
+    def parse_message(self, data):
+        msg_type = data.get('_type')
+
+        if msg_type == 'session_start':
+            self.test_number = data['test_number']
+        elif msg_type == 'test_result':
+            # Ignore invalid json
+            if 'id' not in data or 'outcome' not in data:
+                return
+
+            self.tests[data['id']] = data
+
+            test_number = self.current_test_number + 1
+            self.current_test_number = test_number
+
+            if self.test_number is not None:
+                ptn = "%d/%d" % (test_number, self.test_number)
+            else:
+                ptn = "%d" % test_number
+
+            print("%s %r: %s" % (ptn, data['id'], data['outcome']))
+        else:
+            print(data)
 
     def run_failed_tests(self):
         print("Running only failed tests:")
