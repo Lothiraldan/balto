@@ -4,7 +4,7 @@ import json
 import subprocess
 import sys
 from collections import Counter
-from os.path import abspath
+from os.path import abspath, join
 
 from prompt_toolkit import prompt
 from prompt_toolkit.contrib.completers import WordCompleter
@@ -12,7 +12,6 @@ from prompt_toolkit.history import InMemoryHistory
 
 
 default_test_args = "testing/test_cache.py"
-CMD = "py.test %s"
 completer = WordCompleter(
     ['run', 'r', 'failed', 'f', 'p', 'print'], ignore_case=True)
 
@@ -124,6 +123,9 @@ class LITR(object):
         self.history = InMemoryHistory()
         self.tests = Tests()
 
+        self.config = {}
+        self.read_configuration()
+
     def run(self):
         while True:
             command = prompt("> ", history=self.history, completer=completer)
@@ -137,13 +139,17 @@ class LITR(object):
 
             self.tests.status_by_status()
 
+    def read_configuration(self):
+        with open(join(self.repository, '.litr.json')) as config_file:
+            self.config = json.load(config_file)
+
     def launch_all_tests(self):
-        session = SubprocessRunnerSession(CMD, self.repository, self.tests, [default_test_args])
+        session = SubprocessRunnerSession(self.config['cmd'], self.repository, self.tests, [default_test_args])
         session.run()
 
     def launch_failed_tests(self):
         tests = self.tests.get_test_by_outcome("failed")
-        session = SubprocessRunnerSession(CMD, self.repository, self.tests, tests)
+        session = SubprocessRunnerSession(self.config['cmd'], self.repository, self.tests, tests)
         session.run()
 
 
