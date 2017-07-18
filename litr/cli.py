@@ -16,20 +16,24 @@ CMD = "py.test %s"
 completer = WordCompleter(
     ['run', 'r', 'failed', 'f', 'p', 'print'], ignore_case=True)
 
-TESTS = {}
 
+class SubprocessRunnerSession(object):
 
-class SubprocessRunner(object):
-
-    def __init__(self, base_cmd, working_directory):
+    def __init__(self, base_cmd, working_directory, tests, tests_to_run=[]):
         self.working_directory = working_directory
         self.base_cmd = base_cmd
-        self.tests = {}
         self.test_number = None
         self.current_test_number = 0
+        self.tests = tests
+        self.tests_to_run = tests_to_run
 
-    def run(self, *args):
-        final_cmd = self.base_cmd % args
+    def run(self):
+        if self.tests_to_run:
+            tests = " ".join(["'%s'" % x for x in self.tests_to_run])
+        else:
+            tests = ''
+
+        final_cmd = self.base_cmd % tests
 
         # Reinitialize variables
         self.test_number = None
@@ -70,15 +74,6 @@ class SubprocessRunner(object):
         else:
             print(data)
 
-    def run_failed_tests(self):
-        print("Running only failed tests:")
-        test_names = [
-            "'%s'" % test_name for (test_name, test_data) in self.tests.items()
-            if test_data['outcome'] == 'failed'
-        ]
-
-        self.run(" ".join(test_names))      
-
     def launch_cmd(self, cmd):
         p = subprocess.Popen(
             cmd,
@@ -87,6 +82,12 @@ class SubprocessRunner(object):
             cwd=self.working_directory,
             shell=True)
         return p
+
+
+class Tests(dict):
+
+    def __init__(self):
+        self.tests = {}
 
     def status(self):
         print("Tests:")
@@ -106,26 +107,45 @@ class SubprocessRunner(object):
 
         print("\n")
 
+    def get_test_by_outcome(self, outcome):
+        return [
+            test_name for (test_name, test_data) in self.tests.items()
+            if test_data['outcome'] == outcome
+        ]
+
+    def __setitem__(self, name, value):
+        self.tests[name] = value
+
 
 class LITR(object):
 
     def __init__(self, repository):
         self.repository = repository
         self.history = InMemoryHistory()
-        self.test_runner = SubprocessRunner(CMD, repository)
+        self.tests = Tests()
 
     def run(self):
         while True:
             command = prompt("> ", history=self.history, completer=completer)
 
             if command == 'p':
-                self.test_runner.status()
+                self.tests.status()
             elif command == 'r':
-                self.test_runner.run(default_test_args)
+                self.launch_all_tests()
             elif command == 'f':
-                self.test_runner.run_failed_tests()
+                self.launch_failed_tests()
 
-            self.test_runner.status_by_status()
+            self.tests.status_by_status()
+
+    def launch_all_tests(self):
+        session = SubprocessRunnerSession(CMD, self.repository, self.tests, [default_test_args])
+        session.run()
+
+    def launch_failed_tests(self):
+        tests = self.tests.get_test_by_outcome("failed")
+        session = SubprocessRunnerSession(CMD, self.repository, self.tests, tests)
+        session.run()
+
 
 def main():
     litr = LITR(abspath(sys.argv[1]))
