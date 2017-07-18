@@ -1,10 +1,8 @@
 from __future__ import unicode_literals
 
-import sys
 import json
-import os
-import os.path
 import subprocess
+import sys
 from collections import Counter
 from os.path import abspath
 
