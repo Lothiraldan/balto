@@ -6,12 +6,12 @@ import os
 import os.path
 import subprocess
 from collections import Counter
+from os.path import abspath
 
 from prompt_toolkit import prompt
 from prompt_toolkit.contrib.completers import WordCompleter
 from prompt_toolkit.history import InMemoryHistory
 
-cwd = os.path.abspath("pytest")
 
 default_test_args = "testing/test_cache.py"
 CMD = "py.test %s"
@@ -130,5 +130,5 @@ class LITR(object):
             self.test_runner.status_by_status()
 
 def main():
-    litr = LITR(sys.argv[1])
+    litr = LITR(abspath(sys.argv[1]))
     litr.run()
