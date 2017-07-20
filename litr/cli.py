@@ -64,8 +64,8 @@ class Tests(dict):
 
     def status(self):
         print("Tests:")
-        for test_name, test_data in self.tests.items():
-            print("%r: %s" % (test_name, test_data['outcome']))
+        for test_name, test in self.tests.items():
+            print("%s %s: %s" % (test['file'], test['test_name'], test['outcome']))
         print("")
 
     def status_by_status(self):
@@ -102,6 +102,7 @@ class TestDisplayer(object):
 
         if msg_type == 'session_start':
             self.test_number = message['test_number']
+            print("Tests session started, %d tests detected:" % self.test_number)
             self.current_test_number = 0
         elif msg_type == 'test_result':
             # Ignore invalid json
@@ -118,7 +119,9 @@ class TestDisplayer(object):
             else:
                 ptn = "%d" % test_number
 
-            print("%s %r: %s" % (ptn, message['id'], message['outcome']))
+            print("%s %s %s: %s" % (ptn, message['file'], message['test_name'], message['outcome']))
+        elif msg_type == 'session_end':
+            print("Tests session end, %d failed, %d passed in %.4f seconds" % (message['failed'], message['passed'], message['total_duration']))
         else:
             print(message)
 
