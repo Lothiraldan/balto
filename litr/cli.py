@@ -18,12 +18,10 @@ completer = WordCompleter(
 
 class SubprocessRunnerSession(object):
 
-    def __init__(self, base_cmd, working_directory, tests, tests_to_run=[]):
+    def __init__(self, base_cmd, working_directory, displayer, tests_to_run=[]):
         self.working_directory = working_directory
         self.base_cmd = base_cmd
-        self.test_number = None
-        self.current_test_number = 0
-        self.tests = tests
+        self.displayer = displayer
         self.tests_to_run = tests_to_run
 
     def run(self):
@@ -43,35 +41,11 @@ class SubprocessRunnerSession(object):
         for line in iter(p.stdout.readline, ''):
             try:
                 data = json.loads(line)
-                self.parse_message(data)
+                self.displayer.parse_message(data)
             except ValueError:
                 pass
 
         print("Done")
-
-    def parse_message(self, data):
-        msg_type = data.get('_type')
-
-        if msg_type == 'session_start':
-            self.test_number = data['test_number']
-        elif msg_type == 'test_result':
-            # Ignore invalid json
-            if 'id' not in data or 'outcome' not in data:
-                return
-
-            self.tests[data['id']] = data
-
-            test_number = self.current_test_number + 1
-            self.current_test_number = test_number
-
-            if self.test_number is not None:
-                ptn = "%d/%d" % (test_number, self.test_number)
-            else:
-                ptn = "%d" % test_number
-
-            print("%s %r: %s" % (ptn, data['id'], data['outcome']))
-        else:
-            print(data)
 
     def launch_cmd(self, cmd):
         p = subprocess.Popen(
@@ -116,12 +90,46 @@ class Tests(dict):
         self.tests[name] = value
 
 
+class TestDisplayer(object):
+
+    def __init__(self, tests):
+        self.tests = tests
+        self.test_number = None
+        self.current_test_number = 0
+
+    def parse_message(self, message):
+        msg_type = message.get('_type')
+
+        if msg_type == 'session_start':
+            self.test_number = message['test_number']
+            self.current_test_number = 0
+        elif msg_type == 'test_result':
+            # Ignore invalid json
+            if 'id' not in message or 'outcome' not in message:
+                return
+
+            self.tests[message['id']] = message
+
+            test_number = self.current_test_number + 1
+            self.current_test_number = test_number
+
+            if self.test_number is not None:
+                ptn = "%d/%d" % (test_number, self.test_number)
+            else:
+                ptn = "%d" % test_number
+
+            print("%s %r: %s" % (ptn, message['id'], message['outcome']))
+        else:
+            print(message)
+
+
 class LITR(object):
 
     def __init__(self, repository):
         self.repository = repository
         self.history = InMemoryHistory()
         self.tests = Tests()
+        self.displayer = TestDisplayer(self.tests)
 
         self.config = {}
         self.read_configuration()
@@ -144,12 +152,14 @@ class LITR(object):
             self.config = json.load(config_file)
 
     def launch_all_tests(self):
-        session = SubprocessRunnerSession(self.config['cmd'], self.repository, self.tests, [default_test_args])
+        session = SubprocessRunnerSession(self.config['cmd'], self.repository,
+        self.displayer, [default_test_args])
         session.run()
 
     def launch_failed_tests(self):
         tests = self.tests.get_test_by_outcome("failed")
-        session = SubprocessRunnerSession(self.config['cmd'], self.repository, self.tests, tests)
+        session = SubprocessRunnerSession(self.config['cmd'], self.repository,
+        self.displayer, tests)
         session.run()
 
 
