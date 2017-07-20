@@ -1,7 +1,6 @@
 from __future__ import unicode_literals
 
 import json
-import subprocess
 import sys
 from collections import Counter
 from os.path import abspath, join
@@ -10,51 +9,12 @@ from prompt_toolkit import prompt
 from prompt_toolkit.contrib.completers import WordCompleter
 from prompt_toolkit.history import InMemoryHistory
 
+from litr.runners.subprocess_runner import SubprocessRunnerSession
+
 
 default_test_args = "testing/test_cache.py"
 completer = WordCompleter(
     ['run', 'r', 'failed', 'f', 'p', 'print'], ignore_case=True)
-
-
-class SubprocessRunnerSession(object):
-
-    def __init__(self, base_cmd, working_directory, displayer, tests_to_run=[]):
-        self.working_directory = working_directory
-        self.base_cmd = base_cmd
-        self.displayer = displayer
-        self.tests_to_run = tests_to_run
-
-    def run(self):
-        if self.tests_to_run:
-            tests = " ".join(["'%s'" % x for x in self.tests_to_run])
-        else:
-            tests = ''
-
-        final_cmd = self.base_cmd % tests
-
-        # Reinitialize variables
-        self.test_number = None
-        self.current_test_number = 0
-
-        p = self.launch_cmd(final_cmd)
-
-        for line in iter(p.stdout.readline, ''):
-            try:
-                data = json.loads(line)
-                self.displayer.parse_message(data)
-            except ValueError:
-                pass
-
-        print("Done")
-
-    def launch_cmd(self, cmd):
-        p = subprocess.Popen(
-            cmd,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            cwd=self.working_directory,
-            shell=True)
-        return p
 
 
 class Tests(dict):
