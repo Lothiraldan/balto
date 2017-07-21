@@ -10,6 +10,7 @@ from prompt_toolkit.contrib.completers import WordCompleter
 from prompt_toolkit.history import InMemoryHistory
 
 from litr.runners.subprocess_runner import SubprocessRunnerSession
+from litr.runners.docker_runner import DockerRunnerSession
 
 
 default_test_args = "testing/test_cache.py"
@@ -115,15 +116,25 @@ class LITR(object):
             self.config = json.load(config_file)
 
     def launch_all_tests(self):
-        session = SubprocessRunnerSession(self.config['cmd'], self.repository,
-        self.displayer, [default_test_args])
+        session = self._get_runner([default_test_args])
         session.run()
 
     def launch_failed_tests(self):
         tests = self.tests.get_test_by_outcome("failed")
-        session = SubprocessRunnerSession(self.config['cmd'], self.repository,
-        self.displayer, tests)
+        session = self._get_runner(tests)
         session.run()
+
+    def _get_runner(self, tests):
+        if self.config['runner'] == 'subprocess':
+            print("SP")
+            return SubprocessRunnerSession(self.config['cmd'], self.repository,
+                                           self.displayer, tests)
+        elif self.config['runner'] == 'docker':
+            print("DOCK")
+            return DockerRunnerSession(self.config['cmd'], self.config['docker_img'], self.repository,
+                                       self.displayer, tests)
+        else:
+            raise NotImplementedError()
 
 
 def main():
