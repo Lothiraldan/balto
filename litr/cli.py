@@ -9,8 +9,8 @@ from prompt_toolkit import prompt
 from prompt_toolkit.contrib.completers import WordCompleter
 from prompt_toolkit.history import InMemoryHistory
 
-from litr.runners.subprocess_runner import SubprocessRunnerSession
 from litr.runners.docker_runner import DockerRunnerSession
+from litr.runners.subprocess_runner import SubprocessRunnerSession
 
 
 default_test_args = "testing/test_cache.py"
