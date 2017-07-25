@@ -12,21 +12,20 @@ from prompt_toolkit.history import InMemoryHistory
 from litr.runners.docker_runner import DockerRunnerSession
 from litr.runners.subprocess_runner import SubprocessRunnerSession
 
-
 default_test_args = "testing/test_cache.py"
 completer = WordCompleter(
     ['run', 'r', 'failed', 'f', 'p', 'print'], ignore_case=True)
 
 
 class Tests(dict):
-
     def __init__(self):
         self.tests = {}
 
     def status(self):
         print("Tests:")
         for test_name, test in self.tests.items():
-            print("%s %s: %s" % (test['file'], test['test_name'], test['outcome']))
+            print("%s %s: %s" % (test['file'], test['test_name'],
+                                 test['outcome']))
         print("")
 
     def status_by_status(self):
@@ -52,7 +51,6 @@ class Tests(dict):
 
 
 class TestDisplayer(object):
-
     def __init__(self, tests):
         self.tests = tests
         self.test_number = None
@@ -63,7 +61,8 @@ class TestDisplayer(object):
 
         if msg_type == 'session_start':
             self.test_number = message['test_number']
-            print("Tests session started, %d tests detected:" % self.test_number)
+            print(
+                "Tests session started, %d tests detected:" % self.test_number)
             self.current_test_number = 0
         elif msg_type == 'test_result':
             # Ignore invalid json
@@ -80,15 +79,17 @@ class TestDisplayer(object):
             else:
                 ptn = "%d" % test_number
 
-            print("%s %s %s: %s" % (ptn, message['file'], message['test_name'], message['outcome']))
+            print("%s %s %s: %s" % (ptn, message['file'], message['test_name'],
+                                    message['outcome']))
         elif msg_type == 'session_end':
-            print("Tests session end, %d failed, %d passed in %.4f seconds" % (message['failed'], message['passed'], message['total_duration']))
+            print("Tests session end, %d failed, %d passed in %.4f seconds" %
+                  (message['failed'], message['passed'],
+                   message['total_duration']))
         else:
             print(message)
 
 
 class LITR(object):
-
     def __init__(self, repository):
         self.repository = repository
         self.history = InMemoryHistory()
@@ -131,8 +132,9 @@ class LITR(object):
                                            self.displayer, tests)
         elif self.config['runner'] == 'docker':
             print("DOCK")
-            return DockerRunnerSession(self.config['cmd'], self.config['docker_img'], self.repository,
-                                       self.displayer, tests)
+            return DockerRunnerSession(self.config['cmd'],
+                                       self.config['docker_img'],
+                                       self.repository, self.displayer, tests)
         else:
             raise NotImplementedError()
 
