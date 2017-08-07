@@ -1,4 +1,4 @@
-from __future__ import unicode_literals
+from __future__ import unicode_literals, print_function
 
 import json
 import sys
@@ -12,9 +12,9 @@ from prompt_toolkit.history import InMemoryHistory
 from litr.runners.docker_runner import DockerRunnerSession
 from litr.runners.subprocess_runner import SubprocessRunnerSession
 
-default_test_args = "testing/test_cache.py"
+default_test_args = ""
 completer = WordCompleter(
-    ['run', 'r', 'failed', 'f', 'p', 'print'], ignore_case=True)
+    ['run', 'r', 'failed', 'f', 'p', 'print', 'pf'], ignore_case=True)
 
 
 class Tests(dict):
@@ -26,6 +26,15 @@ class Tests(dict):
         for test_name, test in self.tests.items():
             print("%s %s: %s" % (test['file'], test['test_name'],
                                  test['outcome']))
+        print("")
+
+    def failed_tests(self):
+        print("Failed tests:")
+        for test_name, test_data in self.tests.items():
+            if not test_data['outcome'] == "failed":
+                continue
+
+            print("TEST NAME", test_name, test_data)
         print("")
 
     def status_by_status(self):
@@ -105,6 +114,8 @@ class LITR(object):
 
             if command == 'p':
                 self.tests.status()
+            elif command == 'pf':
+                self.tests.failed_tests()
             elif command == 'r':
                 self.launch_all_tests()
             elif command == 'f':
