@@ -1,5 +1,6 @@
 from __future__ import unicode_literals, print_function
 
+import asyncio
 import json
 import sys
 from collections import Counter
@@ -8,6 +9,8 @@ from os.path import abspath, join
 from prompt_toolkit import prompt
 from prompt_toolkit.contrib.completers import WordCompleter
 from prompt_toolkit.history import InMemoryHistory
+from prompt_toolkit.interface import CommandLineInterface
+from prompt_toolkit.shortcuts import create_prompt_application, create_asyncio_eventloop, prompt_async
 
 from litr.runners.docker_runner import DockerRunnerSession
 from litr.runners.subprocess_runner import SubprocessRunnerSession
@@ -72,6 +75,7 @@ class TestDisplayer(object):
             self.test_number = message['test_number']
             print(
                 "Tests session started, %d tests detected:" % self.test_number)
+            sys.stdout.flush()
             self.current_test_number = 0
         elif msg_type == 'test_result':
             # Ignore invalid json
@@ -90,36 +94,55 @@ class TestDisplayer(object):
 
             print("%s %s %s: %s" % (ptn, message['file'], message['test_name'],
                                     message['outcome']))
+            sys.stdout.flush()
         elif msg_type == 'session_end':
             print("Tests session end, %d failed, %d passed in %.4f seconds" %
                   (message['failed'], message['passed'],
                    message['total_duration']))
+            sys.stdout.flush()
         else:
             print(message)
+            sys.stdout.flush()
 
 
 class LITR(object):
-    def __init__(self, repository):
+    def __init__(self, repository, eventloop):
         self.repository = repository
         self.history = InMemoryHistory()
         self.tests = Tests()
         self.displayer = TestDisplayer(self.tests)
+        self.eventloop = eventloop
+
+        self.application = create_prompt_application(
+            '> ', history=self.history, completer=completer)
+
+        self.cli = CommandLineInterface(
+            application=self.application,
+            eventloop=create_asyncio_eventloop(eventloop)
+        )
+
+        sys.stdout = self.cli.stdout_proxy()
 
         self.config = {}
         self.read_configuration()
 
-    def run(self):
+    async def run(self):
         while True:
-            command = prompt("> ", history=self.history, completer=completer)
+            try:
+                result = await self.cli.run_async()
+            except (EOFError, KeyboardInterrupt):
+                return
+
+            command = result.text
 
             if command == 'p':
                 self.tests.status()
             elif command == 'pf':
                 self.tests.failed_tests()
             elif command == 'r':
-                self.launch_all_tests()
+                await self.launch_all_tests()
             elif command == 'f':
-                self.launch_failed_tests()
+                await self.launch_failed_tests()
 
             self.tests.status_by_status()
 
@@ -127,29 +150,32 @@ class LITR(object):
         with open(join(self.repository, '.litr.json')) as config_file:
             self.config = json.load(config_file)
 
-    def launch_all_tests(self):
+    async def launch_all_tests(self):
         session = self._get_runner([default_test_args])
-        session.run()
+        await session.run()
 
-    def launch_failed_tests(self):
+    async def launch_failed_tests(self):
         tests = self.tests.get_test_by_outcome("failed")
         session = self._get_runner(tests)
-        session.run()
+        await session.run()
 
     def _get_runner(self, tests):
         if self.config['runner'] == 'subprocess':
             print("SP")
-            return SubprocessRunnerSession(self.config['cmd'], self.repository,
-                                           self.displayer, tests)
+            return SubprocessRunnerSession(self.config['cmd'],
+                                           self.repository, self.displayer,
+                                           tests, loop=self.eventloop)
         elif self.config['runner'] == 'docker':
             print("DOCK")
             return DockerRunnerSession(self.config['cmd'],
                                        self.config['docker_img'],
-                                       self.repository, self.displayer, tests)
+                                       self.repository, self.displayer, tests,
+                                       loop=self.eventloop)
         else:
             raise NotImplementedError()
 
 
 def main():
-    litr = LITR(abspath(sys.argv[1]))
-    litr.run()
+    loop = asyncio.get_event_loop()
+    litr = LITR(abspath(sys.argv[1]), loop)
+    loop.run_until_complete(litr.run())

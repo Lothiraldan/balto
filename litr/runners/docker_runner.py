@@ -2,7 +2,11 @@ import json
 import tarfile
 import tempfile
 from os.path import join
-from StringIO import StringIO
+
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
 
 import docker.utils
 from docker import DockerClient
@@ -42,7 +46,7 @@ def docker_context(dockerfile_content, base_path):
 
 class DockerRunnerSession(object):
 
-    def __init__(self, base_cmd, docker_img, working_directory, displayer, tests_to_run=[]):
+    def __init__(self, base_cmd, docker_img, working_directory, displayer, tests_to_run=[], eventloop=None):
         self.working_directory = working_directory
         self.base_cmd = base_cmd
         self.displayer = displayer
@@ -81,8 +85,9 @@ class DockerRunnerSession(object):
         if local is True:
             volumes = {self.working_directory: {'bind': '/sut', 'mode': 'rw'}}
 
-        container = DOCKER.containers.run(docker_img, command=final_cmd, detach=True,
-                                          volumes=volumes, working_dir="/sut")
+        container = DOCKER.containers.run(docker_img, command=final_cmd,
+                                          detach=True, volumes=volumes,
+                                          working_dir="/sut")
 
         for line in container.logs(stream=True, follow=True):
             try:
