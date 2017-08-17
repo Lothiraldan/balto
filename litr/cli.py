@@ -6,7 +6,6 @@ import sys
 from collections import Counter
 from os.path import abspath, join
 
-from prompt_toolkit import prompt
 from prompt_toolkit.contrib.completers import WordCompleter
 from prompt_toolkit.history import InMemoryHistory
 from prompt_toolkit.interface import CommandLineInterface
@@ -14,10 +13,27 @@ from prompt_toolkit.shortcuts import create_prompt_application, create_asyncio_e
 
 from litr.runners.docker_runner import DockerRunnerSession
 from litr.runners.subprocess_runner import SubprocessRunnerSession
+from litr.displayer.cli_simple import TestDisplayer
 
 default_test_args = ""
 completer = WordCompleter(
     ['run', 'r', 'failed', 'f', 'p', 'print', 'pf'], ignore_case=True)
+
+
+class EventEmitter(object):
+
+    def __init__(self):
+        self.callbacks = []
+
+    def register(self, callback):
+        self.callbacks.append(callback)
+
+    async def emit(self, event):
+        calls = [callback(event) for callback in self.callbacks]
+
+        await asyncio.gather(*calls)
+
+EM = EventEmitter()
 
 
 class Tests(dict):
@@ -60,49 +76,6 @@ class Tests(dict):
 
     def __setitem__(self, name, value):
         self.tests[name] = value
-
-
-class TestDisplayer(object):
-    def __init__(self, tests):
-        self.tests = tests
-        self.test_number = None
-        self.current_test_number = 0
-
-    def parse_message(self, message):
-        msg_type = message.get('_type')
-
-        if msg_type == 'session_start':
-            self.test_number = message['test_number']
-            print(
-                "Tests session started, %d tests detected:" % self.test_number)
-            sys.stdout.flush()
-            self.current_test_number = 0
-        elif msg_type == 'test_result':
-            # Ignore invalid json
-            if 'id' not in message or 'outcome' not in message:
-                return
-
-            self.tests[message['id']] = message
-
-            test_number = self.current_test_number + 1
-            self.current_test_number = test_number
-
-            if self.test_number is not None:
-                ptn = "%d/%d" % (test_number, self.test_number)
-            else:
-                ptn = "%d" % test_number
-
-            print("%s %s %s: %s" % (ptn, message['file'], message['test_name'],
-                                    message['outcome']))
-            sys.stdout.flush()
-        elif msg_type == 'session_end':
-            print("Tests session end, %d failed, %d passed in %.4f seconds" %
-                  (message['failed'], message['passed'],
-                   message['total_duration']))
-            sys.stdout.flush()
-        else:
-            print(message)
-            sys.stdout.flush()
 
 
 class LITR(object):
@@ -161,15 +134,13 @@ class LITR(object):
 
     def _get_runner(self, tests):
         if self.config['runner'] == 'subprocess':
-            print("SP")
             return SubprocessRunnerSession(self.config['cmd'],
-                                           self.repository, self.displayer,
+                                           self.repository, EM,
                                            tests, loop=self.eventloop)
         elif self.config['runner'] == 'docker':
-            print("DOCK")
             return DockerRunnerSession(self.config['cmd'],
                                        self.config['docker_img'],
-                                       self.repository, self.displayer, tests,
+                                       self.repository, EM, tests,
                                        loop=self.eventloop)
         else:
             raise NotImplementedError()
@@ -178,4 +149,8 @@ class LITR(object):
 def main():
     loop = asyncio.get_event_loop()
     litr = LITR(abspath(sys.argv[1]), loop)
+
+    # Register the callbacks
+    EM.register(litr.displayer.parse_message)
+
     loop.run_until_complete(litr.run())
