@@ -66,6 +66,9 @@ class SimpleTestInterface(object):
         self.runner_class = runner_class
         self.em = em
 
+        # Register the callbacks
+        self.em.register(self.displayer.parse_message)
+
         self.application = create_prompt_application(
             '> ', history=self.history, completer=completer)
 

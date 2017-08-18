@@ -97,7 +97,4 @@ def main():
 
     litr = SimpleTestInterface(abspath(repository_path), loop, tests, config, em, runner_class)
 
-    # Register the callbacks
-    em.register(litr.displayer.parse_message)
-
     loop.run_until_complete(litr.run())
