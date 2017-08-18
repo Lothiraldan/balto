@@ -23,7 +23,7 @@ class EventEmitter(object):
     async def emit(self, event):
         for callback in self.callbacks:
             # Don't wait for callbacks to finished
-            self.loop.call_soon(callback, event)
+            self.loop.create_task(callback(event))
 
 
 class Tests(dict):
