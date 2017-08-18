@@ -13,19 +13,17 @@ from litr.displayer.cli_simple import SimpleTestInterface
 
 class EventEmitter(object):
 
-    def __init__(self):
+    def __init__(self, loop):
         self.callbacks = []
+        self.loop = loop
 
     def register(self, callback):
         self.callbacks.append(callback)
 
     async def emit(self, event):
-        calls = [callback(event) for callback in self.callbacks]
-
-        await asyncio.gather(*calls)
-
-
-EM = EventEmitter()
+        for callback in self.callbacks:
+            # Don't wait for callbacks to finished
+            self.loop.call_soon(callback, event)
 
 
 class Tests(dict):
@@ -94,9 +92,12 @@ def main():
     # Tests
     tests = Tests()
 
-    litr = SimpleTestInterface(abspath(repository_path), loop, tests, config, EM, runner_class)
+    # EM
+    em = EventEmitter(loop)
+
+    litr = SimpleTestInterface(abspath(repository_path), loop, tests, config, em, runner_class)
 
     # Register the callbacks
-    EM.register(litr.displayer.parse_message)
+    em.register(litr.displayer.parse_message)
 
     loop.run_until_complete(litr.run())

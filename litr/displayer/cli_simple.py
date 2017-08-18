@@ -17,7 +17,7 @@ class TestDisplayer(object):
         self.test_number = None
         self.current_test_number = 0
 
-    async def parse_message(self, message):
+    def parse_message(self, message):
         msg_type = message.get('_type')
 
         if msg_type == 'session_start':
