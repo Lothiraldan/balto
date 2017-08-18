@@ -13,9 +13,9 @@ async def _read_stream(stream, cb):
 
 class SubprocessRunnerSession(object):
 
-    def __init__(self, base_cmd, working_directory, event_emitter, tests_to_run=[], loop=None):
+    def __init__(self, config, working_directory, event_emitter, tests_to_run=[], loop=None):
         self.working_directory = working_directory
-        self.base_cmd = base_cmd
+        self.base_cmd = config['cmd']
         self.event_emitter = event_emitter
         self.tests_to_run = tests_to_run
         self.loop = loop
