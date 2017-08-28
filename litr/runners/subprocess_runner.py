@@ -34,8 +34,6 @@ class SubprocessRunnerSession(object):
 
         await self.launch_cmd(final_cmd)
 
-        print("Done")
-
     async def read_line(self, line):
         # Remove \n and/or whitespace only lines
         line = line.strip()

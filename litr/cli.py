@@ -9,6 +9,7 @@ from os.path import abspath, join
 from litr.runners.docker_runner import DockerRunnerSession
 from litr.runners.subprocess_runner import SubprocessRunnerSession
 from litr.displayer.cli_simple import SimpleTestInterface
+from litr.displayer.curses import CursesTestInterface
 
 
 class EventEmitter(object):
@@ -29,6 +30,26 @@ class EventEmitter(object):
 class Tests(dict):
     def __init__(self):
         self.tests = {}
+
+    def get_test_suites(self):
+        return ['unit']
+
+    def get_test_files(self, test_suite):
+        test_files = set()
+
+        for test in self.tests.values():
+            test_files.add(test['file'])
+
+        return test_files
+
+    def get_tests(self, test_file, test_suite):
+        tests = []
+
+        for test_name, test in self.tests.items():
+            if test['file'] == test_file:
+                tests.append(test_name)
+
+        return tests
 
     def status(self):
         print("Tests:")
@@ -67,6 +88,9 @@ class Tests(dict):
     def __setitem__(self, name, value):
         self.tests[name] = value
 
+    def __getitem__(self, name):
+        return self.tests[name]
+
 
 def get_runner_class(config):
     runner = config['runner']
@@ -95,6 +119,5 @@ def main():
     # EM
     em = EventEmitter(loop)
 
-    litr = SimpleTestInterface(abspath(repository_path), loop, tests, config, em, runner_class)
-
-    loop.run_until_complete(litr.run())
+    litr = CursesTestInterface(abspath(repository_path), loop, tests, config, em, runner_class)
+    litr.run()

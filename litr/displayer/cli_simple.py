@@ -79,7 +79,10 @@ class SimpleTestInterface(object):
 
         sys.stdout = self.cli.stdout_proxy()    
 
-    async def run(self):
+    def run(self):
+        self.eventloop.run_until_complete(self._run())
+
+    async def _run(self):
         while True:
             try:
                 result = await self.cli.run_async()
