@@ -537,7 +537,7 @@ class CursesTestInterface(object):
 
             PROGRESS_BAR.set_completion(0)
             STATUS.set_text("Running all tests")
-        elif key == 'r':
+        elif key in ('r', 'enter'):
             c = self.launch_specific_tests(list(SELECTED_TEST))
             task = asyncio.ensure_future(c, loop=self.eventloop)
 
