@@ -549,6 +549,8 @@ class CursesTestInterface(object):
             self.select_tests("failed")
         elif key == 's':
             self.select_tests("skipped")
+        elif key == 'p':
+            self.select_tests("passed")
         else:
             STATUS.set_text("Key pressed DEBUG: %s" % repr(key))
 
