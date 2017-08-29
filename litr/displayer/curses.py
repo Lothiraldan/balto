@@ -153,8 +153,15 @@ class TestFileWidget(urwid.TreeWidget):
     def update_w(self):
         """Update the attributes of self.widget based on self.flagged.
         """
-        if self.get_node().flagged:
-            self.selected_w.set_text('[x]')
+        node = self.get_node()
+        if node.flagged:
+            if node.all_flagged:
+                icon = "x"
+            elif node.any_flagged:
+                icon = "~"
+            else:
+                raise ValueError()
+            self.selected_w.set_text("[%s]" % icon)
         else:
             self.selected_w.set_text('[ ]')
 
@@ -165,6 +172,8 @@ class TestFileNode(urwid.ParentNode):
         super().__init__(*args, **kwargs)
         self.flagged = flagged
         self.test_suite = test_suite
+        self.all_flagged = False
+        self.any_flagged = False
 
     def load_widget(self):
         return TestFileWidget(self)
@@ -186,23 +195,22 @@ class TestFileNode(urwid.ParentNode):
             self.get_parent().check_flag()
 
     def check_flag(self):
-        all_flagged = True
-        any_flagged = False
+        data = self.get_value()
 
-        for child_key in self.get_child_keys():
-            child = self.get_child_node(child_key)
+        tests = data.get_tests(test_file=self._key, test_suite=self.test_suite)
+        stests = set(tests)
 
-            all_flagged = all_flagged and child.flagged
-            any_flagged = any_flagged or child.flagged
+        self.all_flagged = stests.issubset(SELECTED_TEST)
+        self.any_flagged = not stests.isdisjoint(SELECTED_TEST)
 
-        if all_flagged:
+        if self.all_flagged or self.any_flagged:
             self.flagged = True
             self.get_widget().update_w()
 
             if hasattr(self.get_parent(), "check_flag"):
                 self.get_parent().check_flag()
 
-        if not any_flagged:
+        if not self.any_flagged:
             self.flagged = False
             self.get_widget().update_w()
 
@@ -281,8 +289,15 @@ class TestSuiteWidget(urwid.TreeWidget):
     def update_w(self):
         """Update the attributes of self.widget based on self.flagged.
         """
-        if self.get_node().flagged:
-            self.selected_w.set_text('[x]')
+        node = self.get_node()
+        if node.flagged:
+            if node.all_flagged:
+                icon = "x"
+            elif node.any_flagged:
+                icon = "~"
+            else:
+                raise ValueError()
+            self.selected_w.set_text("[%s]" % icon)
         else:
             self.selected_w.set_text('[ ]')
 
@@ -292,6 +307,8 @@ class TestSuiteNode(urwid.ParentNode):
     def __init__(self, *args, flagged=False, **kwargs):
         super().__init__(*args, **kwargs)
         self.flagged = flagged
+        self.all_flagged = False
+        self.any_flagged = False
 
     def load_widget(self):
         return TestSuiteWidget(self)
@@ -313,23 +330,22 @@ class TestSuiteNode(urwid.ParentNode):
             self.get_parent().check_flag()
 
     def check_flag(self):
-        all_flagged = True
-        any_flagged = False
+        data = self.get_value()
 
-        for child_key in self.get_child_keys():
-            child = self.get_child_node(child_key)
+        tests = data.get_tests(test_suite=self._key)
+        stests = set(tests)
 
-            all_flagged = all_flagged and child.flagged
-            any_flagged = any_flagged or child.flagged
+        self.all_flagged = stests.issubset(SELECTED_TEST)
+        self.any_flagged = not stests.isdisjoint(SELECTED_TEST)
 
-        if all_flagged:
+        if self.all_flagged or self.any_flagged:
             self.flagged = True
             self.get_widget().update_w()
 
             if hasattr(self.get_parent(), "check_flag"):
                 self.get_parent().check_flag()
 
-        if not any_flagged:
+        if not self.any_flagged:
             self.flagged = False
             self.get_widget().update_w()
 

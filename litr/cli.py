@@ -42,12 +42,14 @@ class Tests(dict):
 
         return test_files
 
-    def get_tests(self, test_file, test_suite):
+    def get_tests(self, test_suite, test_file=None):
         tests = []
 
         for test_name, test in self.tests.items():
-            if test['file'] == test_file:
-                tests.append(test_name)
+            if test_file is not None and test['file'] != test_file:
+                continue
+
+            tests.append(test_name)
 
         return tests
 
