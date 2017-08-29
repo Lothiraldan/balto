@@ -101,7 +101,15 @@ class SingleTestNode(urwid.TreeNode):
     def load_widget(self):
         return SingleTestWidget(self)
 
+    def check_flag(self):
+        if self._key in SELECTED_TEST:
+            self.flagged = True
+        else:
+            self.flagged = False
+
     def refresh(self):
+        self.check_flag()
+
         self.get_widget().update_w()
 
 
@@ -232,8 +240,9 @@ class TestFileNode(urwid.ParentNode):
                            test_suite=self._key)
 
     def refresh(self):
-        # signals.emit_signal(self.get_widget(), "modified")
         self._child_keys = None
+
+        self.check_flag()
 
         for child_key in self.get_child_keys():
             child = self.get_child_node(child_key)
@@ -365,6 +374,8 @@ class TestSuiteNode(urwid.ParentNode):
     def refresh(self):
         # signals.emit_signal(self.get_widget(), "modified")
         self._child_keys = None
+
+        self.check_flag()
 
         for child_key in self.get_child_keys():
             child = self.get_child_node(child_key)
@@ -516,6 +527,8 @@ class CursesTestInterface(object):
         self.urwid_loop.run()
 
     def unhandled(self, key):
+        global SELECTED_TEST
+
         if key in ('ctrl c', 'q'):
             raise urwid.ExitMainLoop
         elif key == 'a':
@@ -531,11 +544,13 @@ class CursesTestInterface(object):
             PROGRESS_BAR.set_completion(0)
             STATUS.set_text("Running %s tests" % len(SELECTED_TEST))
         elif key == 'f':
-            c = self.launch_failed_tests()
-            task = asyncio.ensure_future(c, loop=self.eventloop)
+            tests = self.tests.get_test_by_outcome("failed")
 
-            PROGRESS_BAR.set_completion(0)
-            STATUS.set_text("Running %s failing tests" % len(SELECTED_TEST))
+            SELECTED_TEST = set(tests)
+
+            self.displayer.topnode.refresh()
+            self.displayer.walker._modified()
+            STATUS.set_text("Selected %d failing tests" % len(tests))
         else:
             STATUS.set_text("Key pressed DEBUG: %s" % repr(key))
 
