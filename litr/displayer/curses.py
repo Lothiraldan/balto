@@ -436,8 +436,12 @@ PALETTE = [
     ('title', 'white', 'black', 'bold'),
     ('dirmark', 'black', 'dark cyan', 'bold'),
     ('flag', 'dark gray', 'light gray'),
+
+    # Outcomes
     ('failed', 'dark red', 'light gray'),
     ('passed', 'dark green', 'light gray'),
+    ('skipped', 'dark blue', 'light gray'),
+
     ('pg normal',    'white',      'black', 'standout'),
     ('pg complete',  'white',      'dark blue'),
     ('pg smooth', 'dark blue', 'black')
