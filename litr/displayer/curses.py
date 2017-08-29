@@ -528,6 +528,9 @@ class CursesTestInterface(object):
             footer=footer)
 
     def run(self):
+        if len(self.tests.tests) == 0:
+            self.launch_all_tests()
+
         self.urwid_loop.run()
 
     def unhandled(self, key):
