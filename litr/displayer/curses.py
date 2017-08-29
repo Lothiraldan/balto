@@ -555,6 +555,9 @@ class CursesTestInterface(object):
             STATUS.set_text("Key pressed DEBUG: %s" % repr(key))
 
     def launch_all_tests(self):
+        global SELECTED_TEST
+        SELECTED_TEST = set(self.tests.tests.keys())
+
         c = self._launch_all_tests()
         task = asyncio.ensure_future(c, loop=self.eventloop)
 
