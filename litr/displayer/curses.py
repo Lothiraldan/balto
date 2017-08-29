@@ -532,38 +532,51 @@ class CursesTestInterface(object):
         if key in ('ctrl c', 'q'):
             raise urwid.ExitMainLoop
         elif key == 'a':
-            c = self.launch_all_tests()
-            task = asyncio.ensure_future(c, loop=self.eventloop)
-
-            PROGRESS_BAR.set_completion(0)
-            STATUS.set_text("Running all tests")
+            self.launch_all_tests()
         elif key in ('r', 'enter'):
-            c = self.launch_specific_tests(list(SELECTED_TEST))
-            task = asyncio.ensure_future(c, loop=self.eventloop)
+            tests = list(SELECTED_TEST)
 
-            PROGRESS_BAR.set_completion(0)
-            STATUS.set_text("Running %s tests" % len(SELECTED_TEST))
+            if len(tests) == 0:
+                self.launch_all_tests()
+                return
+
+            self.launch_specific_tests(tests)
         elif key == 'f':
-            tests = self.tests.get_test_by_outcome("failed")
-
-            SELECTED_TEST = set(tests)
-
-            self.displayer.topnode.refresh()
-            self.displayer.walker._modified()
-            STATUS.set_text("Selected %d failing tests" % len(tests))
+            self.select_tests("failed")
+        elif key == 's':
+            self.select_tests("skipped")
         else:
             STATUS.set_text("Key pressed DEBUG: %s" % repr(key))
 
-    async def launch_all_tests(self):
+    def launch_all_tests(self):
+        c = self._launch_all_tests()
+        task = asyncio.ensure_future(c, loop=self.eventloop)
+
+        PROGRESS_BAR.set_completion(0)
+        STATUS.set_text("Running all tests")
+
+    def launch_specific_tests(self, tests):
+        c = self._launch_specific_tests(tests)
+        task = asyncio.ensure_future(c, loop=self.eventloop)
+
+        PROGRESS_BAR.set_completion(0)
+        STATUS.set_text("Running %s tests" % len(SELECTED_TEST))
+
+    def select_tests(self, outcome):
+        global SELECTED_TEST
+        tests = self.tests.get_test_by_outcome(outcome)
+
+        SELECTED_TEST = set(tests)
+
+        self.displayer.topnode.refresh()
+        self.displayer.walker._modified()
+        STATUS.set_text("Selected %d %s tests" % (len(tests), outcome))
+
+    async def _launch_all_tests(self):
         session = self._get_runner([])
         await session.run()
 
-    async def launch_specific_tests(self, tests):
-        session = self._get_runner(tests)
-        await session.run()
-
-    async def launch_failed_tests(self):
-        tests = self.tests.get_test_by_outcome("failed")
+    async def _launch_specific_tests(self, tests):
         session = self._get_runner(tests)
         await session.run()
 
