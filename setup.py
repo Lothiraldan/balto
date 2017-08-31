@@ -19,6 +19,7 @@ setup(
     zip_safe=False,
     platforms='any',
     install_requires=dependencies,
+    python_requires='>=3.5',
     entry_points={
         'console_scripts': [
             'litr = litr.cli:main',
@@ -39,10 +40,10 @@ setup(
         'Operating System :: POSIX',
         'Operating System :: MacOS',
         'Operating System :: Unix',
-        'Operating System :: Microsoft :: Windows',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ]
 )
