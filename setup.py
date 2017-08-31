@@ -1,5 +1,5 @@
 """
-Language-Agnostic Test Runner
+Language-Independent Test Runner
 """
 from setuptools import find_packages, setup
 
@@ -12,7 +12,7 @@ setup(
     license='BSD',
     author='Boris Feld',
     author_email='lothiraldan@gmail.com',
-    description='Language-Agnostic Test Runner',
+    description='Language-Independent Test Runner',
     long_description=__doc__,
     packages=find_packages(exclude=['tests']),
     include_package_data=True,
