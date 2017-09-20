@@ -122,4 +122,11 @@ def main():
     em = EventEmitter(loop)
 
     litr = CursesTestInterface(abspath(repository_path), loop, tests, config, em, runner_class)
-    litr.run()
+    try:
+        litr.run()
+    finally:
+        print("Waiting for cleaning workers before exiting")
+        pending = asyncio.Task.all_tasks()
+        loop.run_until_complete(asyncio.gather(*pending))
+        print("Exiting now")
+        loop.close()
