@@ -539,7 +539,7 @@ class CursesTestInterface(object):
         if key in ('ctrl c', 'q'):
             raise urwid.ExitMainLoop
         elif key == 'a':
-            self.launch_all_tests()
+            self.select_all_tests()
         elif key in ('r', 'enter'):
             tests = list(SELECTED_TEST)
 
@@ -556,6 +556,14 @@ class CursesTestInterface(object):
             self.select_tests("passed")
         else:
             STATUS.set_text("Key pressed DEBUG: %s" % repr(key))
+
+    def select_all_tests(self):
+        global SELECTED_TEST
+        SELECTED_TEST = set(self.tests.tests.keys())
+
+        self.displayer.topnode.refresh()
+        self.displayer.walker._modified()
+        STATUS.set_text("Selected %d tests" % (len(SELECTED_TEST)))
 
     def launch_all_tests(self):
         global SELECTED_TEST
