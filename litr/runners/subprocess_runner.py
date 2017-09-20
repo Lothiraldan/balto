@@ -56,6 +56,7 @@ class SubprocessRunnerSession(object):
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
             cwd=self.working_directory,
+            loop=self.loop
         )
 
         await asyncio.wait([
