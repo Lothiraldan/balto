@@ -440,6 +440,7 @@ PALETTE = [
     # Outcomes
     ('failed', 'dark red', 'light gray'),
     ('passed', 'dark green', 'light gray'),
+    ('error', 'dark red', 'light gray'),
     ('skipped', 'dark blue', 'light gray'),
 
     ('pg normal',    'white',      'black', 'standout'),
