@@ -1,4 +1,5 @@
 import json
+import shlex
 import asyncio
 
 
@@ -13,20 +14,27 @@ async def _read_stream(stream, cb):
 
 class SubprocessRunnerSession(object):
 
-    def __init__(self, config, working_directory, event_emitter, tests_to_run=[], loop=None):
+    def __init__(self, config, working_directory, event_emitter, tests_to_run=[], collect_only=False, loop=None):
         self.working_directory = working_directory
-        self.base_cmd = config['cmd']
+        self.tool = config['tool']
         self.event_emitter = event_emitter
         self.tests_to_run = tests_to_run
         self.loop = loop
+        self.collect_only = collect_only
 
     async def run(self):
-        if self.tests_to_run:
-            tests = " ".join(["'%s'" % x for x in self.tests_to_run])
-        else:
-            tests = ''
+        base_cmd = "%s-litf" % self.tool
 
-        final_cmd = self.base_cmd % tests
+        args = {}
+
+        if self.collect_only:
+            args["collect-only"] = True
+
+        if self.tests_to_run:
+            args["files"] = self.tests_to_run
+
+        args = shlex.quote(json.dumps(args))
+        final_cmd = "%s %s" % (base_cmd, args)
 
         # Reinitialize variables
         self.test_number = None
@@ -59,9 +67,9 @@ class SubprocessRunnerSession(object):
             loop=self.loop
         )
 
-        await asyncio.wait([
+        await asyncio.gather(
             _read_stream(process.stdout, self.read_line),
             _read_stream(process.stderr, self.read_line)
-        ])
+        )
 
         return await process.wait()

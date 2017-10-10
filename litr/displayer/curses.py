@@ -442,6 +442,7 @@ PALETTE = [
     ('passed', 'dark green', 'light gray'),
     ('error', 'dark red', 'light gray'),
     ('skipped', 'dark blue', 'light gray'),
+    ('not_run', 'black', 'light gray'),
 
     ('pg normal',    'white',      'black', 'standout'),
     ('pg complete',  'white',      'dark blue'),
@@ -457,6 +458,10 @@ class CursesTestDisplayer(object):
 
         self.test_number = None
         self.current_test_number = 0
+
+    def refresh_screen(self):
+        self.topnode.refresh()
+        self.walker._modified()
 
     async def parse_message(self, message):
         msg_type = message.get('_type')
@@ -477,8 +482,25 @@ class CursesTestDisplayer(object):
             # Update progress bar
             PROGRESS_BAR.set_completion(float(test_number) / self.test_number)
 
-            self.topnode.refresh()
-            self.walker._modified()
+            self.refresh_screen()
+
+        elif msg_type == 'test_collection':
+            # Ignore invalid json
+            if 'id' not in message:
+                return
+
+            # Force a status
+            message['outcome'] = 'not_run'
+
+            self.tests[message['id']] = message
+
+            test_number = self.current_test_number + 1
+            self.current_test_number = test_number
+
+            # Update progress bar
+            PROGRESS_BAR.set_completion(float(test_number) / self.test_number)
+
+            self.refresh_screen()
 
         elif msg_type == 'session_end':
             # PROGRESS_BAR.set_completion(0)
@@ -530,7 +552,7 @@ class CursesTestInterface(object):
 
     def run(self):
         if len(self.tests.tests) == 0:
-            self.launch_all_tests()
+            self.collect_all_tests()
 
         self.urwid_loop.run()
 
@@ -538,7 +560,7 @@ class CursesTestInterface(object):
         global SELECTED_TEST
 
         if key in ('ctrl c', 'q'):
-            raise urwid.ExitMainLoop
+            raise urwid.ExitMainLoop()
         elif key == 'a':
             self.select_all_tests()
         elif key in ('r', 'enter'):
@@ -576,6 +598,13 @@ class CursesTestInterface(object):
         PROGRESS_BAR.set_completion(0)
         STATUS.set_text("Running all tests")
 
+    def collect_all_tests(self):
+        c = self._collect_all_tests()
+        task = asyncio.ensure_future(c, loop=self.eventloop)
+
+        PROGRESS_BAR.set_completion(0)
+        STATUS.set_text("Collecting all tests")
+
     def launch_specific_tests(self, tests):
         c = self._launch_specific_tests(tests)
         task = asyncio.ensure_future(c, loop=self.eventloop)
@@ -593,6 +622,10 @@ class CursesTestInterface(object):
         self.displayer.walker._modified()
         STATUS.set_text("Selected %d %s tests" % (len(tests), outcome))
 
+    async def _collect_all_tests(self):
+        session = self._get_runner([], collect_only=True)
+        await session.run()
+
     async def _launch_all_tests(self):
         session = self._get_runner([])
         await session.run()
@@ -601,6 +634,6 @@ class CursesTestInterface(object):
         session = self._get_runner(tests)
         await session.run()
 
-    def _get_runner(self, tests):
+    def _get_runner(self, tests, **kwargs):
         return self.runner_class(self.config, self.repository, self.em, tests,
-                                 loop=self.eventloop)
+                                 loop=self.eventloop, **kwargs)
