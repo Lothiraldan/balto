@@ -22,9 +22,13 @@ class EventEmitter(object):
         self.callbacks.append(callback)
 
     async def emit(self, event):
+        awaitables = []
         for callback in self.callbacks:
             # Don't wait for callbacks to finished
-            self.loop.create_task(callback(event))
+            awaitables.append(callback(event))
+
+        # Wait for callbacks in parallel
+        await asyncio.gather(*awaitables)
 
 
 class Tests(dict):
