@@ -1,5 +1,8 @@
+""" Language Independent Test Runner is the ultimate test-runner.
+"""
 from __future__ import unicode_literals, print_function
 
+import argparse
 import asyncio
 import json
 import sys
@@ -109,11 +112,16 @@ def get_runner_class(config):
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("directory", help="The directory LITR should start looking for its config file")
+    parser.add_argument("--curses", help="curses interface", action="store_true", default=True)
+    parser.add_argument("--simple", help="simple interface", action="store_true", default=False)
+    args = parser.parse_args()
+
     loop = asyncio.get_event_loop()
-    repository_path = sys.argv[1]
 
     # Read config
-    with open(join(repository_path, '.litr.json')) as config_file:
+    with open(join(args.directory, '.litr.json')) as config_file:
         config = json.load(config_file)
 
     # Runner class
@@ -125,7 +133,12 @@ def main():
     # EM
     em = EventEmitter(loop)
 
-    litr = CursesTestInterface(abspath(repository_path), loop, tests, config, em, runner_class)
+    if args.simple:
+        klass = SimpleTestInterface
+    elif args.curses:
+        klass = CursesTestInterface
+
+    litr = klass(abspath(args.directory), loop, tests, config, em, runner_class)
     try:
         litr.run()
     finally:
