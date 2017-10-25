@@ -11,6 +11,8 @@ except ImportError:
 import docker.utils
 from docker import DockerClient
 
+from litr.runners import command_formatter
+
 DOCKER = DockerClient()
 
 
@@ -46,24 +48,23 @@ def docker_context(dockerfile_content, base_path):
 
 class DockerRunnerSession(object):
 
-    def __init__(self, base_cmd, docker_img, working_directory, displayer, tests_to_run=[], eventloop=None):
+    def __init__(self, config, working_directory, event_emitter, tests_to_run=[], collect_only=False, loop=None):
         self.working_directory = working_directory
-        self.base_cmd = base_cmd
-        self.displayer = displayer
+        self.tool = config['tool']
+        self.docker_img = '%s-litf' % self.tool
+        self.event_emitter = event_emitter
         self.tests_to_run = tests_to_run
-        self.docker_img = docker_img
-        self.builded_image = None
+        self.loop = loop
+        self.collect_only = collect_only
 
-    def run(self):
+    async def run(self):
         if self.is_local_docker_host() is True:
-            self._launch_container(self.docker_img, local=True)
+            await self._launch_container(self.docker_img, local=True)
         else:
             self._build_image()
-            self._launch_container(self.builded_image.id)
+            await self._launch_container(self.builded_image.id)
 
     def _build_image(self):
-        print("BUILDING")
-
         dockerfile = "FROM %s\nADD . /sut/" % self.docker_img
         context = docker_context(dockerfile, self.working_directory)
 
@@ -71,13 +72,10 @@ class DockerRunnerSession(object):
 
         self.builded_image = image
 
-    def _launch_container(self, docker_img, local=False):
-        if self.tests_to_run:
-            tests = " ".join(["'%s'" % x for x in self.tests_to_run])
-        else:
-            tests = ''
+    async def _launch_container(self, docker_img, local=False):
+        cmd, args = command_formatter(self.tool, self.tests_to_run, self.collect_only)
 
-        final_cmd = self.base_cmd % tests
+        final_cmd = "%s %s" % (cmd, args)
 
         # Launch the container
         volumes = {}
@@ -89,10 +87,12 @@ class DockerRunnerSession(object):
                                           detach=True, volumes=volumes,
                                           working_dir="/sut")
 
-        for line in container.logs(stream=True, follow=True):
+        logs = container.logs(stream=True, follow=True)
+        for line in logs:
             try:
-                data = json.loads(line)
-                self.displayer.parse_message(data)
+                line = line.strip()
+                data = json.loads(line.decode('utf-8'))
+                await self.event_emitter.emit(data)
             except ValueError:
                 pass
 
