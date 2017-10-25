@@ -3,22 +3,23 @@ import tarfile
 import tempfile
 from os.path import join
 
-try:
-    from StringIO import StringIO
-except ImportError:
-    from io import StringIO
+from io import BytesIO
 
 import docker.utils
 from docker import DockerClient
 
+from aiodocker.docker import Docker
+from aiodocker.exceptions import DockerError
+
 from litr.runners import command_formatter
 
 DOCKER = DockerClient()
+AIODOCKER = Docker()
 
 
 def prepare_string_for_tar(name, content):
     dfinfo = tarfile.TarInfo(name)
-    bytesio = StringIO(content.encode('utf-8'))
+    bytesio = BytesIO(content.encode('utf-8'))
     dfinfo.size = len(bytesio.getvalue())
     bytesio.seek(0)
     return dfinfo, bytesio
@@ -87,11 +88,13 @@ class DockerRunnerSession(object):
                                           detach=True, volumes=volumes,
                                           working_dir="/sut")
 
-        logs = container.logs(stream=True, follow=True)
-        for line in logs:
+        aiocontainer = await AIODOCKER.containers.get(container.id)
+
+        logs = await aiocontainer.log(stdout=True, stderr=True, follow=True)
+        async for line in logs:
             try:
                 line = line.strip()
-                data = json.loads(line.decode('utf-8'))
+                data = json.loads(line)
                 await self.event_emitter.emit(data)
             except ValueError:
                 pass

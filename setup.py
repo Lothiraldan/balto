@@ -3,7 +3,7 @@ Language-Independent Test Runner
 """
 from setuptools import find_packages, setup
 
-dependencies = ['prompt_toolkit', 'docker', 'urwid']
+dependencies = ['prompt_toolkit', 'docker', 'urwid', 'aiodocker']
 
 setup(
     name='litr',
