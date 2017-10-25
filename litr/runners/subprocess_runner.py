@@ -1,6 +1,7 @@
 import json
-import shlex
 import asyncio
+
+from litr.runners import command_formatter
 
 
 async def _read_stream(stream, cb):
@@ -23,18 +24,9 @@ class SubprocessRunnerSession(object):
         self.collect_only = collect_only
 
     async def run(self):
-        base_cmd = "%s-litf" % self.tool
+        cmd, args = command_formatter(self.tool, self.tests_to_run, self.collect_only)
 
-        args = {}
-
-        if self.collect_only:
-            args["collect-only"] = True
-
-        if self.tests_to_run:
-            args["files"] = self.tests_to_run
-
-        args = shlex.quote(json.dumps(args))
-        final_cmd = "%s %s" % (base_cmd, args)
+        final_cmd = "%s %s" % (cmd, args)
 
         # Reinitialize variables
         self.test_number = None
