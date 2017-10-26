@@ -1,4 +1,3 @@
-import shlex
 import json
 
 def command_formatter(tool, tests_to_run, collect_only):
@@ -12,5 +11,5 @@ def command_formatter(tool, tests_to_run, collect_only):
     if tests_to_run:
         args["files"] = tests_to_run
 
-    args = shlex.quote(json.dumps(args))
+    args = json.dumps(args)
     return base_cmd, args

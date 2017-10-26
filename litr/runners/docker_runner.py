@@ -1,6 +1,7 @@
 import json
 import tarfile
 import tempfile
+import asyncio
 from os.path import join
 
 from io import BytesIO
@@ -62,35 +63,43 @@ class DockerRunnerSession(object):
         if self.is_local_docker_host() is True:
             await self._launch_container(self.docker_img, local=True)
         else:
-            self._build_image()
-            await self._launch_container(self.builded_image.id)
+            await self._build_image()
+            await self._launch_container(self.builded_image)
 
-    def _build_image(self):
+    async def _build_image(self):
         dockerfile = "FROM %s\nADD . /sut/" % self.docker_img
         context = docker_context(dockerfile, self.working_directory)
 
-        image = DOCKER.images.build(custom_context=True, fileobj=context)
+        # Build an image with a custom Dockerfile and context
+        image = await AIODOCKER.images.build(fileobj=context, encoding='utf-8', quiet=True)
+        image_id = image[0]['stream'].strip()
 
-        self.builded_image = image
+        self.builded_image = image_id
 
     async def _launch_container(self, docker_img, local=False):
         cmd, args = command_formatter(self.tool, self.tests_to_run, self.collect_only)
 
-        final_cmd = "%s %s" % (cmd, args)
+        config = {
+            "Cmd": [cmd, args],
+            "Image": docker_img,
+            "AttachStdout": True,
+            "AttachStderr": True,
+            "Tty": False,
+            "OpenStdin": False,
+            "WorkingDir": "/sut",
+        }
 
         # Launch the container
-        volumes = {}
-
         if local is True:
-            volumes = {self.working_directory: {'bind': '/sut', 'mode': 'rw'}}
+            config['Volumes'] = {"/sut": {}}
+            config['HostConfig'] = {
+                "Binds": ["%s:/sut:ro" % self.working_directory]
+            }
 
-        container = DOCKER.containers.run(docker_img, command=final_cmd,
-                                          detach=True, volumes=volumes,
-                                          working_dir="/sut")
+        container = await AIODOCKER.containers.create(config=config)
+        await container.start()
 
-        aiocontainer = await AIODOCKER.containers.get(container.id)
-
-        logs = await aiocontainer.log(stdout=True, stderr=True, follow=True)
+        logs = await container.log(stdout=True, stderr=True, follow=True)
         async for line in logs:
             try:
                 line = line.strip()

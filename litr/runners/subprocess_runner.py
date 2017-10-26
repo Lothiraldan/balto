@@ -1,4 +1,5 @@
 import json
+import shlex
 import asyncio
 
 from litr.runners import command_formatter
@@ -26,7 +27,7 @@ class SubprocessRunnerSession(object):
     async def run(self):
         cmd, args = command_formatter(self.tool, self.tests_to_run, self.collect_only)
 
-        final_cmd = "%s %s" % (cmd, args)
+        final_cmd = "%s %s" % (cmd, shlex.quote(args))
 
         # Reinitialize variables
         self.test_number = None
