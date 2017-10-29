@@ -2,8 +2,7 @@ import json
 import shlex
 import asyncio
 
-from litr.runners import command_formatter
-
+from litr.runners.base import BaseRunner
 
 async def _read_stream(stream, cb):
     while True:
@@ -14,24 +13,12 @@ async def _read_stream(stream, cb):
             break
 
 
-class SubprocessRunnerSession(object):
-
-    def __init__(self, config, working_directory, event_emitter, tests_to_run=[], collect_only=False, loop=None):
-        self.working_directory = working_directory
-        self.tool = config['tool']
-        self.event_emitter = event_emitter
-        self.tests_to_run = tests_to_run
-        self.loop = loop
-        self.collect_only = collect_only
+class SubprocessRunnerSession(BaseRunner):
 
     async def run(self):
-        cmd, args = command_formatter(self.tool, self.tests_to_run, self.collect_only)
+        cmd, args = self.command
 
         final_cmd = "%s %s" % (cmd, shlex.quote(args))
-
-        # Reinitialize variables
-        self.test_number = None
-        self.current_test_number = 0
 
         await self.launch_cmd(final_cmd)
 

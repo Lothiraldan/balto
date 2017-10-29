@@ -12,7 +12,7 @@ from docker import DockerClient
 from aiodocker.docker import Docker
 from aiodocker.exceptions import DockerError
 
-from litr.runners import command_formatter
+from litr.runners.base import BaseRunner
 
 DOCKER = DockerClient()
 AIODOCKER = Docker()
@@ -48,16 +48,12 @@ def docker_context(dockerfile_content, base_path):
     return context
 
 
-class DockerRunnerSession(object):
+class DockerRunnerSession(BaseRunner):
 
-    def __init__(self, config, working_directory, event_emitter, tests_to_run=[], collect_only=False, loop=None):
-        self.working_directory = working_directory
-        self.tool = config['tool']
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
         self.docker_img = '%s-litf' % self.tool
-        self.event_emitter = event_emitter
-        self.tests_to_run = tests_to_run
-        self.loop = loop
-        self.collect_only = collect_only
 
     async def run(self):
         if self.is_local_docker_host() is True:
@@ -77,7 +73,7 @@ class DockerRunnerSession(object):
         self.builded_image = image_id
 
     async def _launch_container(self, docker_img, local=False):
-        cmd, args = command_formatter(self.tool, self.tests_to_run, self.collect_only)
+        cmd, args = self.command
 
         config = {
             "Cmd": [cmd, args],
