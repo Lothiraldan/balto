@@ -22,22 +22,6 @@ class SubprocessRunnerSession(BaseRunner):
 
         await self.launch_cmd(final_cmd)
 
-    async def read_line(self, line):
-        # Remove \n and/or whitespace only lines
-        line = line.strip()
-
-        if not line:
-            return
-
-        decodedline = line.decode('utf-8')
-        try:
-            data = json.loads(decodedline)
-        except json.JSONDecodeError:
-            print("Invalid line", repr(decodedline))
-            return
-
-        await self.event_emitter.emit(data)
-
     async def launch_cmd(self, cmd):
         process = await asyncio.create_subprocess_shell(
             cmd,

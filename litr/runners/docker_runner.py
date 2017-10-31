@@ -97,12 +97,7 @@ class DockerRunnerSession(BaseRunner):
 
         logs = await container.log(stdout=True, stderr=True, follow=True)
         async for line in logs:
-            try:
-                line = line.strip()
-                data = json.loads(line)
-                await self.event_emitter.emit(data)
-            except ValueError:
-                pass
+            await self.read_line(line)
 
     def is_local_docker_host(self):
         if DOCKER.api.base_url in ('http+docker://localunixsocket',):
