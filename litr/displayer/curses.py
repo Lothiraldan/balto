@@ -5,12 +5,9 @@ from __future__ import print_function
 import asyncio
 
 import urwid
-
 from litr.displayer.curses_widgets import (
-    RootParentNode, PALETTE, FOOTER,
-    PROGRESS_BAR, STATUS,
-    set_selected_tests, get_selected_tests
-)
+    FOOTER, PALETTE, PROGRESS_BAR, STATUS, RootParentNode, get_selected_tests,
+    set_selected_tests)
 
 
 class CursesTestDisplayer(object):
@@ -73,14 +70,12 @@ class CursesTestDisplayer(object):
 
 
 class CursesTestInterface(object):
-
-    def __init__(self, repository, eventloop, tests, config, em, runner_class):
+    def __init__(self, repository, eventloop, tests, suites, em):
         self.repository = repository
         self.eventloop = eventloop
         self.tests = tests
-        self.config = config
+        self.suites = suites
         self.em = em
-        self.runner_class = runner_class
 
         self.urwid_loop = urwid.MainLoop(
             self._get_urwid_view(),
@@ -102,9 +97,7 @@ class CursesTestInterface(object):
 
         listbox.offset_rows = 1
         footer = urwid.AttrWrap(FOOTER, 'foot')
-        return urwid.Frame(
-            urwid.AttrWrap(listbox, 'body'),
-            footer=footer)
+        return urwid.Frame(urwid.AttrWrap(listbox, 'body'), footer=footer)
 
     def run(self):
         if len(self.tests.tests) == 0:
@@ -184,5 +177,5 @@ class CursesTestInterface(object):
         await session.run()
 
     def _get_runner(self, tests, **kwargs):
-        return self.runner_class(self.config, self.repository, self.em, tests,
-                                 loop=self.eventloop, **kwargs)
+        return self.suites[0].get_runner(
+            self.repository, self.em, tests, loop=self.eventloop, **kwargs)

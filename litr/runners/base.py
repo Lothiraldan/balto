@@ -2,6 +2,7 @@
 """
 import json
 
+
 def command_formatter(tool, tests_to_run, collect_only):
     base_cmd = "%s-litf" % tool
 
@@ -15,6 +16,7 @@ def command_formatter(tool, tests_to_run, collect_only):
 
     args = json.dumps(args)
     return base_cmd, args
+
 
 def parse_line(line):
     # Remove \n and/or whitespace only lines
@@ -39,11 +41,17 @@ def parse_line(line):
 
     return data
 
-class BaseRunner():
 
-    def __init__(self, config, working_directory, event_emitter, tests_to_run=[], collect_only=False, loop=None):
+class BaseRunner():
+    def __init__(self,
+                 tool,
+                 working_directory,
+                 event_emitter,
+                 tests_to_run=[],
+                 collect_only=False,
+                 loop=None):
         self.working_directory = working_directory
-        self.tool = config['tool']
+        self.tool = tool
         self.event_emitter = event_emitter
         self.tests_to_run = tests_to_run
         self.loop = loop
@@ -51,7 +59,8 @@ class BaseRunner():
 
     @property
     def command(self):
-        return command_formatter(self.tool, self.tests_to_run, self.collect_only)
+        return command_formatter(self.tool, self.tests_to_run,
+                                 self.collect_only)
 
     async def read_line(self, line):
 

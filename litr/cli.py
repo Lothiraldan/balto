@@ -4,25 +4,13 @@ from __future__ import print_function, unicode_literals
 
 import argparse
 import asyncio
-import json
 from os.path import abspath, join
 
+from litr.config import read_config
 from litr.displayer.cli_simple import SimpleTestInterface
 from litr.displayer.curses import CursesTestInterface
 from litr.event_emitter import EventEmitter
-from litr.runners.docker_runner import DockerRunnerSession
-from litr.runners.subprocess_runner import SubprocessRunnerSession
 from litr.store import Tests
-
-
-def get_runner_class(config):
-    runner = config['runner']
-    if runner == 'subprocess':
-        return SubprocessRunnerSession
-    elif runner == 'docker':
-        return DockerRunnerSession
-    else:
-        raise NotImplementedError()
 
 
 def main():
@@ -42,11 +30,8 @@ def main():
     loop = asyncio.get_event_loop()
 
     # Read config
-    with open(join(args.directory, '.litr.json')) as config_file:
-        config = json.load(config_file)
-
-    # Runner class
-    runner_class = get_runner_class(config)
+    config_filepath = join(args.directory, '.litr.json')
+    suites = read_config(config_filepath)
 
     # Tests
     tests = Tests()
@@ -59,8 +44,7 @@ def main():
     elif args.curses:
         klass = CursesTestInterface
 
-    litr = klass(
-        abspath(args.directory), loop, tests, config, em, runner_class)
+    litr = klass(abspath(args.directory), loop, tests, suites, em)
     try:
         litr.run()
     finally:
