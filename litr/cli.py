@@ -34,7 +34,7 @@ def main():
     suites = read_config(config_filepath)
 
     # Tests
-    tests = Tests()
+    tests = Tests(suites)
 
     # EM
     em = EventEmitter(loop)

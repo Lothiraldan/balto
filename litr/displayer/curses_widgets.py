@@ -300,7 +300,7 @@ class TestSuiteWidget(urwid.TreeWidget):
                 [('fixed', 3, self.selected_w), main_w], dividechars=1)
 
     def get_display_text(self):
-        return "Test suite: " + self.get_node().get_key()
+        return self.get_node().get_key()
 
     def selectable(self):
         return True

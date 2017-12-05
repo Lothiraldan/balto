@@ -5,11 +5,12 @@ from collections import Counter
 
 
 class Tests(dict):
-    def __init__(self):
+    def __init__(self, suites):
         self.tests = {}
+        self.suites = suites
 
     def get_test_suites(self):
-        return ['unit']
+        return [suite.name for suite in self.suites]
 
     def get_test_files(self, test_suite):
         test_files = set()
