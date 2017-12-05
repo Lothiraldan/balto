@@ -138,6 +138,7 @@ class CursesTestInterface(object):
 
         c = self._launch_all_tests()
         task = asyncio.ensure_future(c, loop=self.eventloop)
+        asyncio.wait(task)
 
         PROGRESS_BAR.set_completion(0)
         STATUS.set_text("Running all tests")
@@ -165,17 +166,10 @@ class CursesTestInterface(object):
         STATUS.set_text("Selected %d %s tests" % (len(tests), outcome))
 
     async def _collect_all_tests(self):
-        session = self._get_runner([], collect_only=True)
-        await session.run()
+        return await self.suites[0].collect_all(self.repository, self.em, loop=self.eventloop)
 
     async def _launch_all_tests(self):
-        session = self._get_runner([])
-        await session.run()
+        return await self.suites[0].launch_all(self.repository, self.em, loop=self.eventloop)
 
     async def _launch_specific_tests(self, tests):
-        session = self._get_runner(tests)
-        await session.run()
-
-    def _get_runner(self, tests, **kwargs):
-        return self.suites[0].get_runner(
-            self.repository, self.em, tests, loop=self.eventloop, **kwargs)
+        return await self.suites[0].launch_tests(self.repository, self.em, self.eventloop, tests)
