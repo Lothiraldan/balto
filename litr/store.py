@@ -10,7 +10,7 @@ class Tests(dict):
         self.suites = suites
 
     def get_test_suites(self):
-        return [suite.name for suite in self.suites]
+        return self.suites.keys()
 
     def get_test_files(self, test_suite):
         test_files = set()

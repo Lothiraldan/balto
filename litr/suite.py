@@ -11,6 +11,7 @@ class TestSuite():
         self.name = name
         self.runner = runner
         self.tool = tool
+        self.tests = {}
 
     def get_runner_class(self):
         if self.runner == 'subprocess':

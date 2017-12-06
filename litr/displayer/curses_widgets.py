@@ -427,7 +427,8 @@ class RootParentNode(urwid.ParentNode):
 
     def load_child_node(self, key):
         data = self.get_value()
-        return TestSuiteNode(data, parent=self, key=key, depth=self.get_depth() + 1)
+        suite = data.suites[key]
+        return TestSuiteNode(suite, parent=self, key=key, depth=self.get_depth() + 1)
 
     def refresh(self):
         # signals.emit_signal(self.get_widget(), "modified")

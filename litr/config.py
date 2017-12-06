@@ -16,10 +16,10 @@ def parse_config(config):
     if not isinstance(config, list):
         config = [config]
 
-    test_suites = []
+    test_suites = dict()
 
     for suite_id, suite_config in enumerate(config):
         suite_name = suite_config.pop('name', "Suite %d" % (suite_id + 1))
-        test_suites.append(TestSuite(suite_name, **suite_config))
+        test_suites[suite_name] = TestSuite(suite_name, **suite_config)
 
     return test_suites
