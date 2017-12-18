@@ -1,10 +1,10 @@
 import sys
 
+
 from prompt_toolkit.contrib.completers import WordCompleter
 from prompt_toolkit.history import InMemoryHistory
 from prompt_toolkit.interface import CommandLineInterface
-from prompt_toolkit.shortcuts import (create_asyncio_eventloop,
-                                      create_prompt_application)
+from prompt_toolkit.shortcuts import create_prompt_application, create_asyncio_eventloop, prompt_async
 
 default_test_args = ""
 completer = WordCompleter(
@@ -55,13 +55,15 @@ class TestDisplayer(object):
 
 
 class SimpleTestInterface(object):
-    def __init__(self, repository, eventloop, tests, suites, em):
+
+    def __init__(self, repository, eventloop, tests, config, em, runner_class):
         self.repository = repository
         self.history = InMemoryHistory()
         self.tests = tests
-        self.suites = suites
+        self.config = config
         self.displayer = TestDisplayer(self.tests)
         self.eventloop = eventloop
+        self.runner_class = runner_class
         self.em = em
 
         # Register the callbacks
@@ -72,9 +74,10 @@ class SimpleTestInterface(object):
 
         self.cli = CommandLineInterface(
             application=self.application,
-            eventloop=create_asyncio_eventloop(eventloop))
+            eventloop=create_asyncio_eventloop(eventloop)
+        )
 
-        sys.stdout = self.cli.stdout_proxy()
+        sys.stdout = self.cli.stdout_proxy()    
 
     def run(self):
         self.eventloop.run_until_complete(self._run())
@@ -109,5 +112,5 @@ class SimpleTestInterface(object):
         await session.run()
 
     def _get_runner(self, tests):
-        return self.suites[0].get_runner(
-            self.repository, self.em, tests, loop=self.eventloop)
+        return self.runner_class(self.config, self.repository, self.em, tests,
+                                 loop=self.eventloop)

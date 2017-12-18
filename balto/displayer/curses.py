@@ -70,12 +70,13 @@ class CursesTestDisplayer(object):
 
 
 class CursesTestInterface(object):
-    def __init__(self, repository, eventloop, tests, suites, em):
+    def __init__(self, repository, eventloop, tests, suites, em, task_list):
         self.repository = repository
         self.eventloop = eventloop
         self.tests = tests
         self.suites = suites
         self.em = em
+        self.task_list = task_list
 
         self.urwid_loop = urwid.MainLoop(
             self._get_urwid_view(),
@@ -128,13 +129,25 @@ class CursesTestInterface(object):
             STATUS.set_text("Key pressed DEBUG: %s" % repr(key))
 
     def select_all_tests(self):
-        set_selected_tests(self.tests.tests.keys())
+        all_tests = []
+
+        for suite in self.suites.values():
+            for test_name in suite.get_tests_name():
+                all_tests.append((suite, test_name))
+
+        set_selected_tests(all_tests)
 
         self.displayer.refresh_screen()
         STATUS.set_text("Selected %d tests" % (len(get_selected_tests())))
 
     def launch_all_tests(self):
-        set_selected_tests(self.tests.tests.keys())
+        all_tests = []
+
+        for suite in self.suites.values():
+            for test_name in suite.get_tests_name():
+                all_tests.append((suite, test_name))
+
+        set_selected_tests(all_tests)
 
         c = self._launch_all_tests()
         task = asyncio.ensure_future(c, loop=self.eventloop)
@@ -146,7 +159,7 @@ class CursesTestInterface(object):
     def collect_all_tests(self):
         c = self._collect_all_tests()
         task = asyncio.ensure_future(c, loop=self.eventloop)
-        asyncio.blop(task)
+        self.task_list.append(task)
 
         PROGRESS_BAR.set_completion(0)
         STATUS.set_text("Collecting all tests")
@@ -154,6 +167,7 @@ class CursesTestInterface(object):
     def launch_specific_tests(self, tests):
         c = self._launch_specific_tests(tests)
         task = asyncio.ensure_future(c, loop=self.eventloop)
+        self.task_list.append(task)
 
         PROGRESS_BAR.set_completion(0)
         STATUS.set_text("Running %s tests" % len(get_selected_tests()))
@@ -167,16 +181,22 @@ class CursesTestInterface(object):
         STATUS.set_text("Selected %d %s tests" % (len(tests), outcome))
 
     async def _collect_all_tests(self):
-        suite, *_ = sorted(self.suites.items())
-        suite = suite[1]
-        return await suite.collect_all(self.repository, self.em, loop=self.eventloop)
+        tasks = [suite.collect_all(self.repository, self.em, loop=self.eventloop) for suite in self.suites.values()]
+        return await asyncio.gather(*tasks, loop=self.eventloop)
 
     async def _launch_all_tests(self):
-        suite, *_ = sorted(self.suites.items())
-        suite = suite[1]
-        return await suite.launch_all(self.repository, self.em, loop=self.eventloop)
+        tasks = [suite.launch_all(self.repository, self.em, loop=self.eventloop) for suite in self.suites.values()]
+        return await asyncio.gather(*tasks, loop=self.eventloop)
 
     async def _launch_specific_tests(self, tests):
-        suite, *_ = sorted(self.suites.items())
-        suite = suite[1]
-        return await suite.launch_tests(self.repository, self.em, self.eventloop, tests)
+        # Dispatch test by suite
+        test_by_suite = {}
+
+        for suite, test in tests:
+            test_by_suite.setdefault(suite, []).append(test)
+
+        tasks = []
+        for suite, suite_tests in test_by_suite.items():
+            tasks.append(suite.launch_tests(self.repository, self.em, self.eventloop, suite_tests))
+
+        return await asyncio.gather(*tasks, loop=self.eventloop)

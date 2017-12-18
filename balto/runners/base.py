@@ -49,13 +49,15 @@ class BaseRunner():
                  event_emitter,
                  tests_to_run=[],
                  collect_only=False,
-                 loop=None):
+                 loop=None,
+                 suite_name=None):
         self.working_directory = working_directory
         self.tool = tool
         self.event_emitter = event_emitter
         self.tests_to_run = tests_to_run
         self.loop = loop
         self.collect_only = collect_only
+        self.suite_name = suite_name
 
     @property
     def command(self):
@@ -67,4 +69,7 @@ class BaseRunner():
         data = parse_line(line)
 
         if data:
+            # Add suite name to identify it
+            data["suite_name"] = self.suite_name
+
             await self.event_emitter.emit(data)

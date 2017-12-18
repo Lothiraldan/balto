@@ -29,22 +29,24 @@ def main():
 
     loop = asyncio.get_event_loop()
 
+    # EM
+    em = EventEmitter(loop)
+
     # Read config
     config_filepath = join(args.directory, '.balto.json')
-    suites = read_config(config_filepath)
+    suites = read_config(config_filepath, em)
 
     # Tests
     tests = Tests(suites)
-
-    # EM
-    em = EventEmitter(loop)
 
     if args.simple:
         klass = SimpleTestInterface
     elif args.curses:
         klass = CursesTestInterface
 
-    balto = klass(abspath(args.directory), loop, tests, suites, em)
+    task_list = []
+
+    balto = klass(abspath(args.directory), loop, tests, suites, em, task_list)
     try:
         balto.run()
     finally:

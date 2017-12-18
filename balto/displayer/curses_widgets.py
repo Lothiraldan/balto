@@ -4,6 +4,8 @@ from contextlib import suppress
 
 import urwid
 
+from balto.suite import TestSuite
+
 STATUS = urwid.Text('')
 PROGRESS_BAR = urwid.ProgressBar('pg normal', 'pg complete', 0, 1)
 FOOTER = urwid.Columns([STATUS, PROGRESS_BAR])
@@ -48,12 +50,12 @@ PALETTE = [
 ]
 
 
-def on_flagged(name, flagged):
+def on_flagged(test_id, flagged):
     if flagged:
-        SELECTED_TEST.add(name)
+        SELECTED_TEST.add(test_id)
     else:
         with suppress(KeyError):
-            SELECTED_TEST.remove(name)
+            SELECTED_TEST.remove(test_id)
 
 
 class SingleTestWidget(urwid.TreeWidget):
@@ -93,8 +95,9 @@ class SingleTestWidget(urwid.TreeWidget):
     def update_w(self):
         """Update the attributes of self.widget based on self.flagged.
         """
-        data = self.get_node().get_value()
-        outcome = data[self.get_node()._key]['outcome']
+        suite = self.get_node().get_value()
+        test = suite[self.get_node()._key]
+        outcome = test.get('outcome')
         self._w.focus_attr = 'focus %s' % outcome
         self._w.attr = outcome
 
@@ -113,6 +116,7 @@ class SingleTestNode(urwid.TreeNode):
         super().__init__(*args, **kwargs)
         self.flagged = flagged
         self.test_suite = test_suite
+        self.test_id = (self.test_suite, self._key)
 
     def toggle_flag(self):
         self.set_flag(not self.flagged)
@@ -121,7 +125,7 @@ class SingleTestNode(urwid.TreeNode):
         self.flagged = flag
         self.get_widget().update_w()
 
-        on_flagged(self.get_key(), flag)
+        on_flagged(self.test_id, flag)
 
         self.get_parent().check_flag()
 
@@ -129,7 +133,7 @@ class SingleTestNode(urwid.TreeNode):
         return SingleTestWidget(self)
 
     def check_flag(self):
-        if self._key in SELECTED_TEST:
+        if self.test_id in SELECTED_TEST:
             self.flagged = True
         else:
             self.flagged = False
@@ -215,7 +219,7 @@ class TestFileNode(urwid.ParentNode):
 
     def load_child_keys(self):
         data = self.get_value()
-        return sorted(data.get_tests(test_file=self._key, test_suite=self.test_suite))
+        return sorted(data.get_tests_name(test_file=self._key))
 
     def set_flag(self, flag):
         self.flagged = flag
@@ -232,8 +236,11 @@ class TestFileNode(urwid.ParentNode):
     def check_flag(self):
         data = self.get_value()
 
-        tests = data.get_tests(test_file=self._key, test_suite=self.test_suite)
-        stests = set(tests)
+        tests = data.get_tests_name(test_file=self._key)
+        stests = set()
+
+        for test in tests:
+            stests.add((self.get_value(), test))
 
         self.all_flagged = stests.issubset(SELECTED_TEST)
         self.any_flagged = not stests.isdisjoint(SELECTED_TEST)
@@ -258,13 +265,15 @@ class TestFileNode(urwid.ParentNode):
     def load_child_node(self, key):
         data = self.get_value()
 
-        if 'outcome' in data[key]:
+        test = data[key]
+
+        if test:
             child_class = SingleTestNode
         else:
             child_class = self.__class__
 
         return child_class(data, parent=self, key=key, depth=self.get_depth() + 1, flagged=self.flagged,
-                           test_suite=self._key)
+                           test_suite=self.get_value())
 
     def refresh(self):
         self._child_keys = None
@@ -351,7 +360,7 @@ class TestSuiteNode(urwid.ParentNode):
 
     def load_child_keys(self):
         data = self.get_value()
-        return sorted(data.get_test_files(test_suite=self._key))
+        return sorted(data.get_test_files())
 
     def set_flag(self, flag):
         self.flagged = flag
@@ -368,8 +377,11 @@ class TestSuiteNode(urwid.ParentNode):
     def check_flag(self):
         data = self.get_value()
 
-        tests = data.get_tests(test_suite=self._key)
-        stests = set(tests)
+        tests = data.get_tests_name()
+        stests = set()
+
+        for test in tests:
+            stests.add((self.get_value(), test))
 
         self.all_flagged = stests.issubset(SELECTED_TEST)
         self.any_flagged = not stests.isdisjoint(SELECTED_TEST)
