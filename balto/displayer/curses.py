@@ -5,7 +5,7 @@ from __future__ import print_function
 import asyncio
 
 import urwid
-from litr.displayer.curses_widgets import (
+from balto.displayer.curses_widgets import (
     FOOTER, PALETTE, PROGRESS_BAR, STATUS, RootParentNode, get_selected_tests,
     set_selected_tests)
 

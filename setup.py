@@ -1,18 +1,18 @@
 """
-Language-Independent Test Runner
+BAdass Language independent Test Orchestrator
 """
 from setuptools import find_packages, setup
 
 dependencies = ['prompt_toolkit', 'docker', 'urwid', 'aiodocker']
 
 setup(
-    name='litr',
+    name='balto',
     version='0.1.0',
-    url='https://github.com/lothiraldan/litr',
+    url='https://github.com/lothiraldan/balto',
     license='BSD',
     author='Boris Feld',
     author_email='lothiraldan@gmail.com',
-    description='Language-Independent Test Runner',
+    description='BAdass Language independent Test Orchestrator',
     long_description=__doc__,
     packages=find_packages(exclude=['tests']),
     include_package_data=True,
@@ -22,7 +22,7 @@ setup(
     python_requires='>=3.5',
     entry_points={
         'console_scripts': [
-            'litr = litr.cli:main',
+            'balto = balto.cli:main',
         ],
     },
     classifiers=[

@@ -2,7 +2,7 @@ import json
 import shlex
 import asyncio
 
-from litr.runners.base import BaseRunner
+from balto.runners.base import BaseRunner
 
 async def _read_stream(stream, cb):
     while True:

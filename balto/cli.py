@@ -1,4 +1,4 @@
-""" Language Independent Test Runner is the ultimate test-runner.
+""" BAdass Language independent Test Orchestrator is the ultimate test-runner.
 """
 from __future__ import print_function, unicode_literals
 
@@ -6,11 +6,11 @@ import argparse
 import asyncio
 from os.path import abspath, join
 
-from litr.config import read_config
-from litr.displayer.cli_simple import SimpleTestInterface
-from litr.displayer.curses import CursesTestInterface
-from litr.event_emitter import EventEmitter
-from litr.store import Tests
+from balto.config import read_config
+from balto.displayer.cli_simple import SimpleTestInterface
+from balto.displayer.curses import CursesTestInterface
+from balto.event_emitter import EventEmitter
+from balto.store import Tests
 
 
 def main():
@@ -30,7 +30,7 @@ def main():
     loop = asyncio.get_event_loop()
 
     # Read config
-    config_filepath = join(args.directory, '.litr.json')
+    config_filepath = join(args.directory, '.balto.json')
     suites = read_config(config_filepath)
 
     # Tests
@@ -44,9 +44,9 @@ def main():
     elif args.curses:
         klass = CursesTestInterface
 
-    litr = klass(abspath(args.directory), loop, tests, suites, em)
+    balto = klass(abspath(args.directory), loop, tests, suites, em)
     try:
-        litr.run()
+        balto.run()
     finally:
         print("Waiting for cleaning workers before exiting")
         pending = asyncio.Task.all_tasks()
