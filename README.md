@@ -1,7 +1,7 @@
-# Language-Independent Test Runner
+# BAdass Language independent Test Orchestrator
 
-Language-Independent Test Runner
-
+BAdass Language independent Test Orchestrator is a test orchestrator
+compatible with all your testing frameworks and your languages.
 
 # Installation
 
@@ -13,5 +13,5 @@ Simply run:
 
 To use it:
 
-    $ litr --help
+    $ balto --help
 
