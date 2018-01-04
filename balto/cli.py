@@ -55,3 +55,6 @@ def main():
         loop.run_until_complete(asyncio.gather(*pending))
         print("Exiting now")
         loop.close()
+
+if __name__ == "__main__":
+    main()
