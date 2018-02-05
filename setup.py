@@ -23,6 +23,8 @@ setup(
     entry_points={
         'console_scripts': [
             'balto = balto.cli:main',
+            'balto-server = balto.server:main',
+            'balto-curses = balto.interfaces.curses:main'
         ],
     },
     classifiers=[

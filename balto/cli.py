@@ -3,14 +3,11 @@
 from __future__ import print_function, unicode_literals
 
 import argparse
-import asyncio
-from os.path import abspath, join
-
-from balto.config import read_config
-from balto.displayer.cli_simple import SimpleTestInterface
-from balto.displayer.curses import CursesTestInterface
-from balto.event_emitter import EventEmitter
-from balto.store import Tests
+import os
+import shutil
+import subprocess
+import time
+import webbrowser
 
 
 def main():
@@ -19,42 +16,39 @@ def main():
         "directory",
         help="The directory LITR should start looking for its config file")
     parser.add_argument(
-        "--curses", help="curses interface", action="store_true", default=True)
-    parser.add_argument(
-        "--simple",
-        help="simple interface",
-        action="store_true",
-        default=False)
+        "--interface",
+        "-i",
+        help="which interface to start",
+        action="store",
+        default="curses")
     args = parser.parse_args()
 
-    loop = asyncio.get_event_loop()
+    # Launch the server
+    balto_server_full_path = shutil.which("balto-server")
+    server_args = [balto_server_full_path, args.directory]
+    port = 8888
 
-    # EM
-    em = EventEmitter(loop)
-
-    # Read config
-    config_filepath = join(args.directory, '.balto.json')
-    suites = read_config(config_filepath, em)
-
-    # Tests
-    tests = Tests(suites)
-
-    if args.simple:
-        klass = SimpleTestInterface
-    elif args.curses:
-        klass = CursesTestInterface
-
-    task_list = []
-
-    balto = klass(abspath(args.directory), loop, tests, suites, em, task_list)
     try:
-        balto.run()
+        server = subprocess.Popen(server_args)
+
+        # Let the server starts
+        time.sleep(0.2)
+
+        # Launch the interface
+        if args.interface == "curses":
+            balto_interface = shutil.which("balto-curses")
+
+            env = os.environ.copy()
+            env["BALTO_PORT"] = "%d" % port
+
+            interface = subprocess.Popen([balto_interface], env=env)
+            interface.wait()
+        elif args.interface == "web":
+            webbrowser.open("http://localhost:%d/interface/simple" % port)
+            server.wait()
     finally:
-        print("Waiting for cleaning workers before exiting")
-        pending = asyncio.Task.all_tasks()
-        loop.run_until_complete(asyncio.gather(*pending))
-        print("Exiting now")
-        loop.close()
+        server.terminate()
+
 
 if __name__ == "__main__":
     main()
