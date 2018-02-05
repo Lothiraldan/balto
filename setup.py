@@ -1,5 +1,5 @@
 """
-BAdass Language independent Test Orchestrator
+BAlto is a Language independent Test Orchestrator
 """
 from setuptools import find_packages, setup
 
@@ -12,7 +12,7 @@ setup(
     license='BSD',
     author='Boris Feld',
     author_email='lothiraldan@gmail.com',
-    description='BAdass Language independent Test Orchestrator',
+    description='BAlto is a Language independent Test Orchestrator',
     long_description=__doc__,
     packages=find_packages(exclude=['tests']),
     include_package_data=True,

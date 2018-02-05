@@ -1,4 +1,4 @@
-""" BAdass Language independent Test Orchestrator is the ultimate test-runner.
+""" BAlto is a Language independent Test Orchestrator.
 """
 from __future__ import print_function, unicode_literals
 
