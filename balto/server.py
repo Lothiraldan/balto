@@ -19,9 +19,7 @@ from aiohttp.web import Application, run_app, FileResponse, HTTPNotFound
 from aiohttp_json_rpc import JsonRpc
 import asyncio
 
-
-async def ping(request):
-    return 'pong'
+from aiohttp_index import IndexMiddleware
 
 
 async def interface_handle(request):
@@ -72,7 +70,7 @@ def main():
         await asyncio.gather(*tasks)
         return "ok"
 
-    rpc = JsonRpc()
+    rpc = JsonRpc() 
 
     async def forward_notifications(message):
         rpc.notify("test", message)
@@ -88,8 +86,9 @@ def main():
         'test'
     )
 
-    app = Application(loop=loop)
-    app.router.add_get('/interface/{interface}', interface_handle)
+    app = Application(loop=loop, middlewares=[IndexMiddleware()])
+    # app.router.add_get('/interface/{interface}', interface_handle)
+    app.router.add_static('/interface/', join(dirname(__file__), "web_interfaces"), show_index=False)
     app.router.add_route('*', '/', rpc)
 
     run_app(app, port=8888)
