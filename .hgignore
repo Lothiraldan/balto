@@ -7,3 +7,7 @@ build/
 
 .tox/
 .coverage
+
+*/node_modules/
+*/elm-stuff/
+web_interfaces/*/static/

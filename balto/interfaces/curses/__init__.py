@@ -388,7 +388,7 @@ def on_open(ws):
         }))
 
 WS = websocket.WebSocketApp(
-    "ws://localhost:8888/",
+    "ws://localhost:%d/" % int(os.environ["BALTO_PORT"]),
     on_message=on_message,
     on_close=on_close,
     on_open=on_open)

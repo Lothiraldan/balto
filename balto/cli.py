@@ -44,7 +44,7 @@ def main():
             interface = subprocess.Popen([balto_interface], env=env)
             interface.wait()
         elif args.interface == "web":
-            webbrowser.open("http://localhost:%d/interface/simple" % port)
+            webbrowser.open("http://localhost:%d/interface" % port)
             server.wait()
     finally:
         server.terminate()

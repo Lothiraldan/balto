@@ -88,7 +88,7 @@ def main():
 
     app = Application(loop=loop, middlewares=[IndexMiddleware()])
     # app.router.add_get('/interface/{interface}', interface_handle)
-    app.router.add_static('/interface/', join(dirname(__file__), "web_interfaces"), show_index=False)
+    app.router.add_static('/interface/', join(dirname(__file__), "web_interfaces"), show_index=True)
     app.router.add_route('*', '/', rpc)
 
     run_app(app, port=8888)

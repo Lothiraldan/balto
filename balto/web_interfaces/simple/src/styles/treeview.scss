@@ -1,0 +1,99 @@
+$green      : #7cbb00;
+$red        : #d9534f;
+$grey       : #636c72;
+$darkgrey   : #272b2d;
+$blue       : #00a1f1;
+$yellow     : #ffbb00;
+$orange     : #f65314;
+
+.treeview {
+  font-family: "Arial";
+  color: $darkgrey;
+
+  ul {
+    list-style: none;
+    line-height: 2.25em;
+  }
+
+  i {
+    padding-right: 5px;
+  }
+
+  > ul {
+    padding-left: 0;
+  }
+
+  a {
+    text-decoration: none;
+    color: $darkgrey;
+  }
+
+  // Node with no children
+  .last {
+    text-transform: none;
+    margin-left: 15px;
+  }
+
+  input[type="checkbox"] {
+    margin-right: .5em;
+    position: relative;
+    top: .20em;
+    display: inline-block;
+    background-color: #fff;
+    border-radius: 5px;
+  }
+
+
+
+  // Node opened.
+  .opened  {
+    > span { font-weight: bold; }
+    > a { font-weight: bold; }
+  }
+
+  // Handle to open a node.
+  .toggle {
+    width: 15px;
+    display: inline-block;
+
+  }
+
+  // Top node.
+  .root {
+    text-transform: uppercase;
+    letter-spacing: 1.28px;
+    font-size: 12.8px;
+    font-family: BlinkMacSystemFont, -apple-system, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+  }
+
+  // Node with children.
+  .group {
+    border-left: 1px solid rgba(138, 142, 180, 0.22);
+    margin-left: 5px;
+    padding-left: 10px;
+  }
+
+  .search {
+    input[type="text"] {
+      width: 100%;
+      font-size: 12px;
+
+      border: solid 1px #dcdcdc;
+      outline: none;
+      background: transparent;
+      transition: box-shadow 0.3s, border 0.3s;
+      
+
+      &:focus {
+        border: solid 1px $blue;
+        box-shadow: 0 0 1px 1px $grey;
+      }
+    }
+  }
+
+  .green { color: $green; }
+  .red { color: $red; }
+  .blue { color: $blue; }
+  .orange { color: $orange; }
+  .yellow { color: $yellow; }
+}
