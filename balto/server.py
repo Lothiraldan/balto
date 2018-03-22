@@ -73,6 +73,7 @@ def main():
     rpc = JsonRpc() 
 
     async def forward_notifications(message):
+        print("MESSAGE", message)
         rpc.notify("test", message)
     em.register(forward_notifications)
 
@@ -86,7 +87,7 @@ def main():
         'test'
     )
 
-    app = Application(loop=loop, middlewares=[IndexMiddleware()])
+    app = Application(loop=loop, middlewares=[IndexMiddleware()], debug=True)
     # app.router.add_get('/interface/{interface}', interface_handle)
     app.router.add_static('/interface/', join(dirname(__file__), "web_interfaces"), show_index=True)
     app.router.add_route('*', '/', rpc)

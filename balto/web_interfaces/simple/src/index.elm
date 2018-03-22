@@ -85,6 +85,7 @@ testCollectionDecoder =
         |> hardcoded 0.0
         |> hardcoded ""
         |> hardcoded ""
+        |> hardcoded ""
 
 
 testResultDecoder =
@@ -99,6 +100,7 @@ testResultDecoder =
         |> Json.Decode.Pipeline.required "duration" Json.Decode.float
         |> Json.Decode.Pipeline.required "stdout" string
         |> Json.Decode.Pipeline.required "stderr" string
+        |> Json.Decode.Pipeline.requiredAt [ "error", "humanrepr" ] string
 
 
 
@@ -195,10 +197,57 @@ tryDecodeJsonRPC str =
                     Nothing
 
 
+resultChildsNodes test =
+    let
+        outcome_unique_id =
+            test.id ++ "_outcome"
+
+        outcome_str =
+            "Outcome: " ++ test.outcome
+
+        outcome =
+            Treeview.Node outcome_unique_id outcome_str (Treeview.Options "" False False False True False) Nothing
+
+        duration_unique_id =
+            test.id ++ "_duration"
+
+        duration_str =
+            "Duration: " ++ (toString test.duration)
+
+        duration =
+            Treeview.Node duration_unique_id duration_str (Treeview.Options "" False False False True False) Nothing
+
+        stdout_unique_id =
+            test.id ++ "_stdout"
+
+        stdout_str =
+            "Stdout: " ++ test.stdout
+
+        stdout =
+            Treeview.Node stdout_unique_id stdout_str (Treeview.Options "" False False False True False) Nothing
+
+        error_unique_id =
+            test.id ++ "_error"
+
+        error_str =
+            "Error: " ++ test.humanerro
+
+        error =
+            Treeview.Node error_unique_id (Html.text error_str) (Treeview.Options "" False False False True False) Nothing
+    in
+        [ outcome, duration, stdout, error ]
+
+
 testResultNode test =
     let
+        test_id =
+            test.id ++ "_id"
+
+        test_nodes =
+            Just (resultChildsNodes test)
+
         node =
-            Treeview.Node test.id test.test_name (Treeview.Options test.outcome True True False True False) Nothing
+            Treeview.Node test_id test.test_name (Treeview.Options test.outcome True False False True False) test_nodes
 
         log =
             Debug.log "testresult" (node)

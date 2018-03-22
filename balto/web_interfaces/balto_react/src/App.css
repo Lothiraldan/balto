@@ -1,0 +1,45 @@
+@keyframes App-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.container {
+  display: flex;
+  width: 100%;;
+}
+
+.Filter {
+  width: 100%;
+  flex: 1;
+  flex-basis: auto;
+  justify-content: center;
+}
+
+.TestTree {
+  order: 1;
+  flex: 1;
+  flex-basis: auto;
+  padding: .5rem;
+  min-height: 666px;
+}
+
+.TestDetails {
+
+  order: 1;
+  flex: 1;
+  flex-basis: auto;
+  background-color: #CE9B64;
+  padding: .5rem;
+}
+
+.balto-test-failed {
+  color: red;
+}
+
+.balto-test-passed {
+  color: green;
+}
+
+.balto-test-skipped {
+  color: blue;
+}

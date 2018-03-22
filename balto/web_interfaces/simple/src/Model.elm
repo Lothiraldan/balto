@@ -44,6 +44,7 @@ type alias TestResult =
     , duration : Float
     , stdout : String
     , stderr : String
+    , humanerro : String
     }
 
 
