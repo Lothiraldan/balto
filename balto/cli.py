@@ -32,7 +32,7 @@ def main():
         server = subprocess.Popen(server_args)
 
         # Let the server starts
-        time.sleep(0.2)
+        time.sleep(0.5)
 
         # Launch the interface
         if args.interface == "curses":

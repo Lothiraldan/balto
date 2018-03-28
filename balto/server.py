@@ -27,6 +27,9 @@ async def interface_handle(request):
     local_directory = join(dirname(__file__), "web_interfaces", interface_name)
     index_file = join(local_directory, "index.html")
 
+    if not isfile(index_file):
+        index_file = join(local_directory, "build", "index.html")
+
     if isfile(index_file):
         return FileResponse(index_file)
     return HTTPNotFound()
@@ -70,10 +73,9 @@ def main():
         await asyncio.gather(*tasks)
         return "ok"
 
-    rpc = JsonRpc() 
+    rpc = JsonRpc()
 
     async def forward_notifications(message):
-        print("MESSAGE", message)
         rpc.notify("test", message)
     em.register(forward_notifications)
 
@@ -87,9 +89,10 @@ def main():
         'test'
     )
 
-    app = Application(loop=loop, middlewares=[IndexMiddleware()], debug=True)
+    app = Application(loop=loop, debug=True)
     # app.router.add_get('/interface/{interface}', interface_handle)
-    app.router.add_static('/interface/', join(dirname(__file__), "web_interfaces"), show_index=True)
+    web_interfaces_route = join(dirname(__file__), "web_interfaces")
+    app.router.add_static('/interface/', web_interfaces_route, show_index=True, name="static")
     app.router.add_route('*', '/', rpc)
 
     run_app(app, port=8888)
