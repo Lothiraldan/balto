@@ -2,7 +2,7 @@
   "name": "balto_react",
   "version": "0.1.0",
   "private": true,
-  "homepage": "http://localhost:8888/interface/balto_react/build",
+  "homepage": "./",
   "dependencies": {
     "@fortawesome/fontawesome": "^1.1.4",
     "downshift": "^1.29.1",
