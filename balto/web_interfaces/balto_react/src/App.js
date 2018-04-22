@@ -1,139 +1,117 @@
-import React, { Component } from 'react';
-import './App.css';
-import _ from 'lodash';
-import CheckboxTree from 'react-checkbox-tree';
-import 'react-checkbox-tree/lib/react-checkbox-tree.css';
-import 'font-awesome/css/font-awesome.min.css';
-import { hot } from 'react-hot-loader'
-
-function TestsNodes(testList) {
-  var childrens = [];
-
-  for(var test of testList) {
-    let node = {label: test.test_name, value: test.id, children: [], className: `balto-test-${test.outcome}`}
-    childrens.push(node);
-  }
-
-  return childrens;
-}
-
-
-function ChildrentByFile(testList) {
-  var childrens = [];
-
-  var x = _.groupBy(testList, (test) => test.file);
-  for(var [file, testsByFile] of Object.entries(x)) {
-      let children = {label: file, value: file, children: TestsNodes(testsByFile)}
-      childrens.push(children);
-  }
-  return childrens;
-}
-
-
-function treeFromTests(tests) {
-  let testsList = Object.values(tests);
-
-  let nodes = [];
-
-  var x = _.groupBy(testsList, (test) => test.suite_name);
-  for(var [suite_name, testsBySuite] of Object.entries(x)) {
-    let childrens = ChildrentByFile(testsBySuite);
-    let node = {label: suite_name, value: suite_name, children: childrens}
-    nodes.push(node);
-  }
-
-  return nodes;
-
-}
-
-
-const socket = new WebSocket('ws://localhost:8888')
-
-socket.onopen = () => {
-    let data = {"jsonrpc": "2.0", "id": 0, "method": "subscribe", "params": "test"}
-    socket.send(JSON.stringify(data));
-}
+import { hot } from "react-hot-loader";
+import React, { Component } from "react";
+import "./App.css";
+import "react-checkbox-tree/lib/react-checkbox-tree.css";
+import "flexboxgrid/css/flexboxgrid.css";
+import "font-awesome/css/font-awesome.min.css";
+import { treeFromTests } from "./tree.js";
+import { socket } from "./websocket.js";
+import ThemeDefault from "./theme-default.js";
+import withWidth, { LARGE, SMALL } from "material-ui/utils/withWidth";
+import PropTypes from "prop-types";
+import Header from "./components/Header";
+import darkBaseTheme from "material-ui/styles/baseThemes/darkBaseTheme";
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import getMuiTheme from "material-ui/styles/getMuiTheme";
+import Paper from "material-ui/Paper";
+import { Provider, Subscribe, Container } from "unstated";
+import MainContainer from "./containers/main";
+import { Route } from "react-router";
+import { BrowserRouter } from "react-router-dom";
+import { state } from "./state";
+import Mousetrap from "mousetrap";
 
 class App extends Component {
+  static propTypes = {
+    width: PropTypes.number
+  };
 
   constructor(props) {
     super(props);
-    this.state = {tests: {}, msg: [], checked: [], expanded: []};
+    this.state = {
+      tests: {},
+      msg: [],
+      checked: [],
+      expanded: [],
+      selected: undefined,
+      navDrawerOpen: false
+    };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.width !== nextProps.width) {
+      this.setState({ navDrawerOpen: nextProps.width === LARGE });
+    }
+  }
+
+  handleChangeRequestNavDrawer() {
+    this.setState({
+      navDrawerOpen: !this.state.navDrawerOpen
+    });
   }
 
   componentDidMount() {
-    socket.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        console.debug(data);
-        if(data.jsonrpc === "2.0" && data.method === "test") {
-            let msg = data.params;
-
-            switch(msg._type) {
-              case "test_result":
-                var test_id = msg.id;
-                var newTests = {...this.state.tests, [test_id]: msg};
-                console.debug("Tests", newTests, test_id);
-                var newstate = {...this.state, tests: newTests, msg: [...this.state.msg, msg]};
-                break;
-              case "test_collection":
-                var test_id = msg.id;
-                var newTests = {...this.state.tests, [test_id]: msg};
-                console.debug("Tests", newTests, test_id);
-                var newstate = {...this.state, tests: newTests, msg: [...this.state.msg, msg]};
-                break;
-              default:
-                var newstate = {...this.state, msg: [...this.state.msg, msg]};
-            }
-            
-            this.setState(newstate);
-        }
-    }
-    socket.onerror = (error) => {
+    socket.onmessage = event => {
+      state.newMessage(event);
+    };
+    socket.onerror = error => {
       console.log("ERROR " + error);
-    }
+    };
   }
 
   collectAll() {
-    let data = {"jsonrpc": "2.0", "id": 0, "method": "collect_all", "params": null};
+    let data = { jsonrpc: "2.0", id: 0, method: "collect_all", params: null };
+    console.debug("COLLECT ALL");
     socket.send(JSON.stringify(data));
   }
 
   runAll() {
-    let data = {"jsonrpc": "2.0", "id": 0, "method": "run_all", "params": null};
+    let data = { jsonrpc: "2.0", id: 0, method: "run_all", params: null };
     socket.send(JSON.stringify(data));
   }
 
   render() {
+    let nodes = treeFromTests(this.state.tests);
 
-    let nodes2 = treeFromTests(this.state.tests);
+    let { navDrawerOpen } = this.state;
+    const paddingLeftDrawerOpen = 236;
 
-    let tree = <CheckboxTree
-                nodes={nodes2}
-                checked={this.state.checked}
-                expanded={this.state.expanded}
-                onCheck={checked => this.setState({ checked })}
-                onExpand={expanded => this.setState({ expanded })}
-            />;
+    const styles = {
+      header: {
+        paddingLeft: navDrawerOpen ? paddingLeftDrawerOpen : 0
+      },
+      container: {
+        margin: "80px 20px 20px 15px",
+        paddingLeft:
+          navDrawerOpen && this.props.width !== SMALL
+            ? paddingLeftDrawerOpen
+            : 0
+      }
+    };
 
     return (
-      <div className="App">
-        <header className="Filter">
-          <input placeholder="Filter the tree"/>
-          <button onClick={this.collectAll}>Collect all</button>
-          <button onClick={this.runAll}>Run all</button>
-        </header>
-        <div className="container">
-          <nav className="TestTree">
-            {tree}
-          </nav>
-          <article className="TestDetails">
-            <pre> TEST
-            </pre>
-          </article>
-        </div>
-      </div>
+      <BrowserRouter>
+        <Provider>
+          <MuiThemeProvider muiTheme={ThemeDefault}>
+            <div>
+              <Header
+                styles={styles.header}
+                handleChangeRequestNavDrawer={this.handleChangeRequestNavDrawer.bind(
+                  this
+                )}
+                collectAll={this.collectAll}
+                runAll={this.runAll}
+              />
+
+              <div style={styles.container}>
+                <Route path="/" component={MainContainer} />
+              </div>
+            </div>
+          </MuiThemeProvider>
+        </Provider>
+      </BrowserRouter>
     );
   }
 }
 
-export default hot(module)(App);
+export default hot(module)(withWidth()(App));

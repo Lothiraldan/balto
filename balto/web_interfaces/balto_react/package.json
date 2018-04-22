@@ -6,13 +6,19 @@
   "dependencies": {
     "@fortawesome/fontawesome": "^1.1.4",
     "downshift": "^1.29.1",
+    "flexboxgrid": "^6.3.1",
     "font-awesome": "^4.7.0",
     "lodash": "^4.17.5",
+    "material-ui": "^0.20.0",
+    "mousetrap": "^1.6.1",
+    "prop-types": "^15.6.1",
     "react": "^16.2.0",
-    "react-checkbox-tree": "^1.0.2",
+    "react-app-rewire-eslint": "^0.2.3",
+    "react-checkbox-tree": "https://github.com/Lothiraldan/react-checkbox-tree/archive/971c1192be9d2878f7d051546d1d4a39b8aa6d06.tar.gz",
     "react-dom": "^16.2.0",
-    "react-hotkeys": "^0.10.0",
-    "react-scripts": "1.1.1"
+    "react-router-dom": "^4.2.2",
+    "react-scripts": "1.1.1",
+    "unstated": "^2.0.2"
   },
   "scripts": {
     "start": "react-app-rewired start",

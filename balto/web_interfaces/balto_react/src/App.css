@@ -1,11 +1,15 @@
 @keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .container {
   display: flex;
-  width: 100%;;
+  width: 100%;
 }
 
 .Filter {
@@ -19,17 +23,16 @@
   order: 1;
   flex: 1;
   flex-basis: auto;
-  padding: .5rem;
+  padding: 0.5rem;
   min-height: 666px;
 }
 
 .TestDetails {
-
   order: 1;
   flex: 1;
   flex-basis: auto;
-  background-color: #CE9B64;
-  padding: .5rem;
+  background-color: #ce9b64;
+  padding: 0.5rem;
 }
 
 .balto-test-failed {

@@ -1,0 +1,7 @@
+{
+  "extends": "react-app",
+  "rules": {
+    "no-restricted-globals": "warn",
+    "no-undef": "warn",
+  }
+}
