@@ -9,6 +9,10 @@ import { treenodeViewerComponent } from "../components/TestDetails.js";
 import Mousetrap from "mousetrap";
 import _ from "lodash";
 
+function filterTests(tests, predicate) {
+  return _.pickBy(tests, predicate);
+}
+
 class Main extends Component {
   onCheck = checked => {
     console.log("CHECKED", checked);
@@ -21,18 +25,42 @@ class Main extends Component {
 
   componentDidMount() {
     Mousetrap.bind(["f"], this.selectFailed);
+    Mousetrap.bind(["s"], this.selectSkipped);
+    Mousetrap.bind(["p"], this.selectPassed);
   }
 
   componentWillUnmount() {
     Mousetrap.unbind(["f"]);
+    Mousetrap.unbind(["s"]);
+    Mousetrap.unbind(["p"]);
   }
 
   selectFailed = () => {
-    var selected = [];
-
-    var result = _.pickBy(this.props.state.state.tests, function(value, key) {
+    var predicate = function(value, key) {
       return value.outcome === "failed";
-    });
+    };
+
+    this.selectTests(predicate);
+  };
+
+  selectSkipped = () => {
+    var predicate = function(value, key) {
+      return value.outcome === "skipped";
+    };
+
+    this.selectTests(predicate);
+  };
+
+  selectPassed = () => {
+    var predicate = function(value, key) {
+      return value.outcome === "passed";
+    };
+
+    this.selectTests(predicate);
+  };
+
+  selectTests = predicate => {
+    var result = filterTests(this.props.state.state.tests, predicate);
 
     var checked = _.map(result, function(test) {
       return TestNode(test.suite_name, test.file, test.id);
