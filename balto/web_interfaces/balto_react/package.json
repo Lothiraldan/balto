@@ -12,7 +12,7 @@
     "material-ui": "^0.20.0",
     "mousetrap": "^1.6.1",
     "prop-types": "^15.6.1",
-    "react": "^16.2.0",
+    "react": "^16.3.2",
     "react-app-rewire-eslint": "^0.2.3",
     "react-checkbox-tree": "https://github.com/Lothiraldan/react-checkbox-tree/archive/971c1192be9d2878f7d051546d1d4a39b8aa6d06.tar.gz",
     "react-dom": "^16.2.0",

@@ -55,6 +55,7 @@ def main():
     tests = Tests(suites)
 
     async def collect_all(request):
+        print("COLLECT ALL")
         tasks = [suite.collect_all(args.directory, em, loop=loop) for suite in suites.values()]
         await asyncio.gather(*tasks, loop=loop)
         return "ok"
@@ -76,6 +77,7 @@ def main():
     rpc = JsonRpc()
 
     async def forward_notifications(message):
+        print("MESSAGE", message)
         rpc.notify("test", message)
     em.register(forward_notifications)
 
