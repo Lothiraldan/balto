@@ -1,5 +1,7 @@
 import _ from "lodash";
 
+import * as Fuse from "fuse.js";
+
 export function TestNode(suite_name, file, test_id) {
   return JSON.stringify({
     _type: "test",
@@ -39,8 +41,8 @@ function ChildrentByFile(testList, suite_name) {
   return nodes;
 }
 
-export function treeFromTests(tests) {
-  let testsList = Object.values(tests);
+export function treeFromTests(testsList) {
+  /*let testsList = Object.values(tests);*/
 
   let nodes = [];
 
@@ -53,4 +55,30 @@ export function treeFromTests(tests) {
   }
 
   return nodes;
+}
+
+export function filterTest(testsList, filter) {
+  if (filter === "") {
+    return testsList;
+  }
+
+  if (testsList.length == 0) {
+    return [];
+  }
+
+  var fuseOptions = {
+    shouldSort: true,
+    tokenize: true,
+    findAllMatches: true,
+    threshold: 0.4,
+    location: 0,
+    distance: 100,
+    maxPatternLength: 32,
+    minMatchCharLength: 1,
+    keys: ["_type", "test_name", "id"]
+  };
+
+  var fuse = new Fuse(testsList, fuseOptions);
+  var filtered = fuse.search(filter);
+  return filtered;
 }

@@ -5,6 +5,8 @@ import IconButton from "material-ui/IconButton";
 import Search from "material-ui/svg-icons/action/search";
 import Mousetrap from "mousetrap";
 
+import { state } from "../state";
+
 class SearchBox extends React.Component {
   constructor(props) {
     super(props);
@@ -19,8 +21,6 @@ class SearchBox extends React.Component {
   }
 
   focusSearchBox = () => {
-    console.log("SREF", this.refs.search);
-
     this.refs.search.focus();
 
     return false;
@@ -62,6 +62,7 @@ class SearchBox extends React.Component {
           inputStyle={styles.inputStyle}
           hintStyle={styles.hintStyle}
           ref={"search"}
+          onChange={(event, newvalue) => state.setFilterText(newvalue)}
         />
       </div>
     );

@@ -71,7 +71,9 @@ class Main extends Component {
   };
 
   render() {
-    let nodes = treeFromTests(this.props.state.state.tests);
+    console.log("MAIN PROPS", this.props.state.state.filteredTests);
+    /*console.log("TESTS", JSON.stringify(this.props.state.state.tests, null, 4));*/
+    let nodes = treeFromTests(this.props.state.state.filteredTests);
 
     let tree = (
       <CheckboxTree
