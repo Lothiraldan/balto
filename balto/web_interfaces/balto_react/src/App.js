@@ -20,6 +20,11 @@ import { Route } from "react-router";
 import { BrowserRouter } from "react-router-dom";
 import { state } from "./state";
 import Mousetrap from "mousetrap";
+import _ from "lodash";
+
+function setDefault(obj, prop, deflt) {
+  return obj.hasOwnProperty(prop) ? obj[prop] : (obj[prop] = deflt);
+}
 
 class App extends Component {
   static propTypes = {
@@ -29,11 +34,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      tests: {},
       msg: [],
-      checked: [],
-      expanded: [],
-      selected: undefined,
       navDrawerOpen: false
     };
   }
@@ -61,7 +62,6 @@ class App extends Component {
 
   collectAll() {
     let data = { jsonrpc: "2.0", id: 0, method: "collect_all", params: null };
-    console.debug("COLLECT ALL");
     socket.send(JSON.stringify(data));
   }
 
@@ -70,9 +70,22 @@ class App extends Component {
     socket.send(JSON.stringify(data));
   }
 
-  render() {
-    let nodes = treeFromTests(this.state.tests);
+  runSelected = () => {
+    let params = {};
+    for (var test_id of state.state.checked) {
+      var parsed = JSON.parse(test_id);
+      setDefault(params, parsed.suite, []).push(parsed.id);
+    }
+    let data = {
+      jsonrpc: "2.0",
+      id: 0,
+      method: "run_selected",
+      params: params
+    };
+    socket.send(JSON.stringify(data));
+  };
 
+  render() {
     let { navDrawerOpen } = this.state;
     const paddingLeftDrawerOpen = 236;
 
@@ -101,6 +114,7 @@ class App extends Component {
                 )}
                 collectAll={this.collectAll}
                 runAll={this.runAll}
+                runSelected={this.runSelected}
               />
 
               <div style={styles.container}>

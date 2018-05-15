@@ -15,7 +15,6 @@ function filterTests(tests, predicate) {
 
 class Main extends Component {
   onCheck = checked => {
-    console.log("CHECKED", checked);
     this.props.state.setState({ checked });
   };
 

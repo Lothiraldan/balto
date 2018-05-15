@@ -52,6 +52,10 @@ class Header extends React.Component {
                 label="Collect all"
               />
               <RaisedButton onClick={this.props.runAll} label="Run all" />
+              <RaisedButton
+                onClick={this.props.runSelected}
+                label="Run selected"
+              />
             </div>
           }
         />
