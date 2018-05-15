@@ -62,7 +62,7 @@ export function filterTest(testsList, filter) {
     return testsList;
   }
 
-  if (testsList.length == 0) {
+  if (testsList.length === 0) {
     return [];
   }
 

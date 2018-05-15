@@ -8,10 +8,6 @@ import Mousetrap from "mousetrap";
 import { state } from "../state";
 
 class SearchBox extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   componentDidMount() {
     Mousetrap.bind(["ctrl+k"], this.focusSearchBox);
   }

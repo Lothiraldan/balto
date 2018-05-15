@@ -4,23 +4,17 @@ import "./App.css";
 import "react-checkbox-tree/lib/react-checkbox-tree.css";
 import "flexboxgrid/css/flexboxgrid.css";
 import "font-awesome/css/font-awesome.min.css";
-import { treeFromTests } from "./tree.js";
 import { socket } from "./websocket.js";
 import ThemeDefault from "./theme-default.js";
 import withWidth, { LARGE, SMALL } from "material-ui/utils/withWidth";
 import PropTypes from "prop-types";
 import Header from "./components/Header";
-import darkBaseTheme from "material-ui/styles/baseThemes/darkBaseTheme";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import getMuiTheme from "material-ui/styles/getMuiTheme";
-import Paper from "material-ui/Paper";
-import { Provider, Subscribe, Container } from "unstated";
+import { Provider } from "unstated";
 import MainContainer from "./containers/main";
 import { Route } from "react-router";
 import { BrowserRouter } from "react-router-dom";
 import { state } from "./state";
-import Mousetrap from "mousetrap";
-import _ from "lodash";
 
 function setDefault(obj, prop, deflt) {
   return obj.hasOwnProperty(prop) ? obj[prop] : (obj[prop] = deflt);

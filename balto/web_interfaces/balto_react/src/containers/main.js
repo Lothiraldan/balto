@@ -1,10 +1,9 @@
-import { hot } from "react-hot-loader";
 import React, { Component } from "react";
 import Paper from "material-ui/Paper";
 import { state } from "../state";
 import CheckboxTree from "react-checkbox-tree";
 import { treeFromTests, TestNode } from "../tree.js";
-import { Provider, Subscribe, Container } from "unstated";
+import { Subscribe } from "unstated";
 import { treenodeViewerComponent } from "../components/TestDetails.js";
 import Mousetrap from "mousetrap";
 import _ from "lodash";

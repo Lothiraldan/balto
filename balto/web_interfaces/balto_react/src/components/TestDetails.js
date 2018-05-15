@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { state } from "../state";
-import { Provider, Subscribe, Container } from "unstated";
+import { Subscribe } from "unstated";
 
 class SuiteViewer extends Component {
   static propTypes = {

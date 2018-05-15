@@ -1,5 +1,4 @@
-import { hot } from "react-hot-loader";
-import { Provider, Subscribe, Container } from "unstated";
+import { Container } from "unstated";
 import { filterTest } from "./tree";
 
 type TestState = {

@@ -1,10 +1,5 @@
 import React from "react";
 import AppBar from "material-ui/AppBar";
-import IconButton from "material-ui/IconButton";
-import MoreVertIcon from "material-ui/svg-icons/navigation/more-vert";
-import Menu from "material-ui/svg-icons/navigation/menu";
-import ViewModule from "material-ui/svg-icons/action/view-module";
-import { white } from "material-ui/styles/colors";
 import SearchBox from "./SearchBox";
 import PropTypes from "prop-types";
 import RaisedButton from "material-ui/RaisedButton";
@@ -16,10 +11,6 @@ class Header extends React.Component {
     collectAll: PropTypes.func,
     runAll: PropTypes.func
   };
-
-  constructor(props) {
-    super(props);
-  }
 
   render() {
     const { styles, handleChangeRequestNavDrawer } = this.props;
