@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { state } from "../state";
 import { Subscribe } from "unstated";
+import { Tabs, Tab } from "material-ui/Tabs";
 
 class SuiteViewer extends Component {
   static propTypes = {
@@ -36,14 +37,49 @@ class TestViewer extends Component {
     console.log("PROPS", this.props);
     let test = this.props.state.state.tests[this.props.id];
 
-    console.log("TEST", test);
+    let tabs = [];
+
+    if (test.error && test.error.humanrepr) {
+      tabs.push(
+        <Tab key="traceback" label="Traceback">
+          <pre>{test.error.humanrepr}</pre>
+        </Tab>
+      );
+    }
+
+    if (test.stdout) {
+      tabs.push(
+        <Tab key="stdout" label="Stdout">
+          <pre>{test.stdout}</pre>
+        </Tab>
+      );
+    }
+
+    if (test.stderr) {
+      tabs.push(
+        <Tab key="stderr" label="Stderr">
+          <pre>{test.stderr}</pre>
+        </Tab>
+      );
+    }
+
+    console.log("TEST", test, tabs);
 
     return (
       <div>
+        <h1>
+          {test.test_name} [{test.outcome}]
+        </h1>
+        <h2>{this.props.suite}</h2>
+
+        <h3>
+          File: {test.file}, line {test.line}
+        </h3>
+        <h3>Duration: {test.duration} seconds</h3>
         <p>
           Test: {this.props.id} of suite {this.props.suite}
         </p>
-        <pre>{JSON.stringify(test, null, 4)}</pre>
+        {tabs.length > 0 && <Tabs>{tabs}</Tabs>}
       </div>
     );
   }
