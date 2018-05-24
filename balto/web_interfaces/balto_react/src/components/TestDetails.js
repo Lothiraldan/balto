@@ -3,6 +3,14 @@ import PropTypes from "prop-types";
 import { state } from "../state";
 import { Subscribe } from "unstated";
 import { Tabs, Tab } from "material-ui/Tabs";
+import {
+  parseDiff,
+  Diff,
+  addStubHunk,
+  expandFromRawCode,
+  Hunk
+} from "react-diff-view";
+import "react-diff-view/index.css";
 
 class SuiteViewer extends Component {
   static propTypes = {
@@ -43,6 +51,23 @@ class TestViewer extends Component {
       tabs.push(
         <Tab key="traceback" label="Traceback">
           <pre>{test.error.humanrepr}</pre>
+        </Tab>
+      );
+    }
+
+    if (test.error && test.error.diff && test.error.diff.diff) {
+      /*      const paddingMetaInfo = "diff --git a/a b/b";
+      const paddingIndexInfo = "index 1111111..2222222 100644";
+      const diffBody = formatLines(
+        diffLines(test.error.diff.expected, test.error.diff.got)
+      );
+      const diffText = [paddingMetaInfo, paddingIndexInfo, diffBody].join("\n");
+      var result = parseDiff(diffText);
+      console.log("RESULT", result);*/
+
+      tabs.push(
+        <Tab key="diff" label="Diff">
+          <pre>{test.error.diff.diff}</pre>
         </Tab>
       );
     }
