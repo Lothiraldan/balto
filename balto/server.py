@@ -21,6 +21,12 @@ import asyncio
 
 from aiohttp_index import IndexMiddleware
 
+def get_static_path():
+    if getattr( sys, 'frozen', False ) :
+        return join(sys._MEIPASS, "balto/web_interfaces")
+    else:
+        return join(dirname(__file__), "web_interfaces")
+
 
 async def interface_handle(request):
     interface_name = request.match_info['interface'] 
@@ -94,6 +100,8 @@ def main():
     app = Application(loop=loop, debug=True)
     # app.router.add_get('/interface/{interface}', interface_handle)
     web_interfaces_route = join(dirname(__file__), "web_interfaces")
+    web_interfaces_route = get_static_path()
+    print("WEB INTERFACES", web_interfaces_route)
     app.router.add_static('/interface/', web_interfaces_route, show_index=True, name="static")
     app.router.add_route('*', '/', rpc)
 
