@@ -47,11 +47,15 @@ class App extends Component {
 
   componentDidMount() {
     socket.onmessage = event => {
+      console.log("ON MESSAGE", event);
       state.newMessage(event);
     };
     socket.onerror = error => {
       console.log("ERROR " + error);
     };
+    socket.onclose = (event) => {
+      console.log("CLOSED", event);
+    }
   }
 
   collectAll() {

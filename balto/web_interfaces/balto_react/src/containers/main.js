@@ -64,7 +64,7 @@ class Main extends Component {
       return TestNode(test.suite_name, test.file, test.id);
     });
 
-    console.log("RESULT", result, checked);
+    /*    console.log("RESULT", result, checked);*/
     this.props.state.setState({ checked: checked });
   };
 
