@@ -36,4 +36,9 @@ class SubprocessRunnerSession(BaseRunner):
             _read_stream(process.stderr, self.read_line)
         )
 
-        return await process.wait()
+        return_code = await process.wait()
+
+        if return_code != 0:
+            print("cmd exited with return code: %r" % return_code)
+
+        return return_code
