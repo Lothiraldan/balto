@@ -3,7 +3,7 @@ BAlto is a Language independent Test Orchestrator
 """
 from setuptools import find_packages, setup
 
-dependencies = ['prompt_toolkit', 'docker', 'urwid', 'aiodocker']
+dependencies = ['prompt_toolkit', 'docker', 'urwid', 'aiodocker', 'aiohttp_json_rpc', 'aiohttp', 'yarl', 'npyscreen']
 
 setup(
     name='balto',
