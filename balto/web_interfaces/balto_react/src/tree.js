@@ -70,7 +70,7 @@ export function filterTest(testsList, filter) {
     shouldSort: true,
     tokenize: true,
     findAllMatches: true,
-    threshold: 0.4,
+    threshold: 0.15,
     location: 0,
     distance: 100,
     maxPatternLength: 32,
