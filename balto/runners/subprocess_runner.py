@@ -2,6 +2,7 @@ import asyncio
 import json
 import logging
 import shlex
+from shutil import which
 
 from balto.runners.base import BaseRunner
 
@@ -21,7 +22,11 @@ class SubprocessRunnerSession(BaseRunner):
     async def run(self):
         cmd, args = self.command
 
-        final_cmd = "%s %s" % (cmd, shlex.quote(args))
+        full_cmd = which(cmd)
+
+        final_cmd = "%s %s" % (full_cmd, shlex.quote(args))
+
+        # print("RUNNING CMD %r from %r" % (cmd, self.working_directory))
 
         LOGGER.debug(
             "Launching %r from working directory %r", final_cmd, self.working_directory

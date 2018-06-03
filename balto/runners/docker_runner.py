@@ -53,7 +53,7 @@ class DockerRunnerSession(BaseRunner):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.docker_img = "%s-litf" % self.tool
+        self.docker_img = "lothiraldan/%s-litf" % self.tool
 
     async def run(self):
         if self.is_local_docker_host() is True:
