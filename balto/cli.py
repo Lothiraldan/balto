@@ -14,7 +14,6 @@ from balto.server import server
 
 
 def main():
-    print("RUNNING CLI FROM", __file__)
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "directory", help="The directory LITR should start looking for its config file"

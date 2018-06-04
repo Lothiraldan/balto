@@ -84,8 +84,6 @@ def server(directory):
         for client in rpc.clients:
             data = {"jsonrpc": "2.0", "id": None, "method": "test", "params": message}
             r = await client.ws.send_str(json.dumps(data))
-            print("R", r)
-        # await rpc.notify("test", message)
 
     em.register(forward_notifications)
 
@@ -95,7 +93,6 @@ def server(directory):
 
     app = Application(loop=loop, debug=True)
     web_interfaces_route = get_static_path()
-    print("WEB INTERFACES", web_interfaces_route)
     app.router.add_static(
         "/interface/", web_interfaces_route, show_index=True, name="static"
     )
