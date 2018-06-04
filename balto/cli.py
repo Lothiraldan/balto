@@ -3,6 +3,7 @@
 from __future__ import print_function, unicode_literals
 
 import argparse
+import logging
 import os
 import shutil
 import subprocess
@@ -10,7 +11,10 @@ import time
 import webbrowser
 from multiprocessing import Process
 
+from balto._logging import setup_logging
 from balto.server import server
+
+LOGGER = logging.getLogger(__name__)
 
 
 def main():
@@ -25,11 +29,21 @@ def main():
         action="store",
         default="curses",
     )
+    parser.add_argument(
+        "--verbose",
+        "-v",
+        help="activate the verbose mode",
+        action="store_true",
+        default=False,
+    )
+    parser.add_argument(
+        "--debug", help="activate the debug mode", action="store_true", default=False
+    )
     args = parser.parse_args()
 
+    setup_logging(args.verbose, args.debug)
+
     # Launch the server
-    balto_server_full_path = shutil.which("balto-server")
-    server_args = [balto_server_full_path, args.directory]
     port = 8889
 
     try:

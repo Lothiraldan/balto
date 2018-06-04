@@ -1,8 +1,11 @@
 import asyncio
 import json
+import logging
 import shlex
 
 from balto.runners.base import BaseRunner
+
+LOGGER = logging.getLogger(__name__)
 
 
 async def _read_stream(stream, cb):
@@ -39,6 +42,6 @@ class SubprocessRunnerSession(BaseRunner):
         return_code = await process.wait()
 
         if return_code != 0:
-            print("cmd exited with return code: %r" % return_code)
+            LOGGER.warning("CMD %r exited with return code: %d", cmd, return_code)
 
         return return_code

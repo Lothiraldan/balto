@@ -1,5 +1,6 @@
 import asyncio
 import json
+import logging
 import tarfile
 import tempfile
 from io import BytesIO
@@ -14,6 +15,8 @@ from balto.runners.base import BaseRunner
 
 DOCKER = DockerClient()
 AIODOCKER = Docker()
+
+LOGGER = logging.getLogger(__name__)
 
 
 def prepare_string_for_tar(name, content):
@@ -97,6 +100,7 @@ class DockerRunnerSession(BaseRunner):
             await self.read_line(line)
 
     def is_local_docker_host(self):
+        LOGGER.debug("Docker base url: %r", DOCKER.api.base_url)
         if DOCKER.api.base_url in ("http+docker://localunixsocket",):
             return True
 

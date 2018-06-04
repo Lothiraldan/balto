@@ -1,6 +1,9 @@
 """ Base runner class
 """
 import json
+import logging
+
+LOGGER = logging.getLogger(__name__)
 
 
 def command_formatter(tool, tests_to_run, collect_only):
@@ -36,7 +39,7 @@ def parse_line(line):
     try:
         data = json.loads(decodedline)
     except (json.JSONDecodeError, ValueError) as e:
-        # print("Invalid line", e, repr(decodedline))
+        LOGGER.debug("Invalid line: %r", decodedline, exc_info=True)
         return
 
     return data

@@ -13,9 +13,12 @@ import aiohttp
 from aiohttp.web import Application, FileResponse, HTTPNotFound, run_app
 from aiohttp_json_rpc import JsonRpc
 
+from balto._logging import setup_logging
 from balto.config import read_config
 from balto.event_emitter import EventEmitter
 from balto.store import Tests
+
+LOGGER = logging.getLogger(__name__)
 
 
 def get_static_path():
@@ -52,7 +55,7 @@ def server(directory):
     tests = Tests(suites)
 
     async def collect_all(request):
-        print("COLLECT ALL")
+        LOGGER.info("Collect ALL")
         tasks = [
             suite.collect_all(directory, em, loop=loop) for suite in suites.values()
         ]
@@ -60,6 +63,7 @@ def server(directory):
         return "ok"
 
     async def run_all(request):
+        LOGGER.info("Run ALL")
         tasks = [
             suite.launch_all(directory, em, loop=loop) for suite in suites.values()
         ]
@@ -68,7 +72,7 @@ def server(directory):
 
     async def run_selected(request):
         tasks = []
-        print("GOT PARAMS", request.params)
+        LOGGER.info("Run selected: %r", request.params)
         for suite_name, suite_tests in request.params.items():
             suite = suites[suite_name]
             tasks.append(suite.launch_tests(directory, em, loop, suite_tests))
@@ -80,7 +84,7 @@ def server(directory):
     logging.getLogger("aiohttp-json-rpc.server").setLevel(logging.DEBUG)
 
     async def forward_notifications(message):
-        print("MESSAGE", message)
+        LOGGER.debug("Forwarding to %d clients: %r", len(rpc.clients), message)
         for client in rpc.clients:
             data = {"jsonrpc": "2.0", "id": None, "method": "test", "params": message}
             r = await client.ws.send_str(json.dumps(data))
@@ -106,7 +110,19 @@ def main():
     parser.add_argument(
         "directory", help="The directory LITR should start looking for its config file"
     )
+    parser.add_argument(
+        "--verbose",
+        "-v",
+        help="activate the verbose mode",
+        action="store_true",
+        default=False,
+    )
+    parser.add_argument(
+        "--debug", help="activate the debug mode", action="store_true", default=False
+    )
     args = parser.parse_args()
+
+    setup_logging(args.verbose, args.debug)
 
     server(args.directory)
 
