@@ -1,6 +1,6 @@
+import asyncio
 import json
 import shlex
-import asyncio
 
 from balto.runners.base import BaseRunner
 

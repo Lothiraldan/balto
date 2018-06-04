@@ -1,12 +1,11 @@
 import sys
 
-
 from prompt_toolkit.contrib.completers import WordCompleter
 from prompt_toolkit.history import InMemoryHistory
 from prompt_toolkit.interface import CommandLineInterface
 from prompt_toolkit.shortcuts import (
-    create_prompt_application,
     create_asyncio_eventloop,
+    create_prompt_application,
     prompt_async,
 )
 

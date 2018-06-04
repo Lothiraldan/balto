@@ -1,16 +1,14 @@
+import asyncio
 import json
 import tarfile
 import tempfile
-import asyncio
+from io import BytesIO
 from os.path import join
 
-from io import BytesIO
-
 import docker.utils
-from docker import DockerClient
-
 from aiodocker.docker import Docker
 from aiodocker.exceptions import DockerError
+from docker import DockerClient
 
 from balto.runners.base import BaseRunner
 

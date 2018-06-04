@@ -2,23 +2,20 @@
 """
 from __future__ import print_function, unicode_literals
 
+import argparse
+import asyncio
 import json
 import logging
 import sys
-import argparse
-import asyncio
-from os.path import join, dirname, isfile
+from os.path import dirname, isfile, join
+
+import aiohttp
+from aiohttp.web import Application, FileResponse, HTTPNotFound, run_app
+from aiohttp_json_rpc import JsonRpc
 
 from balto.config import read_config
 from balto.event_emitter import EventEmitter
 from balto.store import Tests
-
-import aiohttp
-
-
-from aiohttp.web import Application, run_app, FileResponse, HTTPNotFound
-from aiohttp_json_rpc import JsonRpc
-import asyncio
 
 
 def get_static_path():

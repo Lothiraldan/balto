@@ -5,6 +5,7 @@ from __future__ import print_function
 import asyncio
 
 import urwid
+
 from balto.displayer.curses_widgets import (
     FOOTER,
     PALETTE,
