@@ -4,6 +4,7 @@ import asyncio
 
 from balto.runners.base import BaseRunner
 
+
 async def _read_stream(stream, cb):
     while True:
         line = await stream.readline()
@@ -14,7 +15,6 @@ async def _read_stream(stream, cb):
 
 
 class SubprocessRunnerSession(BaseRunner):
-
     async def run(self):
         cmd, args = self.command
 
@@ -28,12 +28,12 @@ class SubprocessRunnerSession(BaseRunner):
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
             cwd=self.working_directory,
-            loop=self.loop
+            loop=self.loop,
         )
 
         await asyncio.gather(
             _read_stream(process.stdout, self.read_line),
-            _read_stream(process.stderr, self.read_line)
+            _read_stream(process.stderr, self.read_line),
         )
 
         return_code = await process.wait()

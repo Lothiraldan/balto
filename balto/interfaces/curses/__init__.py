@@ -51,9 +51,7 @@ class Tree(npyscreen.MLTreeMultiSelect):
 
     def set_up_handlers(self):
         super().set_up_handlers()
-        self.handlers.update({
-            ord('r'): self.launch_tests,
-        })
+        self.handlers.update({ord("r"): self.launch_tests})
 
     def launch_tests(self, _):
         tests_to_run = {}
@@ -65,30 +63,43 @@ class Tree(npyscreen.MLTreeMultiSelect):
                 tests_to_run.setdefault(suite, []).append(test_id)
 
         import json
-        msg = json.dumps({
-            "jsonrpc": "2.0",
-            "id": 1,
-            "method": "run_selected",
-            "params": tests_to_run
-        })
+
+        msg = json.dumps(
+            {
+                "jsonrpc": "2.0",
+                "id": 1,
+                "method": "run_selected",
+                "params": tests_to_run,
+            }
+        )
         WS.send(msg)
         # raise ZeroDivisionError(list(self.get_selected_objects()))
 
 
 class TestResultData(npyscreen.TreeData):
-    def __init__(self,
-                 content=None,
-                 parent=None,
-                 selected=False,
-                 selectable=True,
-                 highlight=False,
-                 expanded=True,
-                 ignore_root=True,
-                 sort_function=None,
-                 outcome=None,
-                 _id=None):
-        super().__init__(content, parent, selected, selectable, highlight,
-                         expanded, ignore_root, sort_function)
+    def __init__(
+        self,
+        content=None,
+        parent=None,
+        selected=False,
+        selectable=True,
+        highlight=False,
+        expanded=True,
+        ignore_root=True,
+        sort_function=None,
+        outcome=None,
+        _id=None,
+    ):
+        super().__init__(
+            content,
+            parent,
+            selected,
+            selectable,
+            highlight,
+            expanded,
+            ignore_root,
+            sort_function,
+        )
         self.test_id = _id
         self.outcome = outcome
 
@@ -180,7 +191,7 @@ class MainForm(npyscreen.Form):
     #     self.ok_button = self.add_widget(self.__class__.OKBUTTON_TYPE, name=ok_button_text, rely=my, relx=mx, use_max_space=True)
     #     ok_button_postion = len(self._widgets__)-1
     #     self.ok_button.update()
-    #     # End add buttons 
+    #     # End add buttons
     #     self.editing=True
     #     if self.editw < 0: self.editw=0
     #     if self.editw > len(self._widgets__)-1:
@@ -189,12 +200,11 @@ class MainForm(npyscreen.Form):
     #         self.editw = 0
     #     if not self._widgets__[self.editw].editable: self.find_next_editable()
 
-
     #     self.display()
 
     #     while not (self._widgets__[self.editw].editable and not self._widgets__[self.editw].hidden):
     #         self.editw += 1
-    #         if self.editw > len(self._widgets__)-1: 
+    #         if self.editw > len(self._widgets__)-1:
     #             self.editing = False
     #             return False
 
@@ -221,7 +231,6 @@ class MainForm(npyscreen.Form):
 
 
 class TestApp(npyscreen.NPSApp):
-
     def __init__(self, queue):
         super().__init__()
         self.queue = queue
@@ -232,7 +241,8 @@ class TestApp(npyscreen.NPSApp):
         self.tree = F.add(Tree)
 
         self.root = MyTreeData(
-            content='All Tests Suites', selectable=True, ignore_root=False)
+            content="All Tests Suites", selectable=True, ignore_root=False
+        )
         self.tree.values = self.root
 
         th = threading.Thread(target=self._read_queue)
@@ -280,18 +290,18 @@ class TestApp(npyscreen.NPSApp):
             need_to_clear = False
 
             for data in events:
-                msg_type = data['_type']
+                msg_type = data["_type"]
 
-                if msg_type == 'session_start':
+                if msg_type == "session_start":
                     # TODO: Implement progress bar
                     continue
-                elif msg_type == 'session_end':
+                elif msg_type == "session_end":
                     # TODO: Implement progress bar
                     continue
-                elif msg_type == 'test_collection':
+                elif msg_type == "test_collection":
                     r = self.process_test_collection(data)
                     need_to_clear = need_to_clear or r
-                elif msg_type == 'test_result':
+                elif msg_type == "test_result":
                     r = self.process_test_collection(data)
                     need_to_clear = need_to_clear or r
                 else:
@@ -306,10 +316,10 @@ class TestApp(npyscreen.NPSApp):
     def process_test_collection(self, data):
         need_to_clear = False
 
-        suite_name = data['suite_name']
-        test_id = data['id']
-        test_name = data['test_name']
-        test_file = data['file']
+        suite_name = data["suite_name"]
+        test_id = data["id"]
+        test_name = data["test_name"]
+        test_file = data["file"]
         test = data
 
         # Suite
@@ -317,10 +327,8 @@ class TestApp(npyscreen.NPSApp):
             child = self.root.get_children_by_id(suite_name)
         except KeyError:
             child = self.root.new_child(
-                suite_name,
-                content=suite_name,
-                selectable=True,
-                ignore_root=False)
+                suite_name, content=suite_name, selectable=True, ignore_root=False
+            )
             # We need to clear the cache when we add a new child
             need_to_clear = True
 
@@ -337,7 +345,8 @@ class TestApp(npyscreen.NPSApp):
             test_node = test_file_node.get_children_by_id(test_id)
         except KeyError:
             test_node = test_file_node.new_child(
-                test_id, content=test_name, outcome=None)
+                test_id, content=test_name, outcome=None
+            )
             # We need to clear the cache when we add a new child
             need_to_clear = True
 
@@ -354,6 +363,7 @@ def on_message(ws, message):
     # print("MESSAGE", message)
     # raise Exception(type(message))
     import json
+
     params = json.loads(message).get("params")
     if params:
         QUEUE.put(json.loads(message)["params"])
@@ -371,27 +381,22 @@ def on_close(ws):
 
 def on_open(ws):
     import json
-    ws.send(
-        json.dumps({
-            "jsonrpc": "2.0",
-            "id": 0,
-            "method": "subscribe",
-            "params": "test"
-        }))
 
     ws.send(
-        json.dumps({
-            "jsonrpc": "2.0",
-            "id": 1,
-            "method": "collect_all",
-            "params": None
-        }))
+        json.dumps({"jsonrpc": "2.0", "id": 0, "method": "subscribe", "params": "test"})
+    )
+
+    ws.send(
+        json.dumps({"jsonrpc": "2.0", "id": 1, "method": "collect_all", "params": None})
+    )
+
 
 WS = websocket.WebSocketApp(
     "ws://localhost:%d/" % int(os.environ["BALTO_PORT"]),
     on_message=on_message,
     on_close=on_close,
-    on_open=on_open)
+    on_open=on_open,
+)
 QUEUE = Queue()
 
 

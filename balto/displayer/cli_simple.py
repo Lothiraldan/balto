@@ -4,11 +4,16 @@ import sys
 from prompt_toolkit.contrib.completers import WordCompleter
 from prompt_toolkit.history import InMemoryHistory
 from prompt_toolkit.interface import CommandLineInterface
-from prompt_toolkit.shortcuts import create_prompt_application, create_asyncio_eventloop, prompt_async
+from prompt_toolkit.shortcuts import (
+    create_prompt_application,
+    create_asyncio_eventloop,
+    prompt_async,
+)
 
 default_test_args = ""
 completer = WordCompleter(
-    ['run', 'r', 'failed', 'f', 'p', 'print', 'pf'], ignore_case=True)
+    ["run", "r", "failed", "f", "p", "print", "pf"], ignore_case=True
+)
 
 
 class TestDisplayer(object):
@@ -18,20 +23,19 @@ class TestDisplayer(object):
         self.current_test_number = 0
 
     async def parse_message(self, message):
-        msg_type = message.get('_type')
+        msg_type = message.get("_type")
 
-        if msg_type == 'session_start':
-            self.test_number = message['test_number']
-            print(
-                "Tests session started, %d tests detected:" % self.test_number)
+        if msg_type == "session_start":
+            self.test_number = message["test_number"]
+            print("Tests session started, %d tests detected:" % self.test_number)
             sys.stdout.flush()
             self.current_test_number = 0
-        elif msg_type == 'test_result':
+        elif msg_type == "test_result":
             # Ignore invalid json
-            if 'id' not in message or 'outcome' not in message:
+            if "id" not in message or "outcome" not in message:
                 return
 
-            self.tests[message['id']] = message
+            self.tests[message["id"]] = message
 
             test_number = self.current_test_number + 1
             self.current_test_number = test_number
@@ -41,13 +45,16 @@ class TestDisplayer(object):
             else:
                 ptn = "%d" % test_number
 
-            print("%s %s %s: %s" % (ptn, message['file'], message['test_name'],
-                                    message['outcome']))
+            print(
+                "%s %s %s: %s"
+                % (ptn, message["file"], message["test_name"], message["outcome"])
+            )
             sys.stdout.flush()
-        elif msg_type == 'session_end':
-            print("Tests session end, %d failed, %d passed in %.4f seconds" %
-                  (message['failed'], message['passed'],
-                   message['total_duration']))
+        elif msg_type == "session_end":
+            print(
+                "Tests session end, %d failed, %d passed in %.4f seconds"
+                % (message["failed"], message["passed"], message["total_duration"])
+            )
             sys.stdout.flush()
         else:
             print(message)
@@ -55,7 +62,6 @@ class TestDisplayer(object):
 
 
 class SimpleTestInterface(object):
-
     def __init__(self, repository, eventloop, tests, config, em, runner_class):
         self.repository = repository
         self.history = InMemoryHistory()
@@ -70,14 +76,14 @@ class SimpleTestInterface(object):
         self.em.register(self.displayer.parse_message)
 
         self.application = create_prompt_application(
-            '> ', history=self.history, completer=completer)
-
-        self.cli = CommandLineInterface(
-            application=self.application,
-            eventloop=create_asyncio_eventloop(eventloop)
+            "> ", history=self.history, completer=completer
         )
 
-        sys.stdout = self.cli.stdout_proxy()    
+        self.cli = CommandLineInterface(
+            application=self.application, eventloop=create_asyncio_eventloop(eventloop)
+        )
+
+        sys.stdout = self.cli.stdout_proxy()
 
     def run(self):
         self.eventloop.run_until_complete(self._run())
@@ -91,13 +97,13 @@ class SimpleTestInterface(object):
 
             command = result.text
 
-            if command == 'p':
+            if command == "p":
                 self.tests.status()
-            elif command == 'pf':
+            elif command == "pf":
                 self.tests.failed_tests()
-            elif command == 'r':
+            elif command == "r":
                 await self.launch_all_tests()
-            elif command == 'f':
+            elif command == "f":
                 await self.launch_failed_tests()
 
             self.tests.status_by_status()
@@ -112,5 +118,6 @@ class SimpleTestInterface(object):
         await session.run()
 
     def _get_runner(self, tests):
-        return self.runner_class(self.config, self.repository, self.em, tests,
-                                 loop=self.eventloop)
+        return self.runner_class(
+            self.config, self.repository, self.em, tests, loop=self.eventloop
+        )

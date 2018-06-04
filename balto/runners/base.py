@@ -27,8 +27,8 @@ def parse_line(line):
         return
 
     # Decode bytes if we get bytes
-    if hasattr(line, 'decode'):
-        decodedline = line.decode('utf-8')
+    if hasattr(line, "decode"):
+        decodedline = line.decode("utf-8")
     else:
         decodedline = line
 
@@ -42,15 +42,17 @@ def parse_line(line):
     return data
 
 
-class BaseRunner():
-    def __init__(self,
-                 tool,
-                 working_directory,
-                 event_emitter,
-                 tests_to_run=[],
-                 collect_only=False,
-                 loop=None,
-                 suite_name=None):
+class BaseRunner:
+    def __init__(
+        self,
+        tool,
+        working_directory,
+        event_emitter,
+        tests_to_run=[],
+        collect_only=False,
+        loop=None,
+        suite_name=None,
+    ):
         self.working_directory = working_directory
         self.tool = tool
         self.event_emitter = event_emitter
@@ -61,8 +63,7 @@ class BaseRunner():
 
     @property
     def command(self):
-        return command_formatter(self.tool, self.tests_to_run,
-                                 self.collect_only)
+        return command_formatter(self.tool, self.tests_to_run, self.collect_only)
 
     async def read_line(self, line):
 

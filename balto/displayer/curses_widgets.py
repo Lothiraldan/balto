@@ -6,8 +6,8 @@ import urwid
 
 from balto.suite import TestSuite
 
-STATUS = urwid.Text('')
-PROGRESS_BAR = urwid.ProgressBar('pg normal', 'pg complete', 0, 1)
+STATUS = urwid.Text("")
+PROGRESS_BAR = urwid.ProgressBar("pg normal", "pg complete", 0, 1)
 FOOTER = urwid.Columns([STATUS, PROGRESS_BAR])
 SELECTED_TEST = set()
 
@@ -23,30 +23,27 @@ def get_selected_tests():
 
 
 PALETTE = [
-    ('body', 'black', 'light gray'),
-    ('flagged', 'black', 'dark green', ('bold', 'underline')),
-    ('focus', 'light gray', 'dark blue', 'standout'),
-    ('focus Passing', 'light green', 'dark blue', 'standout'),
-    ('focus Failing', 'light red', 'dark blue', 'standout'),
-    ('flagged focus', 'yellow', 'dark cyan', ('bold', 'standout',
-                                              'underline')),
-    ('head', 'yellow', 'black', 'standout'),
-    ('foot', 'light gray', 'black'),
-    ('key', 'light cyan', 'black', 'underline'),
-    ('title', 'white', 'black', 'bold'),
-    ('dirmark', 'black', 'dark cyan', 'bold'),
-    ('flag', 'dark gray', 'light gray'),
-
+    ("body", "black", "light gray"),
+    ("flagged", "black", "dark green", ("bold", "underline")),
+    ("focus", "light gray", "dark blue", "standout"),
+    ("focus Passing", "light green", "dark blue", "standout"),
+    ("focus Failing", "light red", "dark blue", "standout"),
+    ("flagged focus", "yellow", "dark cyan", ("bold", "standout", "underline")),
+    ("head", "yellow", "black", "standout"),
+    ("foot", "light gray", "black"),
+    ("key", "light cyan", "black", "underline"),
+    ("title", "white", "black", "bold"),
+    ("dirmark", "black", "dark cyan", "bold"),
+    ("flag", "dark gray", "light gray"),
     # Outcomes
-    ('failed', 'dark red', 'light gray'),
-    ('passed', 'dark green', 'light gray'),
-    ('error', 'dark red', 'light gray'),
-    ('skipped', 'dark blue', 'light gray'),
-    ('not_run', 'black', 'light gray'),
-
-    ('pg normal',    'white',      'black', 'standout'),
-    ('pg complete',  'white',      'dark blue'),
-    ('pg smooth', 'dark blue', 'black')
+    ("failed", "dark red", "light gray"),
+    ("passed", "dark green", "light gray"),
+    ("error", "dark red", "light gray"),
+    ("skipped", "dark blue", "light gray"),
+    ("not_run", "black", "light gray"),
+    ("pg normal", "white", "black", "standout"),
+    ("pg complete", "white", "dark blue"),
+    ("pg smooth", "dark blue", "black"),
 ]
 
 
@@ -59,9 +56,8 @@ def on_flagged(test_id, flagged):
 
 
 class SingleTestWidget(urwid.TreeWidget):
-
     def __init__(self, *args, **kwargs):
-        self.selected_w = urwid.Text('[ ]')
+        self.selected_w = urwid.Text("[ ]")
         super().__init__(*args, **kwargs)
         # insert an extra AttrWrap for our own use
         self._w = urwid.AttrWrap(self._w, None)
@@ -72,8 +68,7 @@ class SingleTestWidget(urwid.TreeWidget):
 
     def load_inner_widget(self):
         main_w = urwid.Text(self.get_display_text())
-        return urwid.Columns(
-                [('fixed', 3, self.selected_w), main_w], dividechars=1)
+        return urwid.Columns([("fixed", 3, self.selected_w), main_w], dividechars=1)
 
     def keypress(self, size, key):
         """allow subclasses to intercept keystrokes"""
@@ -97,21 +92,20 @@ class SingleTestWidget(urwid.TreeWidget):
         """
         suite = self.get_node().get_value()
         test = suite[self.get_node()._key]
-        outcome = test.get('outcome')
-        self._w.focus_attr = 'focus %s' % outcome
+        outcome = test.get("outcome")
+        self._w.focus_attr = "focus %s" % outcome
         self._w.attr = outcome
 
         if self.get_node().flagged:
-            self.selected_w.set_text('[x]')
+            self.selected_w.set_text("[x]")
         else:
-            self.selected_w.set_text('[ ]')
+            self.selected_w.set_text("[ ]")
 
     def get_display_text(self):
         return self.get_node().get_key()
 
 
 class SingleTestNode(urwid.TreeNode):
-
     def __init__(self, *args, flagged=False, test_suite=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.flagged = flagged
@@ -146,16 +140,16 @@ class SingleTestNode(urwid.TreeNode):
 
 class TestFileWidget(urwid.TreeWidget):
 
-    unexpanded_icon = urwid.SelectableIcon('▹', 0)
-    expanded_icon = urwid.SelectableIcon('▿', 0)
+    unexpanded_icon = urwid.SelectableIcon("▹", 0)
+    expanded_icon = urwid.SelectableIcon("▿", 0)
 
     def __init__(self, *args, **kwargs):
-        self.selected_w = urwid.Text('[ ]')
+        self.selected_w = urwid.Text("[ ]")
         super().__init__(*args, **kwargs)
         # insert an extra AttrWrap for our own use
         self._w = urwid.AttrWrap(self._w, None)
-        self._w.attr = 'body'
-        self._w.focus_attr = 'focus'
+        self._w.attr = "body"
+        self._w.focus_attr = "focus"
         self.update_w()
 
         self.expanded = True
@@ -163,8 +157,7 @@ class TestFileWidget(urwid.TreeWidget):
 
     def load_inner_widget(self):
         main_w = urwid.Text(self.get_display_text())
-        return urwid.Columns(
-                [('fixed', 3, self.selected_w), main_w], dividechars=1)
+        return urwid.Columns([("fixed", 3, self.selected_w), main_w], dividechars=1)
 
     def get_display_text(self):
         return self.get_node().get_key()
@@ -202,11 +195,10 @@ class TestFileWidget(urwid.TreeWidget):
                 raise ValueError()
             self.selected_w.set_text("[%s]" % icon)
         else:
-            self.selected_w.set_text('[ ]')
+            self.selected_w.set_text("[ ]")
 
 
 class TestFileNode(urwid.ParentNode):
-
     def __init__(self, *args, flagged=False, test_suite=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.flagged = flagged
@@ -272,8 +264,14 @@ class TestFileNode(urwid.ParentNode):
         else:
             child_class = self.__class__
 
-        return child_class(data, parent=self, key=key, depth=self.get_depth() + 1, flagged=self.flagged,
-                           test_suite=self.get_value())
+        return child_class(
+            data,
+            parent=self,
+            key=key,
+            depth=self.get_depth() + 1,
+            flagged=self.flagged,
+            test_suite=self.get_value(),
+        )
 
     def refresh(self):
         self._child_keys = None
@@ -288,16 +286,16 @@ class TestFileNode(urwid.ParentNode):
 
 class TestSuiteWidget(urwid.TreeWidget):
 
-    unexpanded_icon = urwid.SelectableIcon('▹', 0)
-    expanded_icon = urwid.SelectableIcon('▿', 0)
+    unexpanded_icon = urwid.SelectableIcon("▹", 0)
+    expanded_icon = urwid.SelectableIcon("▿", 0)
 
     def __init__(self, *args, **kwargs):
-        self.selected_w = urwid.Text('[ ]')
+        self.selected_w = urwid.Text("[ ]")
         super().__init__(*args, **kwargs)
         # insert an extra AttrWrap for our own use
         self._w = urwid.AttrWrap(self._w, None)
-        self._w.attr = 'body'
-        self._w.focus_attr = 'focus'
+        self._w.attr = "body"
+        self._w.focus_attr = "focus"
         self.update_w()
 
         self.expanded = True
@@ -305,8 +303,7 @@ class TestSuiteWidget(urwid.TreeWidget):
 
     def load_inner_widget(self):
         main_w = urwid.Text(self.get_display_text())
-        return urwid.Columns(
-                [('fixed', 3, self.selected_w), main_w], dividechars=1)
+        return urwid.Columns([("fixed", 3, self.selected_w), main_w], dividechars=1)
 
     def get_display_text(self):
         return self.get_node().get_key()
@@ -344,11 +341,10 @@ class TestSuiteWidget(urwid.TreeWidget):
                 raise ValueError()
             self.selected_w.set_text("[%s]" % icon)
         else:
-            self.selected_w.set_text('[ ]')
+            self.selected_w.set_text("[ ]")
 
 
 class TestSuiteNode(urwid.ParentNode):
-
     def __init__(self, *args, flagged=False, **kwargs):
         super().__init__(*args, **kwargs)
         self.flagged = flagged
@@ -408,7 +404,9 @@ class TestSuiteNode(urwid.ParentNode):
 
         child_class = TestFileNode
 
-        return child_class(data, parent=self, key=key, depth=self.get_depth() + 1, flagged=self.flagged)
+        return child_class(
+            data, parent=self, key=key, depth=self.get_depth() + 1, flagged=self.flagged
+        )
 
     def refresh(self):
         # signals.emit_signal(self.get_widget(), "modified")
@@ -424,12 +422,12 @@ class TestSuiteNode(urwid.ParentNode):
 
 class RootTreeWidget(urwid.TreeWidget):
     """ Display widget for leaf nodes """
+
     def get_display_text(self):
         return "Tests"
 
 
 class RootParentNode(urwid.ParentNode):
-
     def load_widget(self):
         return RootTreeWidget(self)
 

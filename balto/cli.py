@@ -17,14 +17,15 @@ def main():
     print("RUNNING CLI FROM", __file__)
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "directory",
-        help="The directory LITR should start looking for its config file")
+        "directory", help="The directory LITR should start looking for its config file"
+    )
     parser.add_argument(
         "--interface",
         "-i",
         help="which interface to start",
         action="store",
-        default="curses")
+        default="curses",
+    )
     args = parser.parse_args()
 
     # Launch the server
@@ -50,7 +51,9 @@ def main():
             interface = subprocess.Popen([balto_interface], env=env)
             interface.join()
         elif args.interface == "web":
-            webbrowser.open("http://localhost:%d/interface/balto_react/build/index.html" % port)
+            webbrowser.open(
+                "http://localhost:%d/interface/balto_react/build/index.html" % port
+            )
             _server.join()
     finally:
         _server.terminate()

@@ -6,8 +6,14 @@ import asyncio
 
 import urwid
 from balto.displayer.curses_widgets import (
-    FOOTER, PALETTE, PROGRESS_BAR, STATUS, RootParentNode, get_selected_tests,
-    set_selected_tests)
+    FOOTER,
+    PALETTE,
+    PROGRESS_BAR,
+    STATUS,
+    RootParentNode,
+    get_selected_tests,
+    set_selected_tests,
+)
 
 
 class CursesTestDisplayer(object):
@@ -24,17 +30,17 @@ class CursesTestDisplayer(object):
         self.walker._modified()
 
     async def parse_message(self, message):
-        msg_type = message.get('_type')
+        msg_type = message.get("_type")
 
-        if msg_type == 'session_start':
-            self.test_number = message['test_number']
+        if msg_type == "session_start":
+            self.test_number = message["test_number"]
             self.current_test_number = 0
-        elif msg_type == 'test_result':
+        elif msg_type == "test_result":
             # Ignore invalid json
-            if 'id' not in message or 'outcome' not in message:
+            if "id" not in message or "outcome" not in message:
                 return
 
-            self.tests[message['id']] = message
+            self.tests[message["id"]] = message
 
             test_number = self.current_test_number + 1
             self.current_test_number = test_number
@@ -44,15 +50,15 @@ class CursesTestDisplayer(object):
 
             self.refresh_screen()
 
-        elif msg_type == 'test_collection':
+        elif msg_type == "test_collection":
             # Ignore invalid json
-            if 'id' not in message:
+            if "id" not in message:
                 return
 
             # Force a status
-            message['outcome'] = 'not_run'
+            message["outcome"] = "not_run"
 
-            self.tests[message['id']] = message
+            self.tests[message["id"]] = message
 
             test_number = self.current_test_number + 1
             self.current_test_number = test_number
@@ -62,7 +68,7 @@ class CursesTestDisplayer(object):
 
             self.refresh_screen()
 
-        elif msg_type == 'session_end':
+        elif msg_type == "session_end":
             # PROGRESS_BAR.set_completion(0)
             pass
         else:
@@ -85,8 +91,7 @@ class CursesTestInterface(object):
             unhandled_input=self.unhandled,
         )
 
-        self.displayer = CursesTestDisplayer(self.tests, self.topnode,
-                                             self.walker)
+        self.displayer = CursesTestDisplayer(self.tests, self.topnode, self.walker)
 
         # Register the callbacks
         self.em.register(self.displayer.parse_message)
@@ -97,8 +102,8 @@ class CursesTestInterface(object):
         listbox = urwid.TreeListBox(self.walker)
 
         listbox.offset_rows = 1
-        footer = urwid.AttrWrap(FOOTER, 'foot')
-        return urwid.Frame(urwid.AttrWrap(listbox, 'body'), footer=footer)
+        footer = urwid.AttrWrap(FOOTER, "foot")
+        return urwid.Frame(urwid.AttrWrap(listbox, "body"), footer=footer)
 
     def run(self):
         if len(self.tests.tests) == 0:
@@ -107,11 +112,11 @@ class CursesTestInterface(object):
         self.urwid_loop.run()
 
     def unhandled(self, key):
-        if key in ('ctrl c', 'q'):
+        if key in ("ctrl c", "q"):
             raise urwid.ExitMainLoop()
-        elif key == 'a':
+        elif key == "a":
             self.select_all_tests()
-        elif key in ('r', 'enter'):
+        elif key in ("r", "enter"):
             tests = list(get_selected_tests())
 
             if len(tests) == 0:
@@ -119,11 +124,11 @@ class CursesTestInterface(object):
                 return
 
             self.launch_specific_tests(tests)
-        elif key == 'f':
+        elif key == "f":
             self.select_tests("failed")
-        elif key == 's':
+        elif key == "s":
             self.select_tests("skipped")
-        elif key == 'p':
+        elif key == "p":
             self.select_tests("passed")
         else:
             STATUS.set_text("Key pressed DEBUG: %s" % repr(key))
@@ -181,11 +186,17 @@ class CursesTestInterface(object):
         STATUS.set_text("Selected %d %s tests" % (len(tests), outcome))
 
     async def _collect_all_tests(self):
-        tasks = [suite.collect_all(self.repository, self.em, loop=self.eventloop) for suite in self.suites.values()]
+        tasks = [
+            suite.collect_all(self.repository, self.em, loop=self.eventloop)
+            for suite in self.suites.values()
+        ]
         return await asyncio.gather(*tasks, loop=self.eventloop)
 
     async def _launch_all_tests(self):
-        tasks = [suite.launch_all(self.repository, self.em, loop=self.eventloop) for suite in self.suites.values()]
+        tasks = [
+            suite.launch_all(self.repository, self.em, loop=self.eventloop)
+            for suite in self.suites.values()
+        ]
         return await asyncio.gather(*tasks, loop=self.eventloop)
 
     async def _launch_specific_tests(self, tests):
@@ -197,6 +208,10 @@ class CursesTestInterface(object):
 
         tasks = []
         for suite, suite_tests in test_by_suite.items():
-            tasks.append(suite.launch_tests(self.repository, self.em, self.eventloop, suite_tests))
+            tasks.append(
+                suite.launch_tests(
+                    self.repository, self.em, self.eventloop, suite_tests
+                )
+            )
 
         return await asyncio.gather(*tasks, loop=self.eventloop)

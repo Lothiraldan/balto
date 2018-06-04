@@ -20,7 +20,7 @@ AIODOCKER = Docker()
 
 def prepare_string_for_tar(name, content):
     dfinfo = tarfile.TarInfo(name)
-    bytesio = BytesIO(content.encode('utf-8'))
+    bytesio = BytesIO(content.encode("utf-8"))
     dfinfo.size = len(bytesio.getvalue())
     bytesio.seek(0)
     return dfinfo, bytesio
@@ -29,9 +29,9 @@ def prepare_string_for_tar(name, content):
 def docker_context(dockerfile_content, base_path):
     context = tempfile.NamedTemporaryFile()
 
-    archive = tarfile.open(mode='w', fileobj=context)
+    archive = tarfile.open(mode="w", fileobj=context)
 
-    archive.addfile(*prepare_string_for_tar('Dockerfile', dockerfile_content))
+    archive.addfile(*prepare_string_for_tar("Dockerfile", dockerfile_content))
 
     root = base_path
 
@@ -49,11 +49,10 @@ def docker_context(dockerfile_content, base_path):
 
 
 class DockerRunnerSession(BaseRunner):
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.docker_img = '%s-litf' % self.tool
+        self.docker_img = "%s-litf" % self.tool
 
     async def run(self):
         if self.is_local_docker_host() is True:
@@ -67,8 +66,10 @@ class DockerRunnerSession(BaseRunner):
         context = docker_context(dockerfile, self.working_directory)
 
         # Build an image with a custom Dockerfile and context
-        image = await AIODOCKER.images.build(fileobj=context, encoding='utf-8', quiet=True)
-        image_id = image[0]['stream'].strip()
+        image = await AIODOCKER.images.build(
+            fileobj=context, encoding="utf-8", quiet=True
+        )
+        image_id = image[0]["stream"].strip()
 
         self.builded_image = image_id
 
@@ -87,10 +88,8 @@ class DockerRunnerSession(BaseRunner):
 
         # Launch the container
         if local is True:
-            config['Volumes'] = {"/sut": {}}
-            config['HostConfig'] = {
-                "Binds": ["%s:/sut:ro" % self.working_directory]
-            }
+            config["Volumes"] = {"/sut": {}}
+            config["HostConfig"] = {"Binds": ["%s:/sut:ro" % self.working_directory]}
 
         container = await AIODOCKER.containers.create(config=config)
         await container.start()
@@ -100,7 +99,7 @@ class DockerRunnerSession(BaseRunner):
             await self.read_line(line)
 
     def is_local_docker_host(self):
-        if DOCKER.api.base_url in ('http+docker://localunixsocket',):
+        if DOCKER.api.base_url in ("http+docker://localunixsocket",):
             return True
 
         return False
