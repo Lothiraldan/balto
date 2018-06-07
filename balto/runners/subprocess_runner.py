@@ -23,6 +23,10 @@ class SubprocessRunnerSession(BaseRunner):
 
         final_cmd = "%s %s" % (cmd, shlex.quote(args))
 
+        LOGGER.debug(
+            "Launching %r from working directory %r", final_cmd, self.working_directory
+        )
+
         await self.launch_cmd(final_cmd)
 
     async def launch_cmd(self, cmd):
