@@ -19,7 +19,7 @@
     "react-diff-view": "^1.4.11",
     "react-dom": "^16.2.0",
     "react-router-dom": "^4.2.2",
-    "react-scripts": "1.1.1",
+    "react-scripts": "1.1.4",
     "unstated": "^2.0.2"
   },
   "scripts": {
