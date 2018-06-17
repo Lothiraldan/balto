@@ -1,4 +1,6 @@
 import _ from "lodash";
+import React, { Component } from "react";
+import { Tag } from "react-bulma-components/full";
 
 import * as Fuse from "fuse.js";
 
@@ -28,6 +30,25 @@ function TestsNodes(testList, suite_name, file) {
   return childrens;
 }
 
+class TestFileLabel extends Component {
+  render() {
+    return (
+      <span>
+        {this.props.file} (
+        <Tag color="success">{this.props.passed}</Tag>+<span style={{ color: "red" }}>{this.props.failed}</span>+<span
+          style={{ color: "red" }}
+        >
+          {this.props.error}
+        </span>+<span style={{ color: "blue" }}>{this.props.skipped}</span>+<span
+          style={{}}
+        >
+          {this.props.collected}
+        </span>={this.props.total})
+      </span>
+    );
+  }
+}
+
 function ChildrentByFile(testList, suite_name) {
   var nodes = [];
 
@@ -35,7 +56,27 @@ function ChildrentByFile(testList, suite_name) {
   for (var [file, testsByFile] of Object.entries(x)) {
     let childrens = TestsNodes(testsByFile, suite_name, file);
     let value = JSON.stringify({ _type: "file", suite: suite_name, id: file });
-    let children = { label: file, value: value, children: childrens };
+    var outcomes = _.groupBy(testsByFile, test => test.outcome);
+    console.log("OUTCOMES", outcomes);
+    let passed = (outcomes.passed && outcomes.passed.length) || 0;
+    let failed = (outcomes.failed && outcomes.failed.length) || 0;
+    let error = (outcomes.error && outcomes.error.length) || 0;
+    let skipped = (outcomes.skipped && outcomes.skipped.length) || 0;
+    let collected = (outcomes.undefined && outcomes.undefined.length) || 0;
+    let label = (
+      <TestFileLabel
+        file={file}
+        passed={passed}
+        failed={failed}
+        error={error}
+        skipped={skipped}
+        collected={collected}
+        total={childrens.length}
+      />
+    );
+    /*tests; ${outcomes.passed && outcomes.passed.length} passed, ${outcomes.failed && outcomes.failed.length} failed, ${outcomes.skipped && outcomes.skipped.length} skipped and ${outcomes.undefined && outcomes.undefined.length} just collected)*/
+    /*var label = <span style={{color: "green"}}>Test</span>*/
+    let children = { label: label, value: value, children: childrens };
     nodes.push(children);
   }
   return nodes;

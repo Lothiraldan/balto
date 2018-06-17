@@ -1252,6 +1252,10 @@ builtin-status-codes@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/builtin-status-codes/-/builtin-status-codes-3.0.0.tgz#85982878e21b98e1c66425e03d0174788f569ee8"
 
+bulma@0.7.1:
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/bulma/-/bulma-0.7.1.tgz#73c2e3b2930c90cc272029cbd19918b493fca486"
+
 bytes@3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/bytes/-/bytes-3.0.0.tgz#d32815404d689699f85a4ea4fa8755dd13a96048"
@@ -1447,7 +1451,7 @@ class-utils@^0.3.5:
     isobject "^3.0.0"
     static-extend "^0.1.1"
 
-classnames@^2.2.5:
+classnames@2.2.5, classnames@^2.2.5:
   version "2.2.5"
   resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.2.5.tgz#fb3801d453467649ef3603c7d61a02bd129bde6d"
 
@@ -5696,6 +5700,13 @@ react-app-rewired@^1.5.0:
   dependencies:
     cross-spawn "^5.1.0"
     dotenv "^4.0.0"
+
+react-bulma-components@^1.4.6:
+  version "1.4.6"
+  resolved "https://registry.yarnpkg.com/react-bulma-components/-/react-bulma-components-1.4.6.tgz#1347d9a8bb3babfd56151dd72461e6890bff2c34"
+  dependencies:
+    bulma "0.7.1"
+    classnames "2.2.5"
 
 "react-checkbox-tree@https://github.com/Lothiraldan/react-checkbox-tree/archive/971c1192be9d2878f7d051546d1d4a39b8aa6d06.tar.gz":
   version "1.1.0"

@@ -15,6 +15,7 @@
     "prop-types": "^15.6.1",
     "react": "^16.3.2",
     "react-app-rewire-eslint": "^0.2.3",
+    "react-bulma-components": "^1.4.6",
     "react-checkbox-tree": "https://github.com/Lothiraldan/react-checkbox-tree/archive/971c1192be9d2878f7d051546d1d4a39b8aa6d06.tar.gz",
     "react-diff-view": "^1.4.11",
     "react-dom": "^16.2.0",
