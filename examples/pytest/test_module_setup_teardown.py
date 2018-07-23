@@ -15,7 +15,6 @@ def test_failing():
 
 
 class TestClassPassing(object):
-
     def setup_method(self, method):
         pass
 
@@ -27,7 +26,6 @@ class TestClassPassing(object):
 
 
 class TestClassFailing(object):
-
     def setup_method(self, method):
         pass
 

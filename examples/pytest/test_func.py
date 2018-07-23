@@ -15,4 +15,4 @@ def test_fixtures(number):
 
 
 def test_error():
-    1/0
+    1 / 0

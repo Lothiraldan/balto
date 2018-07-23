@@ -10,7 +10,6 @@ def test_stderr():
 
 
 class TestClassStdout(object):
-
     def setup_method(self, method):
         pass
 
@@ -22,7 +21,6 @@ class TestClassStdout(object):
 
 
 class TestClassStdoutSetup(object):
-
     def setup_method(self, method):
         print("SETUP")
 
@@ -34,7 +32,6 @@ class TestClassStdoutSetup(object):
 
 
 class TestClassStdoutAllPhases(object):
-
     def setup_method(self, method):
         print("SETUP")
 
@@ -46,7 +43,6 @@ class TestClassStdoutAllPhases(object):
 
 
 class TestClassFailing(object):
-
     def setup_method(self, method):
         pass
 

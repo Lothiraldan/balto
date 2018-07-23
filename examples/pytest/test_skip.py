@@ -1,12 +1,12 @@
 import pytest
 
+
 @pytest.mark.skip(reason="Skip")
 def test_skip_function():
     pass
 
 
 class TestSkipCall(object):
-
     @pytest.mark.skip(reason="Skip")
     def test_skip_method(self):
         pass
@@ -14,7 +14,6 @@ class TestSkipCall(object):
 
 @pytest.mark.skip(reason="Skip")
 class TestSkipClass(object):
-
     def test_skipped_1(self):
         pass
 
