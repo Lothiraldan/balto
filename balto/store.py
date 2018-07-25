@@ -2,6 +2,7 @@
 """
 
 from collections import Counter
+from dataclasses import dataclass, field
 
 
 class Tests(dict):
@@ -70,3 +71,44 @@ class Tests(dict):
 
     def __getitem__(self, name):
         return self.tests[name]
+
+@dataclass
+class MultipleTestSuite:
+    tests_suites: dict = field(default_factory=dict)
+
+    def __getitem__(self, suite_name):
+        return self.tests_suites.setdefault(suite_name, TestSuite())
+
+@dataclass
+class TestSuite:
+    tests: dict = field(default_factory=dict)
+
+    def update_test(self, test_dict):
+        if test_dict["id"] not in self.tests:
+            self.tests[test_dict["id"]] = SingleTest(**test_dict)
+        else:
+            self.tests[test_dict["id"]].update(test_dict)
+
+
+@dataclass
+class SingleTest:
+    id: str
+    suite_name: str
+    test_name: str
+    file: str
+    line: int
+    outcome: str = field(default_factory=lambda: "collected")
+    duration: str = None
+    durations: dict = None
+    stdout: str = None
+    stderr: str = None
+    error: dict = None
+    skipped_messages: dict = None
+
+    def update(self, collect_or_result_msg):
+        for key, value in collect_or_result_msg.items():
+            if key == "id" and value != self.id:
+                raise ValueError("Cannot alter test id")
+            elif key == "suite_name" and value != self.suite_name:
+                raise ValueError("Cannot alter suite name")
+            setattr(self, key, value)
