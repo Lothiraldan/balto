@@ -2,6 +2,7 @@
 """
 import json
 import logging
+import uuid
 
 LOGGER = logging.getLogger(__name__)
 
@@ -63,10 +64,14 @@ class BaseRunner:
         self.loop = loop
         self.collect_only = collect_only
         self.suite_name = suite_name
+        self.run_id = uuid.uuid4().hex
 
     @property
     def command(self):
         return command_formatter(self.tool, self.tests_to_run, self.collect_only)
+
+    async def run(self):
+        await self.event_emitter.emit({"_type": "run_start", "run_id": self.run_id})
 
     async def read_line(self, line):
 
@@ -75,5 +80,7 @@ class BaseRunner:
         if data:
             # Add suite name to identify it
             data["suite_name"] = self.suite_name
+            # And track run id
+            data["run_id"] = self.run_id
 
             await self.event_emitter.emit(data)

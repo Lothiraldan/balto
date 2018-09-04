@@ -56,6 +56,7 @@ class DockerRunnerSession(BaseRunner):
         self.docker_img = "lothiraldan/%s-litf" % self.tool
 
     async def run(self):
+        await super().run()
         if self.is_local_docker_host() is True:
             await self._launch_container(self.docker_img, local=True)
         else:

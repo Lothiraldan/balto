@@ -16,9 +16,21 @@ from aiohttp_json_rpc import JsonRpc
 from balto._logging import setup_logging
 from balto.config import read_config
 from balto.event_emitter import EventEmitter
-from balto.store import Tests
+from balto.store import Tests, SingleTest, MultipleTestSuite
 
 LOGGER = logging.getLogger(__name__)
+
+
+SUITES = MultipleTestSuite()
+
+async def process_notification(message):
+    msg_type = message.pop("_type")
+    if msg_type == "test_collection":
+        process_test_collection(message, SUITES)
+    elif msg_type == "test_result":
+        process_test_result(message, SUITES)
+    else:
+        print("Message", message)
 
 
 def get_static_path():
@@ -26,6 +38,17 @@ def get_static_path():
         return join(sys._MEIPASS, "balto/web_interfaces")
     else:
         return join(dirname(__file__), "web_interfaces")
+
+def process_test_collection(message, suites):
+    suite = message["suite_name"]
+    # The run_id doesn't make sense here
+    message.pop("run_id")
+    suites[suite].update_test(message)
+
+
+def process_test_result(message, suites):
+    suite = message["suite_name"]
+    suites[suite].update_test(message)
 
 
 async def interface_handle(request):
@@ -90,6 +113,7 @@ def server(directory):
             r = await client.ws.send_str(json.dumps(data))
 
     em.register(forward_notifications)
+    em.register(process_notification)
 
     loop = asyncio.get_event_loop()
     rpc.add_methods(("", collect_all), ("", run_selected), ("", run_all))
