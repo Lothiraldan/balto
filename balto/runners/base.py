@@ -15,8 +15,11 @@ def command_formatter(tool, tests_to_run, collect_only):
     if collect_only:
         args["collect-only"] = True
 
-    if tests_to_run:
-        args["files"] = tests_to_run
+    if tests_to_run.get("files"):
+        args["files"] = tests_to_run["files"]
+
+    if tests_to_run.get("nodeids"):
+        args["nodeids"] = tests_to_run["nodeids"]
 
     args = json.dumps(args)
     return base_cmd, args

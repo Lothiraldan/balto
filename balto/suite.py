@@ -62,7 +62,7 @@ class TestSuite:
         session = self.get_runner(
             directory,
             event_emitter,
-            [],
+            {},
             loop=loop,
             collect_only=True,
             suite_name=self.name,
@@ -71,7 +71,7 @@ class TestSuite:
 
     async def launch_all(self, directory, event_emitter, loop):
         session = self.get_runner(
-            directory, event_emitter, [], loop=loop, suite_name=self.name
+            directory, event_emitter, {}, loop=loop, suite_name=self.name
         )
         await session.run()
 
