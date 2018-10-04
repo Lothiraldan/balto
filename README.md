@@ -1,4 +1,4 @@
-# ![Logo of Balto](logo.png) BALTO
+# ![Logo of Balto](logo-100x.png) BALTO
 
 `BAlto is a Language independent Test Orchestrator` is a test orchestrator
 compatible with all your testing frameworks and your languages.
@@ -15,5 +15,3 @@ To use it:
 
     $ balto --help
 
-
-Logo by [Icons8](https://icons8.com/).
