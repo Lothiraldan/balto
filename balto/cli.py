@@ -27,7 +27,7 @@ def main():
         "-i",
         help="which interface to start",
         action="store",
-        default="curses",
+        default="web",
     )
     parser.add_argument(
         "--verbose",
