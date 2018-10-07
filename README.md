@@ -5,13 +5,29 @@ compatible with all your testing frameworks and your languages.
 
 # Installation
 
-Simply run:
-
-    $ pip install .
+- Download the latest binary for you platform here: https://github.com/Lothiraldan/balto/releases
+- Put the binary in your path
+- Enjoy!
 
 # Usage
 
-To use it:
+To use it, point balto to a directory containing a `.balto.json` file:
+    
+```bash
+balto tests/
+```
 
-    $ balto --help
+The `.balto.json` file should look like:
 
+```json
+[{"tool": "pytest", "name": "Acceptance Test Suite Subprocess"}]
+
+```
+
+The tool must be one of the supported one, you can see the list here: https://github.com/lothiraldan/litf#compatible-emitters
+
+For more help:
+
+```bash
+balto --help
+```
