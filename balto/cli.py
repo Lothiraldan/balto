@@ -30,6 +30,13 @@ def main():
         default="web",
     )
     parser.add_argument(
+        "--runner",
+        "-r",
+        help="which runner to use",
+        action="store",
+        default="subprocess",
+    )
+    parser.add_argument(
         "--verbose",
         "-v",
         help="activate the verbose mode",

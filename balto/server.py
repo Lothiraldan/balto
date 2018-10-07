@@ -23,6 +23,7 @@ LOGGER = logging.getLogger(__name__)
 
 SUITES = MultipleTestSuite()
 
+
 async def process_notification(message):
     msg_type = message.pop("_type")
     if msg_type == "test_collection":
@@ -38,6 +39,7 @@ def get_static_path():
         return join(sys._MEIPASS, "balto/web_interfaces")
     else:
         return join(dirname(__file__), "web_interfaces")
+
 
 def process_test_collection(message, suites):
     suite = message["suite_name"]
@@ -64,7 +66,7 @@ async def interface_handle(request):
     return HTTPNotFound()
 
 
-def server(directory):
+def server(directory, runner):
     loop = asyncio.get_event_loop()
 
     # EM
@@ -72,7 +74,7 @@ def server(directory):
 
     # Read config
     config_filepath = join(directory, ".balto.json")
-    suites = read_config(config_filepath, em)
+    suites = read_config(config_filepath, runner, em)
 
     # Tests
     tests = Tests(suites)
@@ -144,11 +146,18 @@ def main():
     parser.add_argument(
         "--debug", help="activate the debug mode", action="store_true", default=False
     )
+    parser.add_argument(
+        "--runner",
+        "-r",
+        help="which runner to use",
+        action="store",
+        default="subprocess",
+    )
     args = parser.parse_args()
 
     setup_logging(args.verbose, args.debug)
 
-    server(args.directory)
+    server(args.directory, args.runner)
 
 
 if __name__ == "__main__":

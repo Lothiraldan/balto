@@ -1,1 +1,1 @@
-[{"runner": "subprocess", "tool": "pytest", "name": "Acceptance Test Suite Subprocess"}]
+[{"tool": "pytest", "name": "Acceptance Test Suite Subprocess"}]

@@ -72,12 +72,14 @@ class Tests(dict):
     def __getitem__(self, name):
         return self.tests[name]
 
+
 @dataclass
 class MultipleTestSuite:
     tests_suites: dict = field(default_factory=dict)
 
     def __getitem__(self, suite_name):
         return self.tests_suites.setdefault(suite_name, TestSuite())
+
 
 @dataclass
 class TestSuite:
