@@ -54,7 +54,7 @@ def main():
     port = 8889
 
     try:
-        _server = Process(target=server, args=(args.directory,))
+        _server = Process(target=server, args=(args.directory, args.runner))
         _server.start()
         # server = subprocess.Popen(server_args)
 
