@@ -26,6 +26,12 @@ The `.balto.json` file should look like:
 
 The tool must be one of the supported one, you can see the list here: https://github.com/lothiraldan/litf#compatible-emitters
 
+You can test balto against examples for supported test runners. Clone this repository and launch `balto` against one of the examples directories. For `pytest`, launch:
+
+```bash
+balto examples/pytest/
+```
+
 For more help:
 
 ```bash
