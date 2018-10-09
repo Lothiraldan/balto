@@ -1,7 +1,7 @@
 import asyncio
-import json
 import logging
 import shlex
+import os
 from shutil import which
 
 from balto.runners.base import BaseRunner
@@ -18,12 +18,35 @@ async def _read_stream(stream, cb):
             break
 
 
+class CommandNotFound(Exception):
+    def __init__(self, command_name, path):
+        super().__init__(None)
+        self.command_name = command_name
+        self.path = path
+
+    def __str__(self):
+        return f"Command {self.command_name!r} not found in paths {self.path!r}"
+
+
+def find_command(command_name, path):
+    """Find the full path of the command passed in parameter or raise an
+    CommandNotFound exception
+    """
+    command_path = which(command_name, path)
+    print("Command path", command_path, command_path is None)
+
+    if command_path is None:
+        raise CommandNotFound(command_name, path)
+
+    return command_path
+
+
 class SubprocessRunnerSession(BaseRunner):
     async def run(self):
         await super().run()
         cmd, args = self.command
 
-        full_cmd = which(cmd)
+        full_cmd = find_command(cmd, os.environ.get("PATH", os.defpath))
 
         final_cmd = "%s %s" % (full_cmd, shlex.quote(args))
 
