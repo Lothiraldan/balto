@@ -1,15 +1,15 @@
 # ![Logo of Balto](logo-100x.png) BALTO
 
-`BAlto is a Language independent Test Orchestrator` is a test orchestrator
-compatible with all your testing frameworks and your languages.
+`BAlto is a Language independent Test Orchestrator` is an unique tool to drive
+all your test-runners with one common interface.
 
-# Installation
+## Installation
 
 - Download the latest binary for you platform here: https://github.com/Lothiraldan/balto/releases
-- Put the binary in your path
+- Put the binary somewhere in your path
 - Enjoy!
 
-# Usage
+## Usage
 
 To use it, point balto to a directory containing a `.balto.json` file:
     
@@ -37,3 +37,44 @@ For more help:
 ```bash
 balto --help
 ```
+
+
+## Development
+
+Balto is composed of two components: the server and the web interface.
+
+### Balto-server
+
+Balto-server is a Python 3.7 project using Asyncio. To build the development version, first create a virtualenv (or equivalent):
+
+```bash
+virtualenv .venv
+source .venv/bin/activate
+```
+
+Install the project in development mode:
+
+```bash
+pip install -e .
+```
+
+Then start the server:
+
+```bash
+balto-server --debug examples/pytest/
+```
+
+The server will start on port 8889.
+
+### Web interface
+
+The web interface is a React project communicating with the server using WebSockets. You can start developing on it with these instructions:
+
+```bash
+cd balto/web_interfaces/balto_react
+yarn start
+```
+
+The web interface is then available on http://localhost:3000/ and will connect to the server started before.
+
+Warning: the WebSocket doesn't auto-reconnect yet, sometimes your React modification requires you to reload your browser tab.
