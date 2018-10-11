@@ -1,5 +1,5 @@
 # ![Logo of Balto](logo-100x.png) BALTO
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors)
 
 `BAlto is a Language independent Test Orchestrator` is an unique tool to drive
 all your test-runners with one common interface.
@@ -86,8 +86,8 @@ Thanks goes to these wonderful people ([emoji key](https://github.com/kentcdodds
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore -->
-| [<img src="https://avatars2.githubusercontent.com/u/243665?v=4" width="100px;"/><br /><sub><b> Boris Feld</b></sub>](https://lothiraldan.github.io/)<br />[💻](https://github.com/lothiraldan/balto/commits?author=Lothiraldan "Code") [🎨](#design-Lothiraldan "Design") [📖](https://github.com/lothiraldan/balto/commits?author=Lothiraldan "Documentation") [🤔](#ideas-Lothiraldan "Ideas, Planning, & Feedback") [📢](#talk-Lothiraldan "Talks") |
-| :---: |
+| [<img src="https://avatars2.githubusercontent.com/u/243665?v=4" width="100px;"/><br /><sub><b> Boris Feld</b></sub>](https://lothiraldan.github.io/)<br />[💻](https://github.com/lothiraldan/balto/commits?author=Lothiraldan "Code") [🎨](#design-Lothiraldan "Design") [📖](https://github.com/lothiraldan/balto/commits?author=Lothiraldan "Documentation") [🤔](#ideas-Lothiraldan "Ideas, Planning, & Feedback") [📢](#talk-Lothiraldan "Talks") | [<img src="https://avatars0.githubusercontent.com/u/37565?v=4" width="100px;"/><br /><sub><b>Elias Dorneles</b></sub>](https://eliasdorneles.github.io)<br />[💻](https://github.com/lothiraldan/balto/commits?author=eliasdorneles "Code") [🐛](https://github.com/lothiraldan/balto/issues?q=author%3Aeliasdorneles "Bug reports") |
+| :---: | :---: |
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/kentcdodds/all-contributors) specification. Contributions of any kind welcome!
