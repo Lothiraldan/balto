@@ -32,8 +32,7 @@ def find_command(command_name, path):
     """Find the full path of the command passed in parameter or raise an
     CommandNotFound exception
     """
-    command_path = which(command_name, path)
-    print("Command path", command_path, command_path is None)
+    command_path = which(command_name, path=path)
 
     if command_path is None:
         raise CommandNotFound(command_name, path)
