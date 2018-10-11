@@ -44,6 +44,8 @@ balto --help
 
 Balto is composed of two components: the server and the web interface.
 
+> Please note that this project is released with a Contributor Code of Conduct. By participating in this project you agree to abide by its terms. Please report unacceptable behavior to [lothiraldan@gmail.com](lothiraldan@gmail.com).
+
 ### Balto-server
 
 Balto-server is a Python 3.7 project using Asyncio. To build the development version, first create a virtualenv (or equivalent):
