@@ -9,6 +9,10 @@ class RunDetails extends React.Component {
   render() {
     let converted_duration = convert(this.props.run.total_duration);
 
+    let header = [<Moment fromNow withTitle>
+            {this.props.run.date_started}
+          </Moment>];
+
     let duration = null;
     if (this.props.run.status === "finished") {
       duration = (
@@ -17,6 +21,10 @@ class RunDetails extends React.Component {
           {converted_duration.unit} <br />
         </span>
       );
+
+      if (this.props.run.return_code !== undefined && this.props.run.return_code !== 0) {
+        header.push(<span style={{color: "red"}}>[{this.props.run.return_code}]</span>);
+      }
     }
 
     let count = null;
@@ -31,9 +39,7 @@ class RunDetails extends React.Component {
     return (
       <Message>
         <Message.Header>
-          <Moment fromNow withTitle>
-            {this.props.run.date_started}
-          </Moment>
+          {header}
         </Message.Header>
         <Message.Body>
           {this.props.run.status} <br />
