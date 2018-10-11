@@ -42,8 +42,7 @@ class RunDetails extends React.Component {
           {header}
         </Message.Header>
         <Message.Body>
-          {this.props.run.status} <br />
-          {duration}
+          {this.props.run.status} {(duration !== null) && <span>in {duration}</span>}
           {count}
           <Progress
             max={this.props.run.test_number}
