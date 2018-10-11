@@ -1,4 +1,5 @@
 # ![Logo of Balto](logo-100x.png) BALTO
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors)
 
 `BAlto is a Language independent Test Orchestrator` is an unique tool to drive
 all your test-runners with one common interface.
@@ -78,3 +79,15 @@ yarn start
 The web interface is then available on http://localhost:3000/ and will connect to the server started before.
 
 Warning: the WebSocket doesn't auto-reconnect yet, sometimes your React modification requires you to reload your browser tab.
+
+## Contributors
+
+Thanks goes to these wonderful people ([emoji key](https://github.com/kentcdodds/all-contributors#emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore -->
+| [<img src="https://avatars2.githubusercontent.com/u/243665?v=4" width="100px;"/><br /><sub><b> Boris Feld</b></sub>](https://lothiraldan.github.io/)<br />[💻](https://github.com/lothiraldan/balto/commits?author=Lothiraldan "Code") [🎨](#design-Lothiraldan "Design") [📖](https://github.com/lothiraldan/balto/commits?author=Lothiraldan "Documentation") [🤔](#ideas-Lothiraldan "Ideas, Planning, & Feedback") [📢](#talk-Lothiraldan "Talks") |
+| :---: |
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/kentcdodds/all-contributors) specification. Contributions of any kind welcome!

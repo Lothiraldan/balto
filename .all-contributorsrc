@@ -1,0 +1,26 @@
+{
+  "projectName": "balto",
+  "projectOwner": "lothiraldan",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": true,
+  "contributors": [
+    {
+      "login": "Lothiraldan",
+      "name": " Boris Feld",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/243665?v=4",
+      "profile": "https://lothiraldan.github.io/",
+      "contributions": [
+        "code",
+        "design",
+        "doc",
+        "ideas",
+        "talk"
+      ]
+    }
+  ]
+}
