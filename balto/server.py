@@ -14,7 +14,7 @@ from aiohttp.web import Application, FileResponse, HTTPNotFound, run_app
 from aiohttp_json_rpc import JsonRpc
 
 from balto._logging import setup_logging
-from balto.config import read_config
+from balto.config import read_config, find_configuration_file
 from balto.event_emitter import EventEmitter
 from balto.store import Tests, SingleTest, MultipleTestSuite
 
@@ -75,7 +75,12 @@ def server(directory, runner):
     em = EventEmitter(loop)
 
     # Read config
-    config_filepath = join(directory, ".balto.json")
+    config_filepath = find_configuration_file(directory)
+
+    if config_filepath is None:
+        err_msg = "Couldn't find a configuration file in directory %s"
+        raise Exception(err_msg % directory)
+
     suites = read_config(config_filepath, runner, em)
 
     # Tests

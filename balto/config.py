@@ -1,8 +1,16 @@
 """ Config parsing utilities
 """
 import json
+from os.path import isfile, join
 
 from balto.suite import TestSuite
+
+
+def find_configuration_file(directory):
+    json_config = join(directory, ".balto.json")
+    if isfile(json_config):
+        return json_config
+    return None
 
 
 def read_config(config_filepath, runner, em):

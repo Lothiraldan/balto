@@ -1,6 +1,8 @@
 from copy import copy
-from balto.store import SingleTest
+
 import pytest
+
+from balto.store import SingleTest
 
 
 class TestSingleTest(object):
@@ -59,9 +61,7 @@ class TestSingleTest(object):
             "id": self.test_id,
             "stdout": "",
             "stderr": "",
-            "error": {
-                "humanrepr": "Traceback..."
-            },
+            "error": {"humanrepr": "Traceback..."},
             "skipped_messages": {},
             "suite_name": self.suite_name,
         }
