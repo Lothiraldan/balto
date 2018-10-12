@@ -1,6 +1,7 @@
 """
 BAlto is a Language independent Test Orchestrator
 """
+import sys
 from setuptools import find_packages, setup
 
 dependencies = [
@@ -13,6 +14,9 @@ dependencies = [
     "yarl",
     "npyscreen",
 ]
+
+if sys.version_info < (3, 7):
+    dependencies.append('dataclasses')
 
 setup(
     name="balto",
@@ -28,7 +32,7 @@ setup(
     zip_safe=False,
     platforms="any",
     install_requires=dependencies,
-    python_requires=">=3.5",
+    python_requires=">=3.6",
     entry_points={
         "console_scripts": [
             "balto = balto.cli:main",
@@ -53,8 +57,8 @@ setup(
         "Operating System :: Unix",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
 )
