@@ -16,7 +16,7 @@ dependencies = [
 
 setup(
     name="balto",
-    version="0.1.0",
+    version="0.1.2",
     url="https://github.com/lothiraldan/balto",
     license="BSD",
     author="Boris Feld",
