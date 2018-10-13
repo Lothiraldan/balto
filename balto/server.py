@@ -50,6 +50,8 @@ def process_test_collection(message, suites):
 
 def process_test_result(message, suites):
     suite = message["suite_name"]
+    # The run_id doesn't make sense here
+    message.pop("run_id")
     suites[suite].update_test(message)
 
 
