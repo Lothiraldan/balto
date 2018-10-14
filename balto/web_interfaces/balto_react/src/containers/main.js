@@ -18,7 +18,6 @@ import { Panel } from "react-bulma-components";
 class TreeLine extends PureComponent {
   onClick = event => {
     event.preventDefault();
-    console.log("Click", this.props.onclick, this.props.node);
     this.props.onClick(this.props.node.id);
   };
 

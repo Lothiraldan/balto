@@ -52,7 +52,6 @@ class TestViewer extends Component {
   };
 
   render() {
-    console.log("PROPS", this.props);
     let test = this.props.state.state.tests[this.props.id];
 
     let tablist = [];
