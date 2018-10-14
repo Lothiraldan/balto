@@ -17,49 +17,19 @@ const SvgLogo = props => (
 
 class Header extends React.Component {
   static propTypes = {
-    styles: PropTypes.object,
-    handleChangeRequestNavDrawer: PropTypes.func,
     collectAll: PropTypes.func,
-    runAll: PropTypes.func
+    runAll: PropTypes.func,
+    countSelected: PropTypes.number
   };
 
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.props.countSelected === nextProps.countSelected) {
+      return false;
+    }
+    return true;
+  }
+
   render() {
-    const { styles, handleChangeRequestNavDrawer } = this.props;
-
-    const style = {
-      appBar: {
-        position: "fixed",
-        top: 0,
-        overflow: "hidden",
-        maxHeight: 57
-      },
-      menuButton: {
-        marginLeft: 10
-      },
-      iconsRightContainer: {
-        marginLeft: 20
-      }
-    };
-
-    /*<AppBar
-          style={{ ...styles, ...style.appBar }}
-          title={<SearchBox />}
-          iconElementLeft={<div />}
-          iconElementRight={
-            <div style={style.iconsRightContainer}>
-              <RaisedButton
-                onClick={this.props.collectAll}
-                label="Collect all"
-              />
-              <RaisedButton onClick={this.props.runAll} label="Run all" />
-              <RaisedButton
-                onClick={this.props.runSelected}
-                label="Run selected"
-              />
-            </div>
-          }
-        />*/
-
     var disabled = true;
     var runSelectedText = "Run selected";
     if (this.props.countSelected > 0) {
