@@ -10,6 +10,9 @@ def find_configuration_file(directory):
     json_config = join(directory, ".balto.json")
     if isfile(json_config):
         return json_config
+    toml_config = join(directory, ".balto.toml")
+    if isfile(toml_config):
+        return toml_config
     return None
 
 
