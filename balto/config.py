@@ -3,7 +3,17 @@
 import json
 from os.path import isfile, join
 
+from tomlkit import document, dumps, loads
+
 from balto.suite import TestSuite
+
+
+class SingleTestSuiteConfig:
+    def __init__(self, parsed_config):
+        self.config = parsed_config
+
+    def __getitem__(self, name):
+        return self.config[name]
 
 
 def find_configuration_file(directory):
@@ -14,6 +24,22 @@ def find_configuration_file(directory):
     if isfile(toml_config):
         return toml_config
     return None
+
+
+def convert_json_config_to_toml(json_config):
+    name = json_config[0]["name"]
+    tool = json_config[0]["tool"]
+
+    toml_config = document()
+    toml_config.add("name", name)
+    toml_config.add("tool", tool)
+
+    return dumps(toml_config)
+
+
+def parse_toml_config(raw_config):
+    parsed_config = loads(raw_config)
+    return SingleTestSuiteConfig(parsed_config)
 
 
 def read_config(config_filepath, runner, em):
