@@ -20,7 +20,7 @@ class TreeLine extends PureComponent {
     event.preventDefault();
     this.props.onClick(this.props.node.id);
   };
-
+  
   render() {
     let tags = [];
 
