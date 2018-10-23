@@ -14,9 +14,10 @@ from aiohttp.web import Application, FileResponse, HTTPNotFound, run_app
 from aiohttp_json_rpc import JsonRpc
 
 from balto._logging import setup_logging
-from balto.config import read_config, find_configuration_file
 from balto.event_emitter import EventEmitter
+from balto.config import find_and_validate_config
 from balto.store import Tests, SingleTest, MultipleTestSuite
+from balto.suite import TestSuite
 
 LOGGER = logging.getLogger(__name__)
 
@@ -68,20 +69,15 @@ async def interface_handle(request):
     return HTTPNotFound()
 
 
-def server(directory, runner):
+def server(directory, config, runner):
     loop = asyncio.get_event_loop()
 
     # EM
     em = EventEmitter(loop)
 
-    # Read config
-    config_filepath = find_configuration_file(directory)
-
-    if config_filepath is None:
-        err_msg = "Couldn't find a configuration file in directory %s"
-        raise Exception(err_msg % directory)
-
-    suites = read_config(config_filepath, runner, em)
+    # TODO: Re-add support for multiple test suites
+    suite = TestSuite(config["name"], runner, em, config)
+    suites = {config["name"]: suite}
 
     # Tests
     tests = Tests(suites)
@@ -164,7 +160,9 @@ def main():
 
     setup_logging(args.verbose, args.debug)
 
-    server(args.directory, args.runner)
+    config = find_and_validate_config(args.directory)
+
+    server(args.directory, config, args.runner)
 
 
 if __name__ == "__main__":

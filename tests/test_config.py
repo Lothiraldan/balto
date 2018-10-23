@@ -1,7 +1,16 @@
+import json
+import pytest
+
 from os.path import dirname, join
 
-from balto.config import (convert_json_config_to_toml, find_configuration_file,
-                          parse_toml_config)
+from balto.config import (
+    convert_json_config_to_toml,
+    find_configuration_file,
+    parse_toml_config,
+    find_and_validate_config,
+)
+
+from balto.exceptions import NoConfigFileFound, LegacyJsonConfigFound
 
 NO_CONFIG_DIR = join(dirname(__file__), "test_directories", "no_config")
 
@@ -52,6 +61,7 @@ tool = "%s"
     assert config["name"] == name
     assert config["tool"] == tool
 
+
 def test_parse_toml_config_runners():
     name = "Acceptance Test Suite Subprocess"
     tool = "pytest"
@@ -68,3 +78,29 @@ command = "not-pytest-litf"
     config = parse_toml_config(raw_config)
 
     assert config["subprocess"]["command"] == command_override
+
+
+def test_find_and_validate_no_config():
+    with pytest.raises(NoConfigFileFound) as excinfo:
+        find_and_validate_config(NO_CONFIG_DIR)
+
+    assert excinfo.value.directory == NO_CONFIG_DIR
+
+
+def test_find_and_validate_json_config():
+    with pytest.raises(LegacyJsonConfigFound) as excinfo:
+        find_and_validate_config(CONFIG_JSON_DIR)
+
+    # Compute expected new config
+    with open(join(CONFIG_JSON_DIR, ".balto.json")) as config_file:
+        json_config = json.load(config_file)
+    config = convert_json_config_to_toml(json_config)
+
+    assert excinfo.value.equivalent_toml_config == config
+
+
+def test_find_and_validate_toml_config():
+    config = find_and_validate_config(CONFIG_TOML_DIR)
+
+    assert config["name"] == "Test Suite"
+    assert config["tool"] == "pytest"

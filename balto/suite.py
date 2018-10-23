@@ -6,12 +6,12 @@ from balto.runners.subprocess_runner import SubprocessRunnerSession
 
 
 class TestSuite:
-    def __init__(self, name, runner, tool, em):
+    def __init__(self, name, runner, em, config):
         self.name = name
         self.runner = runner
-        self.tool = tool
         self.tests = {}
         self.em = em
+        self.config = config
 
         self.em.register(self.new_output)
 
@@ -25,7 +25,7 @@ class TestSuite:
 
     def get_runner(self, *args, **kwargs):
         klass = self.get_runner_class()
-        return klass(self.tool, *args, **kwargs)
+        return klass(self.config, *args, **kwargs)
 
     def get_test_files(self):
         return set(test["file"] for test in self.tests.values())

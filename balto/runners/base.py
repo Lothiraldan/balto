@@ -52,7 +52,7 @@ def parse_line(line):
 class BaseRunner:
     def __init__(
         self,
-        tool,
+        config,
         working_directory,
         event_emitter,
         tests_to_run=[],
@@ -61,7 +61,7 @@ class BaseRunner:
         suite_name=None,
     ):
         self.working_directory = working_directory
-        self.tool = tool
+        self.tool = config["tool"]
         self.event_emitter = event_emitter
         self.tests_to_run = tests_to_run
         self.loop = loop

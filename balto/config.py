@@ -5,7 +5,8 @@ from os.path import isfile, join
 
 from tomlkit import document, dumps, loads
 
-from balto.suite import TestSuite
+
+from balto.exceptions import NoConfigFileFound, LegacyJsonConfigFound
 
 
 class SingleTestSuiteConfig:
@@ -17,12 +18,14 @@ class SingleTestSuiteConfig:
 
 
 def find_configuration_file(directory):
-    json_config = join(directory, ".balto.json")
-    if isfile(json_config):
-        return json_config
+    # Read the toml config first so the old versions can still read the json
+    # file
     toml_config = join(directory, ".balto.toml")
     if isfile(toml_config):
         return toml_config
+    json_config = join(directory, ".balto.json")
+    if isfile(json_config):
+        return json_config
     return None
 
 
@@ -42,23 +45,25 @@ def parse_toml_config(raw_config):
     return SingleTestSuiteConfig(parsed_config)
 
 
-def read_config(config_filepath, runner, em):
+def read_json_config(config_filepath):
     with open(config_filepath, "r") as config_file:
         raw_config = json.load(config_file)
 
-    return parse_config(raw_config, runner, em)
+    return raw_config
 
 
-def parse_config(config, runner, em):
-    if not isinstance(config, list):
-        config = [config]
+def find_and_validate_config(directory):
+    config_path = find_configuration_file(directory)
 
-    test_suites = dict()
+    if config_path is None:
+        raise NoConfigFileFound(directory)
 
-    for suite_id, suite_config in enumerate(config):
-        suite_name = suite_config.pop("name", "Suite %d" % (suite_id + 1))
-        test_suites[suite_name] = TestSuite(
-            suite_name, **suite_config, runner=runner, em=em
-        )
+    # Legacy JSON config
+    if config_path.endswith(".balto.json"):
+        new_toml_config = convert_json_config_to_toml(read_json_config(config_path))
+        raise LegacyJsonConfigFound(new_toml_config)
 
-    return test_suites
+    with open(config_path, "r") as config_file:
+        config = parse_toml_config(config_file.read())
+
+    return config
