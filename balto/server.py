@@ -14,9 +14,9 @@ from aiohttp.web import Application, FileResponse, HTTPNotFound, run_app
 from aiohttp_json_rpc import JsonRpc
 
 from balto._logging import setup_logging
+from balto.config import find_and_validate_config, read_toml_config
 from balto.event_emitter import EventEmitter
-from balto.config import find_and_validate_config
-from balto.store import Tests, SingleTest, MultipleTestSuite
+from balto.store import MultipleTestSuite, SingleTest, Tests
 from balto.suite import TestSuite
 
 LOGGER = logging.getLogger(__name__)
@@ -69,11 +69,13 @@ async def interface_handle(request):
     return HTTPNotFound()
 
 
-def server(directory, config, runner):
+def server(directory, config_path, runner):
     loop = asyncio.get_event_loop()
 
     # EM
     em = EventEmitter(loop)
+
+    config = read_toml_config(config_path)
 
     # TODO: Re-add support for multiple test suites
     suite = TestSuite(config["name"], runner, em, config)
@@ -160,9 +162,9 @@ def main():
 
     setup_logging(args.verbose, args.debug)
 
-    config = find_and_validate_config(args.directory)
+    config_path = find_and_validate_config(args.directory)
 
-    server(args.directory, config, args.runner)
+    server(args.directory, config_path, args.runner)
 
 
 if __name__ == "__main__":

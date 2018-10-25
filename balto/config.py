@@ -5,13 +5,20 @@ from os.path import isfile, join
 
 from tomlkit import document, dumps, loads
 
-
-from balto.exceptions import NoConfigFileFound, LegacyJsonConfigFound
+from balto.exceptions import LegacyJsonConfigFound, NoConfigFileFound
 
 
 class SingleTestSuiteConfig:
-    def __init__(self, parsed_config):
+    def __init__(self, parsed_config, tool_override=None):
         self.config = parsed_config
+        self.tool_override = tool_override
+
+    def get_tool(self):
+        """Return the tool or the overrided one
+        """
+        if self.tool_override is not None:
+            return self.tool_override
+        return self.config["tool"]
 
     def __getitem__(self, name):
         return self.config[name]
@@ -40,9 +47,9 @@ def convert_json_config_to_toml(json_config):
     return dumps(toml_config)
 
 
-def parse_toml_config(raw_config):
+def parse_toml_config(raw_config, tool_override=None):
     parsed_config = loads(raw_config)
-    return SingleTestSuiteConfig(parsed_config)
+    return SingleTestSuiteConfig(parsed_config, tool_override)
 
 
 def read_json_config(config_filepath):
@@ -63,7 +70,11 @@ def find_and_validate_config(directory):
         new_toml_config = convert_json_config_to_toml(read_json_config(config_path))
         raise LegacyJsonConfigFound(new_toml_config)
 
+    return config_path
+
+
+def read_toml_config(config_path, tool_override=None):
     with open(config_path, "r") as config_file:
-        config = parse_toml_config(config_file.read())
+        config = parse_toml_config(config_file.read(), tool_override)
 
     return config

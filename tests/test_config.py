@@ -1,22 +1,26 @@
 import json
-import pytest
-
 from os.path import dirname, join
+
+import pytest
 
 from balto.config import (
     convert_json_config_to_toml,
+    find_and_validate_config,
     find_configuration_file,
     parse_toml_config,
-    find_and_validate_config,
+    read_toml_config,
 )
-
-from balto.exceptions import NoConfigFileFound, LegacyJsonConfigFound
+from balto.exceptions import LegacyJsonConfigFound, NoConfigFileFound
 
 NO_CONFIG_DIR = join(dirname(__file__), "test_directories", "no_config")
 
 CONFIG_JSON_DIR = join(dirname(__file__), "test_directories", "balto_json")
 
 CONFIG_TOML_DIR = join(dirname(__file__), "test_directories", "balto_toml")
+
+CONFIG_TOML_NO_TOOL_DIR = join(
+    dirname(__file__), "test_directories", "balto_toml_no_tool"
+)
 
 
 def test_find_no_configuration_file():
@@ -100,7 +104,29 @@ def test_find_and_validate_json_config():
 
 
 def test_find_and_validate_toml_config():
-    config = find_and_validate_config(CONFIG_TOML_DIR)
+    config_path = find_and_validate_config(CONFIG_TOML_DIR)
+
+    assert config_path.startswith(CONFIG_TOML_DIR)
+
+    config = read_toml_config(config_path)
 
     assert config["name"] == "Test Suite"
     assert config["tool"] == "pytest"
+
+
+def test_find_and_validate_toml_config_tool_override():
+    tool_override = "new_test"
+    config_path = find_and_validate_config(CONFIG_TOML_DIR)
+
+    config = read_toml_config(config_path, tool_override=tool_override)
+
+    assert config.get_tool() == tool_override
+
+
+def test_find_and_validate_toml_config_tool_override_no_tool():
+    tool_override = "new_test"
+    config_path = find_and_validate_config(CONFIG_TOML_NO_TOOL_DIR)
+
+    config = read_toml_config(config_path, tool_override=tool_override)
+
+    assert config.get_tool() == tool_override

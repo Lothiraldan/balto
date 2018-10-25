@@ -12,8 +12,8 @@ import webbrowser
 from multiprocessing import Process
 
 from balto._logging import setup_logging
-from balto.server import server
 from balto.config import find_and_validate_config
+from balto.server import server
 
 LOGGER = logging.getLogger(__name__)
 
@@ -51,13 +51,15 @@ def main():
 
     setup_logging(args.verbose, args.debug)
 
-    config = find_and_validate_config(args.directory)
+    config_path = find_and_validate_config(args.directory)
 
     # Launch the server
     port = 8889
 
     try:
-        _server = Process(target=server, args=(args.directory, config, args.runner))
+        _server = Process(
+            target=server, args=(args.directory, config_path, args.runner)
+        )
         _server.start()
         # server = subprocess.Popen(server_args)
 
