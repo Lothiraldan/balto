@@ -12,16 +12,17 @@ all your test-runners with one common interface.
 
 ## Usage
 
-To use it, point balto to a directory containing a `.balto.json` file:
+To use it, point balto to a directory containing a `.balto.toml` file:
     
 ```bash
 balto tests/
 ```
 
-The `.balto.json` file should look like:
+The `.balto.toml` file should look like:
 
-```json
-[{"tool": "pytest", "name": "Acceptance Test Suite Subprocess"}]
+```toml
+name = "Acceptance Test Suite Subprocess"
+tool = "pytest"
 
 ```
 
