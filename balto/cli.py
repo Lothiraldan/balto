@@ -47,6 +47,12 @@ def main():
     parser.add_argument(
         "--debug", help="activate the debug mode", action="store_true", default=False
     )
+    parser.add_argument(
+        "--tool",
+        help="override the tool defined in .balto.toml",
+        action="store",
+        default=False,
+    )
     args = parser.parse_args()
 
     setup_logging(args.verbose, args.debug)
@@ -58,7 +64,7 @@ def main():
 
     try:
         _server = Process(
-            target=server, args=(args.directory, config_path, args.runner)
+            target=server, args=(args.directory, config_path, args.runner, args.tool)
         )
         _server.start()
         # server = subprocess.Popen(server_args)

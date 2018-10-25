@@ -61,7 +61,7 @@ class BaseRunner:
         suite_name=None,
     ):
         self.working_directory = working_directory
-        self.tool = config["tool"]
+        self.tool = config.get_tool()
         self.event_emitter = event_emitter
         self.tests_to_run = tests_to_run
         self.loop = loop

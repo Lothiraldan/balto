@@ -69,13 +69,13 @@ async def interface_handle(request):
     return HTTPNotFound()
 
 
-def server(directory, config_path, runner):
+def server(directory, config_path, runner, tool_override):
     loop = asyncio.get_event_loop()
 
     # EM
     em = EventEmitter(loop)
 
-    config = read_toml_config(config_path)
+    config = read_toml_config(config_path, tool_override)
 
     # TODO: Re-add support for multiple test suites
     suite = TestSuite(config["name"], runner, em, config)
@@ -158,13 +158,19 @@ def main():
         action="store",
         default="subprocess",
     )
+    parser.add_argument(
+        "--tool",
+        help="override the tool defined in .balto.toml",
+        action="store",
+        default=False,
+    )
     args = parser.parse_args()
 
     setup_logging(args.verbose, args.debug)
 
     config_path = find_and_validate_config(args.directory)
 
-    server(args.directory, config_path, args.runner)
+    server(args.directory, config_path, args.runner, args.tool)
 
 
 if __name__ == "__main__":
