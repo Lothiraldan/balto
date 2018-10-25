@@ -1,0 +1,2 @@
+name = "Balto Test Suite"
+tool = "pytest"
