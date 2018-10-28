@@ -2,11 +2,11 @@
 """
 from __future__ import print_function, unicode_literals
 
-import argparse
 import logging
 import os
 import shutil
 import subprocess
+import sys
 import time
 import webbrowser
 from multiprocessing import Process
@@ -14,46 +14,13 @@ from multiprocessing import Process
 from balto._logging import setup_logging
 from balto.config import find_and_validate_config
 from balto.server import server
+from balto.start import parse_args
 
 LOGGER = logging.getLogger(__name__)
 
 
 def main():
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument(
-        "directory", help="The directory LITR should start looking for its config file"
-    )
-    parser.add_argument(
-        "--interface",
-        "-i",
-        help="which interface to start",
-        action="store",
-        default="web",
-    )
-    parser.add_argument(
-        "--runner",
-        "-r",
-        help="which runner to use",
-        action="store",
-        default="subprocess",
-    )
-    parser.add_argument(
-        "--verbose",
-        "-v",
-        help="activate the verbose mode",
-        action="store_true",
-        default=False,
-    )
-    parser.add_argument(
-        "--debug", help="activate the debug mode", action="store_true", default=False
-    )
-    parser.add_argument(
-        "--tool",
-        help="override the tool defined in .balto.toml",
-        action="store",
-        default=False,
-    )
-    args = parser.parse_args()
+    args = parse_args(sys.argv[1:])
 
     setup_logging(args.verbose, args.debug)
 

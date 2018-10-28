@@ -16,6 +16,7 @@ from aiohttp_json_rpc import JsonRpc
 from balto._logging import setup_logging
 from balto.config import find_and_validate_config, read_toml_config
 from balto.event_emitter import EventEmitter
+from balto.start import parse_args
 from balto.store import MultipleTestSuite, SingleTest, Tests
 from balto.suite import TestSuite
 
@@ -137,34 +138,7 @@ def server(directory, config_path, runner, tool_override):
 
 
 def main():
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument(
-        "directory", help="The directory LITR should start looking for its config file"
-    )
-    parser.add_argument(
-        "--verbose",
-        "-v",
-        help="activate the verbose mode",
-        action="store_true",
-        default=False,
-    )
-    parser.add_argument(
-        "--debug", help="activate the debug mode", action="store_true", default=False
-    )
-    parser.add_argument(
-        "--runner",
-        "-r",
-        help="which runner to use",
-        action="store",
-        default="subprocess",
-    )
-    parser.add_argument(
-        "--tool",
-        help="override the tool defined in .balto.toml",
-        action="store",
-        default=False,
-    )
-    args = parser.parse_args()
+    args = parse_args(sys.argv[1:])
 
     setup_logging(args.verbose, args.debug)
 
