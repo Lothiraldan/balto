@@ -6,6 +6,9 @@ parsing, configuration handling, etc...
 
 import argparse
 
+from balto._logging import setup_logging
+from balto.config import find_and_validate_config
+
 
 def parse_args(args):
     parser = argparse.ArgumentParser(description=__doc__)
@@ -43,3 +46,13 @@ def parse_args(args):
         default=False,
     )
     return parser.parse_args(args)
+
+
+def start(args):
+    parsed_args = parse_args(args)
+
+    setup_logging(parsed_args.verbose, parsed_args.debug)
+
+    config_path = find_and_validate_config(parsed_args.directory)
+
+    return parsed_args, config_path

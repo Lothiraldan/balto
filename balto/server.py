@@ -2,21 +2,18 @@
 """
 from __future__ import print_function, unicode_literals
 
-import argparse
 import asyncio
 import json
 import logging
 import sys
 from os.path import dirname, isfile, join
 
-import aiohttp
 from aiohttp.web import Application, FileResponse, HTTPNotFound, run_app
 from aiohttp_json_rpc import JsonRpc
 
-from balto._logging import setup_logging
-from balto.config import find_and_validate_config, read_toml_config
+from balto.config import read_toml_config
 from balto.event_emitter import EventEmitter
-from balto.start import parse_args
+from balto.start import start
 from balto.store import MultipleTestSuite, SingleTest, Tests
 from balto.suite import TestSuite
 
@@ -138,11 +135,7 @@ def server(directory, config_path, runner, tool_override):
 
 
 def main():
-    args = parse_args(sys.argv[1:])
-
-    setup_logging(args.verbose, args.debug)
-
-    config_path = find_and_validate_config(args.directory)
+    args, config_path = start(sys.argv[1:])
 
     server(args.directory, config_path, args.runner, args.tool)
 

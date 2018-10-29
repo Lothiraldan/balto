@@ -11,20 +11,14 @@ import time
 import webbrowser
 from multiprocessing import Process
 
-from balto._logging import setup_logging
-from balto.config import find_and_validate_config
 from balto.server import server
-from balto.start import parse_args
+from balto.start import start
 
 LOGGER = logging.getLogger(__name__)
 
 
 def main():
-    args = parse_args(sys.argv[1:])
-
-    setup_logging(args.verbose, args.debug)
-
-    config_path = find_and_validate_config(args.directory)
+    args, config_path = start(sys.argv[1:])
 
     # Launch the server
     port = 8889
