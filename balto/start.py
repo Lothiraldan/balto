@@ -5,9 +5,11 @@ parsing, configuration handling, etc...
 """
 
 import argparse
+import tempfile
 
 from balto._logging import setup_logging
-from balto.config import find_and_validate_config
+from balto.config import create_temporary_config_file, find_and_validate_config
+from balto.exceptions import NoConfigFileFound
 
 
 def parse_args(args):
@@ -43,7 +45,7 @@ def parse_args(args):
         "--tool",
         help="override the tool defined in .balto.toml",
         action="store",
-        default=False,
+        default=None,
     )
     return parser.parse_args(args)
 
@@ -53,6 +55,12 @@ def start(args):
 
     setup_logging(parsed_args.verbose, parsed_args.debug)
 
-    config_path = find_and_validate_config(parsed_args.directory)
+    try:
+        config_path = find_and_validate_config(parsed_args.directory)
+    except NoConfigFileFound:
+        if parsed_args.tool is not None:
+            config_path = create_temporary_config_file()
+        else:
+            raise
 
     return parsed_args, config_path

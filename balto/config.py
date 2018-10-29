@@ -1,6 +1,7 @@
 """ Config parsing utilities
 """
 import json
+import tempfile
 from os.path import isfile, join
 
 from tomlkit import document, dumps, loads
@@ -78,3 +79,18 @@ def read_toml_config(config_path, tool_override=None):
         config = parse_toml_config(config_file.read(), tool_override)
 
     return config
+
+
+def create_temporary_config_file():
+    """ Create a minimal config file with some default values
+    """
+    toml_config = document()
+    toml_config.add("name", "Test Suite")
+
+    tmp_config_file = tempfile.NamedTemporaryFile(delete=False)
+
+    with tmp_config_file:
+        content = dumps(toml_config).encode("utf-8")
+        tmp_config_file.write(content)
+
+    return tmp_config_file.name

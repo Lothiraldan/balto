@@ -5,7 +5,10 @@ class BaltoException(Exception):
 class NoConfigFileFound(BaltoException):
     def __init__(self, directory):
         self.directory = directory
-        self.msg = "Couldn't find a configuration file in directory: %s"
+        self.msg = (
+            "Couldn't find a configuration file in directory: %s\n"
+            + "Either create a file or pass the `--tool` option"
+        )
 
     def __str__(self):
         return self.msg % self.directory
