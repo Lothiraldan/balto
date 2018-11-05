@@ -2,6 +2,7 @@
 """
 from __future__ import print_function, unicode_literals
 
+from copy import copy
 import asyncio
 import json
 import logging
@@ -24,6 +25,7 @@ SUITES = MultipleTestSuite()
 
 
 async def process_notification(message):
+    message = copy(message)
     msg_type = message.pop("_type")
     if msg_type == "test_collection":
         process_test_collection(message, SUITES)
