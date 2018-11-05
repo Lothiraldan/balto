@@ -7,7 +7,6 @@ import { Card } from "react-bulma-components";
 
 class RunDetails extends React.Component {
   render() {
-    let converted_duration = convert(this.props.run.total_duration);
 
     let header = [
       <Moment fromNow withTitle>
@@ -17,6 +16,7 @@ class RunDetails extends React.Component {
 
     let duration = null;
     if (this.props.run.status === "finished") {
+      let converted_duration = convert(this.props.run.total_duration);
       duration = (
         <span>
           {converted_duration.value.toFixed(converted_duration.precision)}{" "}
