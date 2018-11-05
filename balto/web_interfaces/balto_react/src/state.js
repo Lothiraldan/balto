@@ -25,7 +25,7 @@ class TestContainer extends Container<TestState> {
 
   newMessage = event => {
     const data = JSON.parse(event.data);
-    /*console.debug(data);*/
+    console.debug("MSG DATA", event.data);
     if (data.jsonrpc === "2.0" && data.method === "test") {
       let msg = data.params;
 
