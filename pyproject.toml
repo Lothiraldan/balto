@@ -1,0 +1,37 @@
+[tool.poetry]
+name = "balto"
+version = "0.1.2"
+description = ""
+authors = ["Boris Feld <lothiraldan@gmail.com>"]
+packages = [
+    {include = "balto/**/*.py"}
+]
+include = ["balto/web_interfaces/balto_react/build/**/*"]
+exclude = ["balto/web_interfaces/balto_react/node_modules/**/*", "balto/web_interfaces/simple/src/elm-stuff/**/*"]
+
+[tool.poetry.dependencies]
+python = "^3.6 || ^3.7"
+click = "^7.0"
+aiohttp = "^3.4"
+aiohttp_json_rpc = "^0.11.2"
+aiodocker = "^0.14.0"
+docker = "^3.5"
+npyscreen = "^4.10"
+prompt_toolkit = "^2.0"
+urwid = "^2.0"
+dataclasses = {version = "^0.6.0",python = "~3.6"}
+tomlkit = "^0.4.6"
+
+[tool.poetry.dev-dependencies]
+pytest = "^3.0"
+pyinstaller = "^3.4"
+
+[tool.poetry.scripts]
+balto = "balto.cli:main"
+balto-server = "balto.server:main"
+balto-curses = "balto.interfaces.curses:main"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
+
