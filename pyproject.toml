@@ -1,11 +1,15 @@
 [tool.poetry]
 name = "balto"
 version = "0.1.2"
-description = ""
+description = "BAlto is a Language independent Test Orchestrator"
+license = "MIT"
 authors = ["Boris Feld <lothiraldan@gmail.com>"]
 packages = [
     {include = "balto/**/*.py"}
 ]
+readme = "README.md"
+homepage = "https://lothiraldan.github.io/balto/"
+repository = "https://github.com/Lothiraldan/balto"
 include = ["balto/web_interfaces/balto_react/build/**/*"]
 exclude = ["balto/web_interfaces/balto_react/node_modules/**/*", "balto/web_interfaces/simple/src/elm-stuff/**/*"]
 
