@@ -6,9 +6,22 @@ all your test-runners with one common interface.
 
 ## Installation
 
-- Download the latest binary for you platform here: https://github.com/Lothiraldan/balto/releases
-- Put the binary somewhere in your path
-- Enjoy!
+Install balto with [pipx](https://github.com/cs01/pipx):
+
+```bash
+pipx install balto
+```
+
+You should see at the end of the command:
+
+```
+  These binaries are now globally available
+    - balto
+    - balto-curses
+    - balto-server
+done! ✨ 🌟 ✨
+
+```
 
 ## Usage
 
