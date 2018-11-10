@@ -8,4 +8,7 @@ build_react:
 	cd balto/web_interfaces/balto_react/ && yarn build
 
 build_app:
-	pyinstaller --onefile -y cli.spec
+	poetry build
+
+publish:
+	poetry publish
