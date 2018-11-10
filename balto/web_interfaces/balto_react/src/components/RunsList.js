@@ -5,60 +5,67 @@ import Moment from "react-moment";
 import { convert } from "../time";
 import { Card } from "react-bulma-components";
 
-class RunDetails extends React.Component {
-  render() {
+export const RunDetails = ({
+  date_started,
+  run_id,
+  status,
+  done,
+  test_number,
+  return_code,
+  total_duration
+}) => {
+  let header = [
+    <Moment fromNow withTitle>
+      {date_started}
+    </Moment>
+  ];
 
-    let header = [
-      <Moment fromNow withTitle>
-        {this.props.run.date_started}
-      </Moment>
-    ];
+  let duration = null;
+  if (status === "finished") {
+    let converted_duration = convert(total_duration);
+    duration = (
+      <span>
+        {converted_duration.value.toFixed(converted_duration.precision)}{" "}
+        {converted_duration.unit} <br />
+      </span>
+    );
 
-    let duration = null;
-    if (this.props.run.status === "finished") {
-      let converted_duration = convert(this.props.run.total_duration);
-      duration = (
-        <span>
-          {converted_duration.value.toFixed(converted_duration.precision)}{" "}
-          {converted_duration.unit} <br />
-        </span>
-      );
-
-      if (
-        this.props.run.return_code !== undefined &&
-        this.props.run.return_code !== 0
-      ) {
-        header.push(
-          <span style={{ color: "red" }}>[{this.props.run.return_code}]</span>
-        );
-      }
+    if (return_code !== undefined && return_code !== 0) {
+      header.push(<span style={{ color: "red" }}>[{return_code}]</span>);
     }
+  }
 
-    let count = null;
-    if (this.props.run.status !== "starting") {
-      count = (
-        <span>
-          {this.props.run.done} / {this.props.run.test_number}
-        </span>
-      );
-    }
-
-    return (
-      <Message>
-        <Message.Header>{header}</Message.Header>
-        <Message.Body>
-          {this.props.run.status}{" "}
-          {duration !== null && <span>in {duration}</span>}
-          {count}
-          <Progress
-            max={this.props.run.test_number}
-            value={this.props.run.done}
-          />
-        </Message.Body>
-      </Message>
+  let count = null;
+  if (status !== "starting") {
+    count = (
+      <span>
+        {done} / {test_number}
+      </span>
     );
   }
-}
+
+  return (
+    <Message>
+      <Message.Header>{header}</Message.Header>
+      <Message.Body>
+        {status} {duration !== null && <span>in {duration}</span>}
+        {count}
+        <Progress max={test_number || 0} value={done || 0} />
+      </Message.Body>
+    </Message>
+  );
+};
+
+RunDetails.propTypes = {
+    date_started: PropTypes.object,
+    run_id: PropTypes.string,
+    status: PropTypes.string,
+    done: PropTypes.number,
+    test_number: PropTypes.number,
+    return_code: PropTypes.number,
+    total_duration: PropTypes.number
+  };
+
 
 export class RunsList extends React.Component {
   static propTypes = {
@@ -68,7 +75,18 @@ export class RunsList extends React.Component {
   render() {
     let runs = [];
     for (let run of _.reverse(_.values(this.props.runs))) {
-      runs.push(<RunDetails run={run} key={run.run_id} />);
+      runs.push(
+        <RunDetails
+          key={run.run_id}
+          date_started={run.date_started}
+          run_id={run.run_id}
+          status={run.status}
+          test_number={run.test_number}
+          done={run.done}
+          return_code={run.return_code}
+          total_duration={run.total_duration}
+        />
+      );
     }
     return (
       <Card>
