@@ -57,15 +57,14 @@ export const RunDetails = ({
 };
 
 RunDetails.propTypes = {
-    date_started: PropTypes.object,
-    run_id: PropTypes.string,
-    status: PropTypes.string,
-    done: PropTypes.number,
-    test_number: PropTypes.number,
-    return_code: PropTypes.number,
-    total_duration: PropTypes.number
-  };
-
+  date_started: PropTypes.object,
+  run_id: PropTypes.string,
+  status: PropTypes.string,
+  done: PropTypes.number,
+  test_number: PropTypes.number,
+  return_code: PropTypes.number,
+  total_duration: PropTypes.number
+};
 
 export class RunsList extends React.Component {
   static propTypes = {

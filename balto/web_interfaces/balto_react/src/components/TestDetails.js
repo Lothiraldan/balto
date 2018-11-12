@@ -46,13 +46,15 @@ class FileViewer extends Component {
   }
 }
 
-class TestViewer extends Component {
+export class TestViewer extends Component {
   static propTypes = {
-    id: PropTypes.string
+    id: PropTypes.string,
+    test: PropTypes.object,
+    suite: PropTypes.string,
   };
 
   render() {
-    let test = this.props.state.state.tests[this.props.id];
+    let test = this.props.test;
 
     let tablist = [];
     let tabcontent = [];
@@ -118,6 +120,20 @@ class TestViewer extends Component {
       tabcontent.push(
         <TabPanel>
           <pre>{test.stderr}</pre>
+        </TabPanel>
+      );
+    }
+
+    if (test.logs) {
+      tablist.push(
+        <Tab>
+          <a>Logs</a>
+        </Tab>
+      );
+
+      tabcontent.push(
+        <TabPanel>
+          <pre>{test.logs}</pre>
         </TabPanel>
       );
     }
@@ -192,15 +208,17 @@ export function treenodeViewerComponent(id) {
 
   let decoded = JSON.parse(id);
   let _type = decoded._type;
+  let _id = decoded.id;
 
   if (_type === "suite") {
     return <SuiteViewer {...decoded} />;
   } else if (_type === "file") {
     return <FileViewer {...decoded} />;
   } else if (_type === "test") {
+    let test = state.state.tests[_id];
     return (
       <Subscribe to={[state]}>
-        {state => <TestViewer state={state} {...decoded} />}
+        {state => <TestViewer test={test} id={_id} suite={decoded.suite} />}
       </Subscribe>
     );
   }
