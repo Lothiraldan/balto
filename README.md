@@ -23,6 +23,8 @@ done! ✨ 🌟 ✨
 
 ```
 
+It is highly recommended to avoid installing Balto in either your global Python environment or a virtual environment as it might causes conflicts with some dependencies.
+
 ## Usage
 
 To use it, point balto to a directory containing a `.balto.toml` file:
@@ -37,6 +39,12 @@ The `.balto.toml` file should look like:
 name = "Acceptance Test Suite Subprocess"
 tool = "pytest"
 
+```
+
+If you just want to give Balto a try, you can use the `--tool` to indicate which tool you want to use. For example:
+
+```
+balto --tool pytest tests
 ```
 
 The tool must be one of the supported one, you can see the list here: https://github.com/lothiraldan/litf#compatible-emitters
