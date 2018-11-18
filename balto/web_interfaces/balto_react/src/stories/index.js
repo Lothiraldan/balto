@@ -103,33 +103,48 @@ const testStories = storiesOf("TestViewer", module);
 
 testStories.addDecorator(withKnobs);
 
-testStories.add("details", () => {
-  let test = {
-    _type: "test_result",
-    file: "test_class.py",
-    line: 18,
-    test_name: "TestClassFailing.test_failing",
-    duration: 0.001344919204711914,
-    durations: {
-      setup: 0.00040912628173828125,
-      call: 0.0006020069122314453,
-      teardown: 0.0003337860107421875
-    },
-    outcome: "failed",
-    id: "test_class.py::TestClassFailing::()::test_failing",
-    stdout: "",
-    stderr: "",
-    error: {
-      humanrepr:
-        "self = <test_class.TestClassFailing object at 0x7f204283d710>\n\n    def test_failing(self):\n>       assert False\nE       assert False\n\ntest_class.py:20: AssertionError"
-    },
-    stderr: "STDERR\n",
-    stdout: "STDOUT\n",
-    logs: "[DEBUG] debug message\n",
-    skipped_messages: {},
-    suite_name: "Acceptance Test Suite Subprocess",
-    run_id: "1256ae16fddd4554bcea7c64352e44e2",
-    last_updated: moment()
-  };
-  return <TestViewer test={test} suite={test.suite_name} id={test._id} />;
-});
+testStories
+  .add("collected", () => {
+    let test = {
+      _type: "test_collection",
+      file: "test_class.py",
+      id: "test_class.py::TestClassPassing::()::test_passing",
+      last_updated: moment(),
+      line: 7,
+      run_id: "c5a4af198ace45358b9ae01b3f22f198",
+      suite_name: "Acceptance Test Suite Subprocess",
+      test_name: "TestClassPassing.test_passing"
+    };
+
+    return <TestViewer test={test} suite={test.suite_name} id={test._id} />;
+  })
+  .add("failed", () => {
+    let test = {
+      _type: "test_result",
+      file: "test_class.py",
+      line: 18,
+      test_name: "TestClassFailing.test_failing",
+      duration: 0.001344919204711914,
+      durations: {
+        setup: 0.00040912628173828125,
+        call: 0.0006020069122314453,
+        teardown: 0.0003337860107421875
+      },
+      outcome: "failed",
+      id: "test_class.py::TestClassFailing::()::test_failing",
+      stdout: "",
+      stderr: "",
+      error: {
+        humanrepr:
+          "self = <test_class.TestClassFailing object at 0x7f204283d710>\n\n    def test_failing(self):\n>       assert False\nE       assert False\n\ntest_class.py:20: AssertionError"
+      },
+      stderr: "STDERR\n",
+      stdout: "STDOUT\n",
+      logs: "[DEBUG] debug message\n",
+      skipped_messages: {},
+      suite_name: "Acceptance Test Suite Subprocess",
+      run_id: "1256ae16fddd4554bcea7c64352e44e2",
+      last_updated: moment()
+    };
+    return <TestViewer test={test} suite={test.suite_name} id={test._id} />;
+  });

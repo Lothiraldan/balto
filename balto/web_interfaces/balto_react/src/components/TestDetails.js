@@ -50,7 +50,7 @@ export class TestViewer extends Component {
   static propTypes = {
     id: PropTypes.string,
     test: PropTypes.object,
-    suite: PropTypes.string,
+    suite: PropTypes.string
   };
 
   render() {
@@ -138,8 +138,6 @@ export class TestViewer extends Component {
       );
     }
 
-    let convertedDuration = convert(test.duration);
-
     let status_icon = null;
 
     if (test.outcome === "passed") {
@@ -162,6 +160,20 @@ export class TestViewer extends Component {
       );
     }
 
+    if (test.duration !== undefined) {
+      let convertedDuration = convert(test.duration);
+      console.log("Test duration", convertedDuration);
+      var duration = (
+        <span>
+          Duration{" "}
+          {convertedDuration.value.toFixed(convertedDuration.precision)}{" "}
+          {convertedDuration.unit}
+        </span>
+      );
+    } else {
+      var duration = undefined;
+    }
+
     return (
       <Card>
         <Card.Header>
@@ -175,11 +187,7 @@ export class TestViewer extends Component {
           <h3>
             File: {test.file}, line {test.line}
           </h3>
-          <h3>
-            Duration:{" "}
-            {convertedDuration.value.toFixed(convertedDuration.precision)}{" "}
-            {convertedDuration.unit}
-          </h3>
+          <h3>{duration}</h3>
           <h3>Last updated: {test.last_updated.fromNow()}</h3>
           <p>
             Test: {this.props.id} of suite {this.props.suite}
