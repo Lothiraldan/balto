@@ -159,7 +159,8 @@ class TestContainer extends Container<TestState> {
               [run_id]: {
                 ...run,
                 status: "finished",
-                return_code: msg.return_code
+                return_code: msg.return_code,
+                return_message: msg.return_message,
               }
             };
             return {
