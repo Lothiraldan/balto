@@ -71,6 +71,7 @@ class BaseRunner:
         self.collect_only = collect_only
         self.suite_name = suite_name
         self.run_id = uuid.uuid4().hex
+        self.extra_lines = []
 
     @property
     def command(self):
@@ -90,3 +91,11 @@ class BaseRunner:
             data["run_id"] = self.run_id
 
             await self.event_emitter.emit(data)
+        elif line.strip():
+            # Decode bytes if we get bytes
+            if hasattr(line, "decode"):
+                decodedline = line.decode("utf-8")
+            else:
+                decodedline = line
+
+            self.extra_lines.append(decodedline)

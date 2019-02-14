@@ -1,10 +1,66 @@
-import React from "react";
+import _ from "lodash";
 import PropTypes from "prop-types";
+import React from "react";
+import { Card, Modal, Section } from "react-bulma-components";
 import { Message, Progress } from "react-bulma-components/full";
 import Moment from "react-moment";
+
 import { convert } from "../time";
-import { Card } from "react-bulma-components";
-import _ from "lodash";
+
+class ReturnCode extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      show_message: false,
+    };
+    this.handleOpen = this.handleOpen.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+  }
+
+  handleOpen() {
+    this.setState({ show_message: true });
+  }
+
+  handleClose() {
+    this.setState({ show_message: false });
+  }
+
+  render() {
+    const { return_code, return_message } = this.props;
+    return (
+      <React.Fragment>
+        <span style={{ color: "red", cursor: "pointer" }} onClick={this.handleOpen}>
+          [{return_code}]
+        </span>
+        <Modal
+          closeOnBlur={true}
+          show={this.state.show_message}
+          showClose={false}
+          onClose={this.handleClose}
+        >
+          <Modal.Content style={{ display: 'flex', width: '90%' }}>
+            <Section style={{
+              backgroundColor: 'white',
+              color: 'black',
+              flexGrow: '1',
+              fontFamily: 'monospace',
+              fontSize: '0.8em',
+              overflow: 'auto',
+              whiteSpace: 'pre',
+            }}>
+              {return_message}
+            </Section>
+          </Modal.Content>
+        </Modal>
+      </React.Fragment>
+    );
+  }
+}
+
+ReturnCode.propTypes = {
+  return_code: PropTypes.number,
+  return_message: PropTypes.string,
+};
 
 export const RunDetails = ({
   date_started,
@@ -13,6 +69,7 @@ export const RunDetails = ({
   done,
   test_number,
   return_code,
+  return_message,
   total_duration
 }) => {
   let header = [
@@ -32,7 +89,7 @@ export const RunDetails = ({
     );
 
     if (return_code !== undefined && return_code !== 0) {
-      header.push(<span style={{ color: "red" }}>[{return_code}]</span>);
+      header.push(<ReturnCode return_code={return_code} return_message={return_message} />);
     }
   }
 
@@ -64,6 +121,7 @@ RunDetails.propTypes = {
   done: PropTypes.number,
   test_number: PropTypes.number,
   return_code: PropTypes.number,
+  return_message: PropTypes.string,
   total_duration: PropTypes.number
 };
 
@@ -84,6 +142,7 @@ export class RunsList extends React.Component {
           test_number={run.test_number}
           done={run.done}
           return_code={run.return_code}
+          return_message={run.return_message}
           total_duration={run.total_duration}
         />
       );

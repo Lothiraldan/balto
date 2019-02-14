@@ -83,7 +83,7 @@ class SubprocessRunnerSession(BaseRunner):
             LOGGER.warning("CMD %r exited with return code: %d", cmd, return_code)
 
         await self.event_emitter.emit(
-            {"_type": "run_stop", "run_id": self.run_id, "return_code": return_code}
+            {"_type": "run_stop", "run_id": self.run_id, "return_code": return_code, "return_message": ''.join(self.extra_lines) }
         )
 
         return return_code
