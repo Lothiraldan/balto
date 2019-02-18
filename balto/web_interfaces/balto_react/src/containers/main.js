@@ -263,7 +263,10 @@ class Main extends Component {
         <Columns.Column size={5}>{nodeViewerComponent}</Columns.Column>
 
         <Columns.Column size={2}>
-          <RunsList runs={this.props.state.state.runs} />
+          <RunsList
+            onClear={this.props.state.onClearRuns}
+            runs={this.props.state.state.runs}
+          />
         </Columns.Column>
       </div>
     );

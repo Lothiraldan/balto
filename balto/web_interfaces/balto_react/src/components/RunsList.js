@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Message, Progress } from "react-bulma-components/full";
 import Moment from "react-moment";
 import { convert } from "../time";
-import { Card } from "react-bulma-components";
+import { Button, Card } from "react-bulma-components";
 
 export const RunDetails = ({
   date_started,
@@ -68,6 +68,7 @@ RunDetails.propTypes = {
 
 export class RunsList extends React.Component {
   static propTypes = {
+    onClear: PropTypes.func,
     runs: PropTypes.object
   };
 
@@ -91,6 +92,13 @@ export class RunsList extends React.Component {
       <Card>
         <Card.Header>
           <Card.Header.Title>Runs</Card.Header.Title>
+          <Card.Header.Icon
+            renderAs={Button}
+            onClick={this.props.onClear}
+            style={{ margin: 6 }}
+          >
+            Clear
+          </Card.Header.Icon>
         </Card.Header>
         <Card.Content>{runs}</Card.Content>
       </Card>

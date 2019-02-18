@@ -310,6 +310,15 @@ class TestContainer extends Container<TestState> {
     var filteredTests = filterTest(Object.values(this.state.tests), newValue);
     this.setState({ filterText: newValue, filteredTests: filteredTests });
   };
+
+  onClearRuns = () => {
+    this.setState(state => {
+      return {
+        ...state,
+        runs: {}
+      };
+    })
+  };
 }
 
 export let state = new TestContainer();
