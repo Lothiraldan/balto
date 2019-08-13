@@ -4,6 +4,7 @@ import { Message, Progress } from "react-bulma-components/full";
 import Moment from "react-moment";
 import { convert } from "../time";
 import { Card } from "react-bulma-components";
+import _ from "lodash";
 
 export const RunDetails = ({
   date_started,

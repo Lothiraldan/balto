@@ -1,8 +1,5 @@
 import { hot } from "react-hot-loader";
 import React, { Component } from "react";
-import "./App.css";
-import "flexboxgrid/css/flexboxgrid.css";
-import "font-awesome/css/font-awesome.min.css";
 import { socket } from "./websocket.js";
 import PropTypes from "prop-types";
 import HeaderContainer from "./containers/Header";
@@ -12,6 +9,12 @@ import { Route } from "react-router";
 import { BrowserRouter } from "react-router-dom";
 import { state } from "./state";
 import _ from "lodash";
+
+import './App.sass';
+import "./App.css";
+import "font-awesome/css/font-awesome.min.css";
+import styles from "flexboxgrid/css/flexboxgrid.css";
+
 
 function setDefault(obj, prop, deflt) {
   return obj.hasOwnProperty(prop) ? obj[prop] : (obj[prop] = deflt);
@@ -32,7 +35,7 @@ class App extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (this.props.width !== nextProps.width) {
-      this.setState({ navDrawerOpen: nextProps.width === LARGE });
+      this.setState({ navDrawerOpen: nextProps.width === styles.LARGE });
     }
   }
 
@@ -70,7 +73,7 @@ class App extends Component {
       container: {
         margin: "20px 20px 20px 15px",
         paddingLeft:
-          navDrawerOpen && this.props.width !== SMALL
+          navDrawerOpen && this.props.width !== styles.SMALL
             ? paddingLeftDrawerOpen
             : 0
       }
