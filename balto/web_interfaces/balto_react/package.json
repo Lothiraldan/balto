@@ -17,7 +17,6 @@
     "node-sass": "^4.12.0",
     "prop-types": "^15.6.1",
     "react": "^16.5.2",
-    "react-app-rewire-eslint": "^0.2.3",
     "react-bulma-components": "^1.5.0",
     "react-diff-view": "^1.4.11",
     "react-dom": "^16.5.2",
@@ -47,8 +46,6 @@
     "@storybook/react": "^4.0.4",
     "patch-package": "^5.1.1",
     "postinstall-postinstall": "^1.0.0",
-    "react-app-rewire-hot-loader": "^1.0.1",
-    "react-app-rewired": "^1.5.0",
     "react-hot-loader": "^4.0.0"
   },
   "browserslist": [
