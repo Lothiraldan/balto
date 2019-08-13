@@ -107,6 +107,7 @@ class SingleTest:
     stderr: str = None
     error: dict = None
     skipped_messages: dict = None
+    logs: str = None
 
     def update(self, collect_or_result_msg):
         for key, value in collect_or_result_msg.items():
