@@ -20,7 +20,7 @@ class TreeLine extends PureComponent {
     event.preventDefault();
     this.props.onClick(this.props.node.id);
   };
-  
+
   render() {
     let tags = [];
 
@@ -135,6 +135,7 @@ class TreeLine extends PureComponent {
 
 const Deepness = ({
   onChangee,
+  style,
   node,
   onClick,
   children,
@@ -146,16 +147,23 @@ const Deepness = ({
     onChangee(node.id, !isExpanded);
   };
 
+  // Change style marginLeft to paddingLeft to works with bulma level
+  // See https://github.com/diogofcunha/react-virtualized-tree/issues/49
+  style.paddingLeft = style.marginLeft;
+  delete style.marginLeft;
+
   return (
-    <TreeLine
-      node={node}
-      handleChange={handleChange}
-      isExpanded={isExpanded}
-      children={children}
-      onClick={onClick}
-      onChecked={setChecked}
-      isChecked={isChecked}
-    />
+    <div style={style}>
+      <TreeLine
+        node={node}
+        handleChange={handleChange}
+        isExpanded={isExpanded}
+        children={children}
+        onClick={onClick}
+        onChecked={setChecked}
+        isChecked={isChecked}
+      />
+    </div>
   );
 };
 
@@ -164,9 +172,10 @@ class Renderers extends Component {
     return (
       <div style={{ flex: "1 1 auto", flexDirection: "column", height: 600 }}>
         <Tree nodes={this.props.nodes}>
-          {({ node, ...rest }) => (
+          {({ style, node, ...rest }) => (
             <Deepness
               key={node.id}
+              style={style}
               node={node}
               onClick={this.props.onClick}
               onChangee={this.props.handleChange}
@@ -178,7 +187,7 @@ class Renderers extends Component {
             </Deepness>
           )}
         </Tree>
-      </div>
+      </div >
     );
   }
 }
@@ -205,7 +214,7 @@ class Main extends Component {
   }
 
   selectFailed = () => {
-    var predicate = function(value, key) {
+    var predicate = function (value, key) {
       return value.outcome === "failed";
     };
 
@@ -213,7 +222,7 @@ class Main extends Component {
   };
 
   selectSkipped = () => {
-    var predicate = function(value, key) {
+    var predicate = function (value, key) {
       return value.outcome === "skipped";
     };
 
@@ -221,7 +230,7 @@ class Main extends Component {
   };
 
   selectPassed = () => {
-    var predicate = function(value, key) {
+    var predicate = function (value, key) {
       return value.outcome === "passed";
     };
 

@@ -17,7 +17,7 @@
     "node-sass": "^4.12.0",
     "prop-types": "^15.6.1",
     "react": "^16.5.2",
-    "react-bulma-components": "^1.5.0",
+    "react-bulma-components": "^3.0.0",
     "react-diff-view": "^1.4.11",
     "react-dom": "^16.5.2",
     "react-moment": "^0.8.1",
@@ -25,7 +25,7 @@
     "react-scripts": "2.0.3",
     "react-tabs": "^2.3.0",
     "react-virtualized": "^9.20.0",
-    "react-virtualized-tree": "==2.3.2",
+    "react-virtualized-tree": "^3.2.3",
     "unstated": "^2.0.2"
   },
   "scripts": {
@@ -44,7 +44,6 @@
     "@storybook/addon-links": "^4.0.4",
     "@storybook/addons": "^4.0.4",
     "@storybook/react": "^4.0.4",
-    "patch-package": "^5.1.1",
     "postinstall-postinstall": "^1.0.0",
     "react-hot-loader": "^4.0.0"
   },
