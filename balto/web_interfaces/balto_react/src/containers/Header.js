@@ -6,6 +6,7 @@ import HeaderComponent from "../components/Header";
 import { Subscribe } from "unstated";
 import { state } from "../state";
 import { socket } from "../websocket.js";
+import { collectAllApi, runAllApi, runSelectedApi } from "../api";
 
 import _ from "lodash";
 
@@ -15,13 +16,11 @@ function setDefault(obj, prop, deflt) {
 
 class Header extends Component {
   collectAll() {
-    let data = { jsonrpc: "2.0", id: 0, method: "collect_all", params: null };
-    socket.send(JSON.stringify(data));
+    collectAllApi();
   }
 
   runAll() {
-    let data = { jsonrpc: "2.0", id: 0, method: "run_all", params: null };
-    socket.send(JSON.stringify(data));
+    runAllApi();
   }
 
   runSelected = () => {
@@ -38,13 +37,7 @@ class Header extends Component {
         setDefault(suite_params, "nodeids", []).push(parsed.id);
       }
     }
-    let data = {
-      jsonrpc: "2.0",
-      id: 0,
-      method: "run_selected",
-      params: params
-    };
-    socket.send(JSON.stringify(data));
+    runSelectedApi(params);
   };
 
   render() {

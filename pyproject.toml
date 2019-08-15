@@ -16,8 +16,6 @@ exclude = ["balto/web_interfaces/balto_react/node_modules/**/*", "balto/web_inte
 [tool.poetry.dependencies]
 python = "^3.6 || ^3.7"
 click = "^7.0"
-aiohttp = "^3.4"
-aiohttp_json_rpc = "^0.11.2"
 aiodocker = "^0.14.0"
 docker = "^3.5"
 npyscreen = "^4.10"
@@ -25,6 +23,8 @@ prompt_toolkit = "^2.0"
 urwid = "^2.0"
 dataclasses = {version = "^0.6.0",python = "~3.6"}
 tomlkit = "^0.4.6"
+fastapi = "^0.35.0"
+aiofiles = "^0.4.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^3.0"
@@ -32,7 +32,7 @@ pyinstaller = "^3.4"
 
 [tool.poetry.scripts]
 balto = "balto.cli:main"
-balto-server = "balto.server:main"
+balto-server = "balto.new_server:main"
 balto-curses = "balto.interfaces.curses:main"
 
 [build-system]

@@ -6,7 +6,7 @@ from os.path import isfile, join
 
 from tomlkit import document, dumps, loads
 
-from balto.exceptions import LegacyJsonConfigFound, NoConfigFileFound
+from .exceptions import LegacyJsonConfigFound, NoConfigFileFound
 
 
 class SingleTestSuiteConfig:

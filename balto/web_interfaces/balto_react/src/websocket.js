@@ -1,4 +1,4 @@
-export const socket = new WebSocket("ws://localhost:8889");
+export const socket = new WebSocket("ws://localhost:8889/ws");
 
 socket.onopen = () => {
   console.debug("ON OPEN");

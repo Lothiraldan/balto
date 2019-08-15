@@ -24,8 +24,8 @@ class TestContainer extends Container<TestState> {
   };
 
   newMessage = event => {
-    const data = JSON.parse(event.data);
     console.debug("MSG DATA", event.data);
+    const data = JSON.parse(event.data);
     if (data.jsonrpc === "2.0" && data.method === "test") {
       let msg = data.params;
 
@@ -189,7 +189,7 @@ class TestContainer extends Container<TestState> {
   };
 
   expandSelectedSuite = (suite, checked) => {
-    let predicate = function(value, key) {
+    let predicate = function (value, key) {
       return value.suite_name === suite.id;
     };
     let filtered = this.filterTests(predicate);
@@ -200,7 +200,7 @@ class TestContainer extends Container<TestState> {
   };
 
   expandSelectedFile = (file_id, checked) => {
-    let predicate = function(value, key) {
+    let predicate = function (value, key) {
       return value.file === file_id.id;
     };
     let filtered = this.filterTests(predicate);
@@ -210,7 +210,7 @@ class TestContainer extends Container<TestState> {
   };
 
   resetSelectedSuite = (suite, checked) => {
-    let predicate = function(value, key) {
+    let predicate = function (value, key) {
       return value.suite_name === suite.id;
     };
     let filtered = this.filterTests(predicate);
@@ -224,7 +224,7 @@ class TestContainer extends Container<TestState> {
   };
 
   resetSelectedFile = (file_id, checked) => {
-    let predicate = function(value, key) {
+    let predicate = function (value, key) {
       return value.file === file_id.id;
     };
     let filtered = this.filterTests(predicate);

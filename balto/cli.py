@@ -11,7 +11,7 @@ import time
 import webbrowser
 from multiprocessing import Process
 
-from balto.server import server
+from balto.new_server import setup_app_and_run
 from balto.start import start
 
 LOGGER = logging.getLogger(__name__)
@@ -25,7 +25,8 @@ def main():
 
     try:
         _server = Process(
-            target=server, args=(args.directory, config_path, args.runner, args.tool)
+            target=setup_app_and_run,
+            args=(args.directory, config_path, args.runner, args.tool),
         )
         _server.start()
         # server = subprocess.Popen(server_args)
