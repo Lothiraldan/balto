@@ -1,5 +1,6 @@
-import asyncio
-import json
+# -*- coding: utf-8 -*-
+# Copyright 2018-2019 by Boris Feld
+
 import logging
 import tarfile
 import tempfile
@@ -8,7 +9,6 @@ from os.path import join
 
 import docker.utils
 from aiodocker.docker import Docker
-from aiodocker.exceptions import DockerError
 from docker import DockerClient
 
 from .base import BaseRunner

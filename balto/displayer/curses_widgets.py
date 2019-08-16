@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+# Copyright 2018-2019 by Boris Feld
+
 from __future__ import print_function
 
 from contextlib import suppress

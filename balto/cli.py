@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+# Copyright 2018-2019 by Boris Feld
+
 """ BAlto is a Language independent Test Orchestrator.
 """
 from __future__ import print_function, unicode_literals

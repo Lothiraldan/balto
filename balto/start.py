@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+# Copyright 2018-2019 by Boris Feld
+
 """ BAlto is a Language independent Test Orchestrator.
 
 All code related to the starting process of CLI applications, argument
@@ -5,7 +8,6 @@ parsing, configuration handling, etc...
 """
 
 import argparse
-import tempfile
 
 from ._logging import setup_logging
 from .config import create_temporary_config_file, find_and_validate_config

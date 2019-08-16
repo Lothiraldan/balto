@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+# Copyright 2018-2019 by Boris Feld
+
 import asyncio
 import logging
 import shlex
@@ -58,7 +61,7 @@ class SubprocessRunnerSession(BaseRunner):
         await self.launch_cmd(final_cmd)
 
     async def launch_cmd(self, cmd):
-         # Bump the buffer size to be sure to handle big tracebacks
+        # Bump the buffer size to be sure to handle big tracebacks
         limit = 1048576
         process = await asyncio.create_subprocess_shell(
             cmd,
@@ -66,7 +69,7 @@ class SubprocessRunnerSession(BaseRunner):
             stderr=asyncio.subprocess.PIPE,
             cwd=self.working_directory,
             loop=self.loop,
-            limit=limit
+            limit=limit,
         )
 
         await asyncio.gather(

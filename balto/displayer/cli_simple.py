@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+# Copyright 2018-2019 by Boris Feld
+
 import sys
 
 from prompt_toolkit.contrib.completers import WordCompleter

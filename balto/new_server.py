@@ -1,5 +1,6 @@
-""" BAlto is a Language independent Test Orchestrator.
-"""
+# -*- coding: utf-8 -*-
+# Copyright 2018-2019 by Boris Feld
+
 from __future__ import print_function, unicode_literals
 
 import asyncio
@@ -8,7 +9,7 @@ import logging
 import sys
 from copy import copy
 from os.path import dirname, join
-from typing import List
+from typing import List, Dict
 
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware

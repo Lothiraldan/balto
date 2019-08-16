@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+# Copyright 2018-2019 by Boris Feld
+
 """ Base runner class
 """
 import json
@@ -42,7 +45,7 @@ def parse_line(line):
     # Parse the JSON
     try:
         data = json.loads(decodedline)
-    except (json.JSONDecodeError, ValueError) as e:
+    except (json.JSONDecodeError, ValueError):
         LOGGER.debug("Invalid line: %r", decodedline, exc_info=True)
         return
 
