@@ -4,7 +4,7 @@ import shlex
 import os
 from shutil import which
 
-from balto.runners.base import BaseRunner
+from .base import BaseRunner
 
 LOGGER = logging.getLogger(__name__)
 

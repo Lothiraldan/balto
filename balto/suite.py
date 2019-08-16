@@ -1,8 +1,8 @@
 """ Test suite classes and utilities
 """
 
-from balto.runners.docker_runner import DockerRunnerSession
-from balto.runners.subprocess_runner import SubprocessRunnerSession
+from .runners.docker_runner import DockerRunnerSession
+from .runners.subprocess_runner import SubprocessRunnerSession
 
 
 class TestSuite:

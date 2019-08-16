@@ -7,9 +7,9 @@ parsing, configuration handling, etc...
 import argparse
 import tempfile
 
-from balto._logging import setup_logging
-from balto.config import create_temporary_config_file, find_and_validate_config
-from balto.exceptions import NoConfigFileFound
+from ._logging import setup_logging
+from .config import create_temporary_config_file, find_and_validate_config
+from .exceptions import NoConfigFileFound
 
 
 def parse_args(args):

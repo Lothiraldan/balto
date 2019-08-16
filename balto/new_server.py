@@ -16,12 +16,12 @@ from starlette.staticfiles import StaticFiles
 from starlette.websockets import WebSocket, WebSocketDisconnect
 from uvicorn import Config, Server
 
-from balto.config import read_toml_config
-from balto.event_emitter import EventEmitter
-from balto.models import SelectedTests
-from balto.start import start
-from balto.store import MultipleTestSuite, Tests
-from balto.suite import TestSuite
+from .config import read_toml_config
+from .event_emitter import EventEmitter
+from .models import SelectedTests
+from .start import start
+from .store import MultipleTestSuite, Tests
+from .suite import TestSuite
 
 LOGGER = logging.getLogger(__name__)
 
@@ -100,7 +100,7 @@ def setup_app_and_run(directory, config_path, runner, tool_override):
         await app.ws_client.broadcast(json.dumps(data))
 
     app.em.register(forward_notifications)
-    app.em.register(process_notification)
+    # app.em.register(process_notification)
 
     app.loop.run_until_complete(server.serve())
 

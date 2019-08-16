@@ -11,7 +11,7 @@ from aiodocker.docker import Docker
 from aiodocker.exceptions import DockerError
 from docker import DockerClient
 
-from balto.runners.base import BaseRunner
+from .base import BaseRunner
 
 DOCKER = DockerClient()
 AIODOCKER = Docker()
