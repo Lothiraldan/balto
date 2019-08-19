@@ -31,7 +31,9 @@ class TestContainer extends Container<TestState> {
 
       switch (msg._type) {
         case "test_result":
+          // eslint-disable-next-line
           var test_id = msg.id;
+          // eslint-disable-next-line
           var run_id = msg.run_id;
 
           this.setState(state => {
@@ -56,7 +58,9 @@ class TestContainer extends Container<TestState> {
           });
           break;
         case "test_collection":
+          // eslint-disable-next-line
           var test_id = msg.id;
+          // eslint-disable-next-line
           var run_id = msg.run_id;
 
           this.setState(state => {
@@ -82,6 +86,7 @@ class TestContainer extends Container<TestState> {
           break;
 
         case "session_start":
+          // eslint-disable-next-line
           var run_id = msg.run_id;
 
           this.setState(state => {
@@ -102,6 +107,7 @@ class TestContainer extends Container<TestState> {
           });
           break;
         case "session_end":
+          // eslint-disable-next-line
           var run_id = msg.run_id;
 
           this.setState(state => {
@@ -124,6 +130,7 @@ class TestContainer extends Container<TestState> {
           });
           break;
         case "run_start":
+          // eslint-disable-next-line
           var run_id = msg.run_id;
 
           this.setState(state => {
@@ -142,6 +149,7 @@ class TestContainer extends Container<TestState> {
           });
           break;
         case "run_stop":
+          // eslint-disable-next-line
           var run_id = msg.run_id;
 
           this.setState(state => {

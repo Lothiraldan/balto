@@ -66,7 +66,7 @@ class App extends Component {
     let { navDrawerOpen } = this.state;
     const paddingLeftDrawerOpen = 236;
 
-    const styles = {
+    const my_styles = {
       header: {
         paddingLeft: navDrawerOpen ? paddingLeftDrawerOpen : 0
       },
@@ -85,7 +85,7 @@ class App extends Component {
           <div id="app">
             <HeaderContainer send={this.send} />
 
-            <div style={styles.container}>
+            <div style={my_styles.container}>
               <Route path="/" component={MainContainer} />
             </div>
           </div>

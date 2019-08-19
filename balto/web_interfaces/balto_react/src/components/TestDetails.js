@@ -160,18 +160,17 @@ export class TestViewer extends Component {
       );
     }
 
+    var duration = undefined;
     if (test.duration !== undefined) {
       let convertedDuration = convert(test.duration);
       console.log("Test duration", convertedDuration);
-      var duration = (
+      duration = (
         <span>
           Duration{" "}
           {convertedDuration.value.toFixed(convertedDuration.precision)}{" "}
           {convertedDuration.unit}
         </span>
       );
-    } else {
-      var duration = undefined;
     }
 
     return (
