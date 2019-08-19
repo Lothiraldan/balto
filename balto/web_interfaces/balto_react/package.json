@@ -33,7 +33,6 @@
     "build": "NODE_PATH=./src react-scripts build",
     "test": "NODE_PATH=./src react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "postinstall": "patch-package",
     "storybook": "start-storybook -p 9009 -s public",
     "build-storybook": "build-storybook -s public"
   },
