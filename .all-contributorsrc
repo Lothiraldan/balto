@@ -31,6 +31,16 @@
         "code",
         "bug"
       ]
+    },
+    {
+      "login": "madprog",
+      "name": "Paul Morelle",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/539272?v=4",
+      "profile": "https://github.com/madprog",
+      "contributions": [
+        "code"
+      ]
     }
-  ]
+  ],
+  "commitConvention": "none"
 }
