@@ -101,7 +101,6 @@ export class RunSummary extends React.Component {
         </span>
       );
     }
-    console.log("State", this.state.show_modal);
 
     return (
       <Message>

@@ -1,10 +1,10 @@
 import "react-virtualized/styles.css";
 import "react-virtualized-tree/lib/main.css";
 
-import { Icon, Level, Tag } from "react-bulma-components/full";
 import React, { PureComponent } from "react";
-import { faAngleDown, faAngleRight } from "@fortawesome/free-solid-svg-icons";
+import { Icon, Level, Tag } from "react-bulma-components/full";
 
+import { faAngleDown, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 // if (process.env.NODE_ENV !== 'production') {
@@ -110,6 +110,12 @@ export class TreeLine extends PureComponent {
             );
         };
 
+        if (this.props.selected === true) {
+            var name = <b>{this.props.node.name}</b>;
+        } else {
+            var name = this.props.node.name;
+        }
+
         return (
             <Level onDoubleClick={this.props.handleChange}>
                 <Level.Side>
@@ -117,7 +123,7 @@ export class TreeLine extends PureComponent {
                     <Level.Item>
                         <input type="checkbox" checked={isChecked} onChange={onChange} />
                     </Level.Item>
-                    <Level.Item onClick={this.onClick}><span className={this.props.node.className}>{this.props.node.name}</span></Level.Item>
+                    <Level.Item onClick={this.onClick}><span className={this.props.node.className}>{name}</span></Level.Item>
                 </Level.Side>
                 <Level.Side align="right">
                     <Tag.Group gapless>{tags}</Tag.Group>

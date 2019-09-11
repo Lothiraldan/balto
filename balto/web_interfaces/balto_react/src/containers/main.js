@@ -1,18 +1,18 @@
 import "react-virtualized/styles.css";
 import "react-virtualized-tree/lib/main.css";
 
-import { Card, Columns } from "react-bulma-components/full";
-import React, { Component } from "react";
-
 import Mousetrap from "mousetrap";
-import { RunsList } from "../components/RunsList.js";
-import { Subscribe } from "unstated";
+import React, { Component } from "react";
+import { Card, Columns } from "react-bulma-components/full";
 import Tree from "react-virtualized-tree";
-import { TreeLine } from "../components/TreeLine";
 import { getNodeRenderOptions } from "react-virtualized-tree/lib/selectors/nodes";
+import { Subscribe } from "unstated";
+
+import { RunsList } from "../components/RunsList.js";
+import { treenodeViewerComponent } from "../components/TestDetails.js";
+import { TreeLine } from "../components/TreeLine";
 import { state } from "../state";
 import { treeFromTests } from "../tree.js";
-import { treenodeViewerComponent } from "../components/TestDetails.js";
 
 // if (process.env.NODE_ENV !== 'production') {
 //   const { whyDidYouUpdate } = require('why-did-you-update');
@@ -26,7 +26,8 @@ const Deepness = ({
   onClick,
   children,
   setChecked,
-  isChecked
+  isChecked,
+  selected
 }) => {
   const { isExpanded } = getNodeRenderOptions(node);
   const handleChange = () => {
@@ -48,6 +49,7 @@ const Deepness = ({
         onClick={onClick}
         onChecked={setChecked}
         isChecked={isChecked}
+        selected={selected}
       />
     </div>
   );
@@ -67,6 +69,7 @@ class Renderers extends Component {
               onChangee={this.props.handleChange}
               setChecked={this.props.onChecked}
               isChecked={this.props.isChecked}
+              selected={node.id == this.props.currentlySelected}
               {...rest}
             />
           )}
@@ -148,6 +151,7 @@ class Main extends Component {
                 handleChange={this.props.state.setExpanded}
                 onChecked={this.props.state.onChecked}
                 isChecked={this.props.state.isChecked}
+                currentlySelected={this.props.state.state.selected}
               />
             </Card.Content>
           </Card>
