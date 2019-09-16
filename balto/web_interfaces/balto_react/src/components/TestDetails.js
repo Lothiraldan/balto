@@ -1,26 +1,37 @@
-import React, { Component } from "react";
+import "react-diff-view/index.css";
+
 import PropTypes from "prop-types";
-import { state } from "../state";
-import { Subscribe } from "unstated";
-import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
+import React, { Component } from "react";
+import { Card } from "react-bulma-components";
+import { Icon } from "react-bulma-components/full";
 import {
-  parseDiff,
   Diff,
   addStubHunk,
-  expandFromRawCode
+  expandFromRawCode,
+  parseDiff
 } from "react-diff-view";
-import "react-diff-view/index.css";
-import { convert } from "../time";
-import { Card } from "react-bulma-components";
-
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import {
-  faCheckCircle,
-  faTimesCircle,
-  faBan
-} from "@fortawesome/free-solid-svg-icons";
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Legend,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts';
+import { Subscribe } from "unstated";
 
-import { Icon } from "react-bulma-components/full";
+import {
+  faBan,
+  faCheckCircle,
+  faTimesCircle
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+import { state } from "../state";
+import { convert, convert_at_power } from "../time";
 
 class SuiteViewer extends Component {
   static propTypes = {
@@ -163,7 +174,6 @@ export class TestViewer extends Component {
     var duration = undefined;
     if (test.duration !== undefined) {
       let convertedDuration = convert(test.duration);
-      console.log("Test duration", convertedDuration);
       duration = (
         <span>
           Duration{" "}
@@ -172,6 +182,43 @@ export class TestViewer extends Component {
         </span>
       );
     }
+
+    if (test.durations !== undefined) {
+      let data = [];
+
+      let min_timing = Math.min(...Object.values(test.durations));
+      let converted_timing = convert(min_timing);
+      console.log("Min timing", min_timing, converted_timing);
+
+      for (let [key, value] of Object.entries(test.durations)) {
+        let new_timing = convert_at_power(value, converted_timing.power).toFixed(converted_timing.precision);
+        data.push({ name: key, timing: parseFloat(new_timing) });
+      }
+
+      tablist.push(
+        <Tab>
+          <a>Timings</a>
+        </Tab>
+      );
+
+      let name = "timing in " + converted_timing.unit
+
+      tabcontent.push(
+        <TabPanel>
+          <ResponsiveContainer width='100%' aspect={4.0 / 3.0}>
+            <BarChart data={data}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="timing" name={name} fill="#8884d8" />
+            </BarChart>
+          </ResponsiveContainer>
+        </TabPanel>
+      );
+    }
+
 
     return (
       <Card>
@@ -222,10 +269,9 @@ export function treenodeViewerComponent(id) {
   } else if (_type === "file") {
     return <FileViewer {...decoded} />;
   } else if (_type === "test") {
-    let test = state.state.tests[_id];
     return (
       <Subscribe to={[state]}>
-        {state => <TestViewer test={test} id={_id} suite={decoded.suite} />}
+        {state => <TestViewer test={state.state.tests[_id]} id={_id} suite={decoded.suite} />}
       </Subscribe>
     );
   }
