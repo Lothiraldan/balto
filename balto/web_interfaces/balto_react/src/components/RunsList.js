@@ -106,7 +106,7 @@ export class RunSummary extends React.Component {
       <Message>
         <Message.Header key={this.props.run_id + "header"} style={{ cursor: "pointer" }} onClick={this.handleOpen} >{header}</Message.Header >
         <Message.Body>
-          {this.props.status} {this.props.duration !== null && <span>in {this.props.duration}</span>}
+          {this.props.status} {duration !== null && <span>in {duration}</span>}
           {count}
           <Progress max={this.props.test_number || 0} value={this.props.done || 0} />
         </Message.Body>
