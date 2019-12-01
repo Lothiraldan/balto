@@ -3,13 +3,8 @@ import "react-diff-view/index.css";
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { Card } from "react-bulma-components";
-import { Icon } from "react-bulma-components/full";
-import {
-  Diff,
-  addStubHunk,
-  expandFromRawCode,
-  parseDiff
-} from "react-diff-view";
+import { Icon } from "react-bulma-components";
+import Moment from "react-moment";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import {
   Bar,
@@ -20,23 +15,21 @@ import {
   Tooltip,
   XAxis,
   YAxis,
-} from 'recharts';
-import { Subscribe } from "unstated";
+} from "recharts";
 
 import {
   faBan,
   faCheckCircle,
   faEdit,
-  faTimesCircle
+  faTimesCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { state } from "../state";
 import { convert, convert_at_power } from "../time";
 
-class SuiteViewer extends Component {
+export class SuiteViewer extends Component {
   static propTypes = {
-    id: PropTypes.string
+    id: PropTypes.string,
   };
 
   render() {
@@ -44,9 +37,9 @@ class SuiteViewer extends Component {
   }
 }
 
-class FileViewer extends Component {
+export class FileViewer extends Component {
   static propTypes = {
-    id: PropTypes.string
+    id: PropTypes.string,
   };
 
   render() {
@@ -62,7 +55,7 @@ export class TestViewer extends Component {
   static propTypes = {
     id: PropTypes.string,
     test: PropTypes.object,
-    suite: PropTypes.string
+    suite: PropTypes.string,
   };
 
   render() {
@@ -192,7 +185,10 @@ export class TestViewer extends Component {
       console.log("Min timing", min_timing, converted_timing);
 
       for (let [key, value] of Object.entries(test.durations)) {
-        let new_timing = convert_at_power(value, converted_timing.power).toFixed(converted_timing.precision);
+        let new_timing = convert_at_power(
+          value,
+          converted_timing.power
+        ).toFixed(converted_timing.precision);
         data.push({ name: key, timing: parseFloat(new_timing) });
       }
 
@@ -202,11 +198,11 @@ export class TestViewer extends Component {
         </Tab>
       );
 
-      let name = "timing in " + converted_timing.unit
+      let name = "timing in " + converted_timing.unit;
 
       tabcontent.push(
         <TabPanel>
-          <ResponsiveContainer width='100%' aspect={4.0 / 3.0}>
+          <ResponsiveContainer width="100%" aspect={4.0 / 3.0}>
             <BarChart data={data}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" />
@@ -220,7 +216,14 @@ export class TestViewer extends Component {
       );
     }
 
-    const edit_callback = () => { this.props.editFile(this.props.suite, this.props.id) };
+    const edit_callback = () => {
+      this.props.editFile(this.props.suite, this.props.id);
+    };
+    let last_updated = (
+      <Moment fromNow withTitle>
+        {this.props.last_updated}
+      </Moment>
+    );
 
     return (
       <Card>
@@ -233,10 +236,15 @@ export class TestViewer extends Component {
           <h2>{this.props.suite}</h2>
 
           <h3>
-            File: {test.file}, line {test.line} <a onClick={edit_callback}><Icon><FontAwesomeIcon icon={faEdit} /></Icon></a>
+            File: {test.file}, line {test.line}{" "}
+            <a onClick={edit_callback}>
+              <Icon>
+                <FontAwesomeIcon icon={faEdit} />
+              </Icon>
+            </a>
           </h3>
           <h3>{duration}</h3>
-          <h3>Last updated: {test.last_updated.fromNow()}</h3>
+          <h3>Last updated: {last_updated}</h3>
           <p>
             Test: {this.props.id} of suite {this.props.suite}
           </p>
@@ -255,28 +263,4 @@ export class TestViewer extends Component {
       </Card>
     );
   }
-}
-
-export function treenodeViewerComponent(id, editFileCallback) {
-  if (id === undefined) {
-    return null;
-  }
-
-  let decoded = JSON.parse(id);
-  let _type = decoded._type;
-  let _id = decoded.id;
-
-  if (_type === "suite") {
-    return <SuiteViewer {...decoded} />;
-  } else if (_type === "file") {
-    return <FileViewer {...decoded} />;
-  } else if (_type === "test") {
-    return (
-      <Subscribe to={[state]}>
-        {state => <TestViewer test={state.state.tests[_id]} id={_id} suite={decoded.suite} editFile={editFileCallback} />}
-      </Subscribe>
-    );
-  }
-
-  return <p>{id}</p>;
 }

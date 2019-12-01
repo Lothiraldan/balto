@@ -1,9 +1,10 @@
-import React from "react";
 import Mousetrap from "mousetrap";
+import React from "react";
 
-import { state } from "../state";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+import store from "../store";
 
 class SearchBox extends React.Component {
   constructor(props) {
@@ -20,7 +21,6 @@ class SearchBox extends React.Component {
   }
 
   focusSearchBox = () => {
-    console.log("REFS", this.myRef.current);
     this.myRef.current.focus();
 
     return false;
@@ -33,8 +33,8 @@ class SearchBox extends React.Component {
           <input
             className="input"
             placeholder="Search"
-            value={state.filterText}
-            onChange={event => state.setFilterText(event.target.value)}
+            value={store.query_text}
+            onChange={event => store.set_query_text(event.target.value)}
             ref={this.myRef}
           />
           <span className="icon is-small is-left">

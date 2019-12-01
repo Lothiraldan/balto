@@ -9,6 +9,7 @@ from pydantic import BaseModel
 
 
 class SingleSuiteSelectedTests(BaseModel):
+    full: bool = False
     files: List[str] = []
     nodeids: List[str] = []
 

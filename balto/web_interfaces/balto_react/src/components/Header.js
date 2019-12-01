@@ -1,8 +1,9 @@
-import React from "react";
-import SearchBox from "./SearchBox";
 import PropTypes from "prop-types";
-import { Button } from "react-bulma-components/full";
+import React from "react";
+import { Button } from "react-bulma-components";
 import Navbar from "react-bulma-components/lib/components/navbar";
+
+import SearchBox from "./SearchBox";
 
 const SvgLogo = props => (
   <svg viewBox="0 0 100 100" height={52} width={52} {...props}>

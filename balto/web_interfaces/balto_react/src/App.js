@@ -1,25 +1,20 @@
-import { hot } from "react-hot-loader";
-import React, { Component } from "react";
-import { socket } from "./websocket.js";
-import PropTypes from "prop-types";
-import HeaderContainer from "./containers/Header";
-import { Provider } from "unstated";
-import MainContainer from "./containers/main";
-import { Route } from "react-router";
-import { BrowserRouter } from "react-router-dom";
-import { state } from "./state";
-import _ from "lodash";
+import "font-awesome/css/font-awesome.min.css";
 
 import './App.sass';
 import "./App.css";
-import "font-awesome/css/font-awesome.min.css";
+
 import styles from "flexboxgrid/css/flexboxgrid.css";
+import PropTypes from "prop-types";
+import React, { Component } from "react";
+import { hot } from "react-hot-loader";
+import { Route } from "react-router";
+import { BrowserRouter } from "react-router-dom";
 
+import Header  from "./containers/Header";
+import Main from "./containers/main";
+import { socket } from "./websocket.js";
 
-function setDefault(obj, prop, deflt) {
-  return obj.hasOwnProperty(prop) ? obj[prop] : (obj[prop] = deflt);
-}
-
+// @observer 
 class App extends Component {
   static propTypes = {
     width: PropTypes.number
@@ -48,14 +43,18 @@ class App extends Component {
   componentDidMount() {
     socket.onmessage = event => {
       /*console.log("ON MESSAGE", event);*/
-      state.newMessage(event);
-    };
-    socket.onerror = error => {
-      console.log("ERROR " + error);
-    };
-    socket.onclose = event => {
-      console.log("CLOSED", event);
-    };
+      const data = JSON.parse(event.data);
+      if (data.jsonrpc === "2.0" && data.method === "test") {
+        let msg = data.params;
+        this.props.store.process_single_msg(msg);
+      };
+      socket.onerror = error => {
+        console.log("ERROR " + error);
+      };
+      socket.onclose = event => {
+        console.log("CLOSED", event);
+      };
+    }
   }
 
   send(data) {
@@ -81,15 +80,13 @@ class App extends Component {
 
     return (
       <BrowserRouter>
-        <Provider>
-          <div id="app">
-            <HeaderContainer send={this.send} />
+        <div id="app">
+          <Header send={this.send} />
 
-            <div style={my_styles.container}>
-              <Route path="/" component={MainContainer} />
-            </div>
+          <div style={my_styles.container}>
+            <Route path="/" component={Main} store={this.props.store} />
           </div>
-        </Provider>
+        </div>
       </BrowserRouter>
     );
   }

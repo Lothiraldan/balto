@@ -146,9 +146,12 @@ async def run_selected(selected_test: SelectedTests):
     LOGGER.info("Run selected: %r", selected_test.tests)
     for suite_name, suite_tests in selected_test.tests.items():
         suite = app.suites[suite_name]
-        tasks.append(
-            suite.launch_tests(app.directory, app.em, app.loop, suite_tests.dict())
-        )
+        if suite_tests.full:
+            tasks.append(suite.launch_all(app.directory, app.em, app.loop))
+        else:
+            tasks.append(
+                suite.launch_tests(app.directory, app.em, app.loop, suite_tests.dict())
+            )
 
     await asyncio.gather(*tasks)
     return "ok"

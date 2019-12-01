@@ -1,0 +1,11 @@
+// Used by jest only
+{
+    "plugins": [
+        [
+            "@babel/plugin-proposal-decorators",
+            {
+                "legacy": true
+            }
+        ]
+    ]
+}

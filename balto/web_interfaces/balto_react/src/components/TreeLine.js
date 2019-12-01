@@ -2,7 +2,7 @@ import "react-virtualized/styles.css";
 import "react-virtualized-tree/lib/main.css";
 
 import React, { PureComponent } from "react";
-import { Icon, Level, Tag } from "react-bulma-components/full";
+import { Icon, Level, Tag } from "react-bulma-components";
 
 import { faAngleDown, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -13,122 +13,150 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // }
 
 export class TreeLine extends PureComponent {
-    onClick = event => {
-        event.preventDefault();
-        this.props.onClick(this.props.node.id);
-    };
+  onClick = event => {
+    event.preventDefault();
+    this.props.onClick(this.props.id);
+  };
 
-    render() {
-        let tags = [];
+  onCheckBoxChange = event => {
+    this.props.onChecked(this.props.id);
+  };
 
-        if (this.props.node.passed && this.props.node.passed > 0) {
-            tags.push(
-                <Tag color="success" key="passed">
-                    {this.props.node.passed}
-                </Tag>
-            );
-        }
-        if (this.props.node.failed && this.props.node.failed > 0) {
-            tags.push(
-                <Tag color="danger" key="failed">
-                    {this.props.node.failed}
-                </Tag>
-            );
-        }
+  render() {
+    let tags = [];
 
-        if (this.props.node.errror && this.props.node.errror > 0) {
-            tags.push(
-                <Tag color="danger" key="danger">
-                    {this.props.node.errror}
-                </Tag>
-            );
-        }
-
-        if (this.props.node.skipped && this.props.node.skipped > 0) {
-            tags.push(
-                <Tag color="info" key="info">
-                    {this.props.node.skipped}
-                </Tag>
-            );
-        }
-
-        if (this.props.node.collected && this.props.node.collected > 0) {
-            tags.push(<Tag key="collected">{this.props.node.collected}</Tag>);
-        }
-
-        let expand = undefined;
-
-        // Expand icon
-        if (this.props.node.type !== "test") {
-            if (this.props.isExpanded === true) {
-                expand = (
-                    <Icon onClick={this.props.handleChange}>
-                        <FontAwesomeIcon icon={faAngleDown} />
-                    </Icon>
-                );
-            } else {
-                expand = (
-                    <Icon onClick={this.props.handleChange}>
-                        <FontAwesomeIcon icon={faAngleRight} />
-                    </Icon>
-                );
-            }
-        }
-
-        let isCheckedFn = this.props.isChecked;
-
-        let isChecked = undefined;
-        let parentChecked = false;
-
-        // Check the parents first
-        for (var parent of this.props.node.parents) {
-            let parentChecked = isCheckedFn(parent);
-            if (parentChecked === true) {
-                isChecked = true;
-                parentChecked = true;
-                break;
-            }
-        }
-
-        if (isChecked === undefined) {
-            isChecked = isCheckedFn(this.props.node.id);
-        }
-
-        let newCheckedValue = undefined;
-        if (parentChecked === true) {
-            newCheckedValue = false;
-        } else {
-            newCheckedValue = !isChecked;
-        }
-
-        let onChange = event => {
-            event.preventDefault();
-            this.props.onChecked(
-                this.props.node.id,
-                newCheckedValue,
-                this.props.node.parents
-            );
-        };
-
-        if (this.props.selected === true) {
-            var name = <b>{this.props.node.name}</b>;
-        } else {
-            var name = this.props.node.name;
-        }
-
-        return (
-            <Level onDoubleClick={this.props.handleChange}>
-                <Level.Side>
-                    <Level.Item>{expand}</Level.Item>
-                    <Level.Item>
-                        <input type="checkbox" checked={isChecked} onChange={onChange} />
-                    </Level.Item>
-                    <Level.Item onClick={this.onClick}><span className={this.props.node.className}>{name}</span></Level.Item>
-                </Level.Side>
-                <Level.Side align="right">
-                    <Tag.Group gapless>{tags}</Tag.Group>
-                </Level.Side>
-            </Level>
-        );
+    if (
+      this.props.status_summary &&
+      this.props.status_summary.get("passed", 0) > 0
+    ) {
+      tags.push(
+        <Tag color="success" key="passed">
+          {this.props.status_summary.get("passed", 0)}
+        </Tag>
+      );
     }
+    if (
+      this.props.status_summary &&
+      this.props.status_summary.get("failed", 0) > 0
+    ) {
+      tags.push(
+        <Tag color="danger" key="failed">
+          {this.props.status_summary.get("failed", 0)}
+        </Tag>
+      );
+    }
+
+    if (
+      this.props.status_summary &&
+      this.props.status_summary.get("error", 0) > 0
+    ) {
+      tags.push(
+        <Tag color="danger" key="danger">
+          {this.props.status_summary.get("error", 0)}
+        </Tag>
+      );
+    }
+
+    if (
+      this.props.status_summary &&
+      this.props.status_summary.get("skipped", 0) > 0
+    ) {
+      tags.push(
+        <Tag color="info" key="info">
+          {this.props.status_summary.get("skipped", 0)}
+        </Tag>
+      );
+    }
+
+    if (
+      this.props.status_summary &&
+      this.props.status_summary.get("collected", 0) > 0
+    ) {
+      tags.push(
+        <Tag key="collected">
+          {this.props.status_summary.get("collected", 0)}
+        </Tag>
+      );
+    }
+
+    let expand = undefined;
+
+    // Expand icon
+    if (this.props.node_type !== "test") {
+      if (this.props.isExpanded === true) {
+        expand = (
+          <Icon onClick={this.props.handleChange}>
+            <FontAwesomeIcon icon={faAngleDown} />
+          </Icon>
+        );
+      } else {
+        expand = (
+          <Icon onClick={this.props.handleChange}>
+            <FontAwesomeIcon icon={faAngleRight} />
+          </Icon>
+        );
+      }
+    }
+
+    let isChecked = false;
+    if (this.props.isChecked === "true") {
+      isChecked = true;
+    } else if (this.props.isChecked === "parent") {
+      isChecked = true;
+    }
+
+    // Check the parents first
+    // for (var parent of this.props.node.parents) {
+    //     let parentChecked = isCheckedFn(parent);
+    //     if (parentChecked === true) {
+    //         isChecked = true;
+    //         parentChecked = true;
+    //         break;
+    //     }
+    // }
+
+    // if (isChecked === undefined) {
+    //     isChecked = isCheckedFn(this.props.node.id);
+    // }
+
+    // let newCheckedValue = undefined;
+    // if (parentChecked === true) {
+    //     newCheckedValue = false;
+    // } else {
+    //     newCheckedValue = !isChecked;
+    // }
+
+    var name = undefined;
+    if (this.props.selected === true) {
+      name = <b>{this.props.name}</b>;
+    } else {
+      name = this.props.name;
+    }
+
+    var className = null;
+    if (this.props.node_type === "test") {
+      className = `balto-test-${this.props.status}`;
+    }
+
+    return (
+      <Level onDoubleClick={this.props.handleChange}>
+        <Level.Side>
+          <Level.Item>{expand}</Level.Item>
+          <Level.Item>
+            <input
+              type="checkbox"
+              checked={isChecked}
+              onChange={this.onCheckBoxChange}
+            />
+          </Level.Item>
+          <Level.Item onClick={this.onClick}>
+            <span className={className}>{name}</span>
+          </Level.Item>
+        </Level.Side>
+        <Level.Side align="right">
+          <Tag.Group gapless>{tags}</Tag.Group>
+        </Level.Side>
+      </Level>
+    );
+  }
 }
