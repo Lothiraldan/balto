@@ -8,6 +8,7 @@ import Tree from "react-virtualized-tree";
 import { getNodeRenderOptions } from "react-virtualized-tree/lib/selectors/nodes";
 import { Subscribe } from "unstated";
 
+import { editTest } from "../api";
 import { RunsList } from "../components/RunsList.js";
 import { treenodeViewerComponent } from "../components/TestDetails.js";
 import { TreeLine } from "../components/TreeLine";
@@ -134,7 +135,7 @@ class Main extends Component {
     );
 
     let nodeViewerComponent = treenodeViewerComponent(
-      this.props.state.state.selected
+      this.props.state.state.selected, editTest
     );
 
     return (

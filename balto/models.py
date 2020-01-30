@@ -15,3 +15,8 @@ class SingleSuiteSelectedTests(BaseModel):
 
 class SelectedTests(BaseModel):
     tests: Dict[str, SingleSuiteSelectedTests]
+
+
+class SingleSelectedTest(BaseModel):
+    suite: str
+    test_id: str

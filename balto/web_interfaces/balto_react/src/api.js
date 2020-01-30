@@ -25,3 +25,14 @@ export function runSelectedApi(selected_tests) {
     }).then(data => console.log(JSON.stringify(data))) // JSON-string from `response.json()` call
         .catch(error => console.error(error));
 }
+
+export function editTest(suite, selected_test) {
+    console.log("Edit", suite, selected_test);
+    fetch("http://localhost:8889/edit_test/", {
+        method: 'Post', headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ suite: suite, test_id: selected_test }),
+    }).then(data => console.log(JSON.stringify(data))) // JSON-string from `response.json()` call
+        .catch(error => console.error(error));
+}

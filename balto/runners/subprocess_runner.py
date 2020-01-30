@@ -3,8 +3,8 @@
 
 import asyncio
 import logging
-import shlex
 import os
+import shlex
 from shutil import which
 
 from .base import BaseRunner

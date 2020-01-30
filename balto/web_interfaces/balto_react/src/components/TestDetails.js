@@ -26,6 +26,7 @@ import { Subscribe } from "unstated";
 import {
   faBan,
   faCheckCircle,
+  faEdit,
   faTimesCircle
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -153,19 +154,19 @@ export class TestViewer extends Component {
 
     if (test.outcome === "passed") {
       status_icon = (
-        <Icon onClick={this.props.handleChange}>
+        <Icon>
           <FontAwesomeIcon icon={faCheckCircle} style={{ color: "green" }} />
         </Icon>
       );
     } else if (test.outcome === "failed") {
       status_icon = (
-        <Icon onClick={this.props.handleChange}>
+        <Icon>
           <FontAwesomeIcon icon={faTimesCircle} style={{ color: "red" }} />
         </Icon>
       );
     } else if (test.outcome === "skipped") {
       status_icon = (
-        <Icon onClick={this.props.handleChange}>
+        <Icon>
           <FontAwesomeIcon icon={faBan} style={{ color: "blue" }} />
         </Icon>
       );
@@ -219,6 +220,7 @@ export class TestViewer extends Component {
       );
     }
 
+    const edit_callback = () => { this.props.editFile(this.props.suite, this.props.id) };
 
     return (
       <Card>
@@ -231,7 +233,7 @@ export class TestViewer extends Component {
           <h2>{this.props.suite}</h2>
 
           <h3>
-            File: {test.file}, line {test.line}
+            File: {test.file}, line {test.line} <a onClick={edit_callback}><Icon><FontAwesomeIcon icon={faEdit} /></Icon></a>
           </h3>
           <h3>{duration}</h3>
           <h3>Last updated: {test.last_updated.fromNow()}</h3>
@@ -255,7 +257,7 @@ export class TestViewer extends Component {
   }
 }
 
-export function treenodeViewerComponent(id) {
+export function treenodeViewerComponent(id, editFileCallback) {
   if (id === undefined) {
     return null;
   }
@@ -271,7 +273,7 @@ export function treenodeViewerComponent(id) {
   } else if (_type === "test") {
     return (
       <Subscribe to={[state]}>
-        {state => <TestViewer test={state.state.tests[_id]} id={_id} suite={decoded.suite} />}
+        {state => <TestViewer test={state.state.tests[_id]} id={_id} suite={decoded.suite} editFile={editFileCallback} />}
       </Subscribe>
     );
   }

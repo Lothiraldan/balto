@@ -2,7 +2,7 @@
 # Copyright 2018-2019 by Boris Feld
 
 from __future__ import print_function, unicode_literals
-
+import os
 import asyncio
 import json
 import logging
@@ -19,10 +19,11 @@ from uvicorn import Config, Server
 
 from .config import read_toml_config
 from .event_emitter import EventEmitter
-from .models import SelectedTests
+from .models import SelectedTests, SingleSelectedTest
 from .start import start
 from .store import MultipleTestSuite, Tests
 from .suite import TestSuite
+from .editor import open_editor
 
 LOGGER = logging.getLogger(__name__)
 
@@ -101,7 +102,7 @@ def setup_app_and_run(directory, config_path, runner, tool_override):
         await app.ws_client.broadcast(json.dumps(data))
 
     app.em.register(forward_notifications)
-    # app.em.register(process_notification)
+    app.em.register(process_notification)
 
     app.loop.run_until_complete(server.serve())
 
@@ -150,6 +151,22 @@ async def run_selected(selected_test: SelectedTests):
         )
 
     await asyncio.gather(*tasks)
+    return "ok"
+
+
+import subprocess
+
+
+@app.post("/edit_test/")
+async def edit_test(selected_test: SingleSelectedTest):
+    # Get file path and lines from the SUITES
+    suite = SUITES[selected_test.suite]
+    test = suite.tests[selected_test.test_id]
+
+    # TODO: Read also editor from config
+    editor = os.environ["EDITOR"].split()[0]
+    open_editor(editor, test.file, test.line)
+
     return "ok"
 
 
