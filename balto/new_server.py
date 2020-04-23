@@ -165,7 +165,7 @@ async def edit_test(selected_test: SingleSelectedTest):
 
     # TODO: Read also editor from config
     editor = os.environ["EDITOR"].split()[0]
-    open_editor(editor, test.file, test.line)
+    open_editor(editor, test.file, test.line, allow_tty=False)
 
     return "ok"
 
