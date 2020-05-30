@@ -1,5 +1,3 @@
-import "react-virtualized/styles.css";
-import "react-virtualized-tree/lib/main.css";
 import "react-bulma-components/dist/react-bulma-components.min.css";
 
 import { observer } from "mobx-react";
@@ -20,18 +18,6 @@ import store, {
   treeWalker,
 } from "../store";
 import Runs from "./RunsList.js";
-
-// import Tree from "react-virtualized-tree";
-// import { getNodeRenderOptions } from "react-virtualized-tree/lib/selectors/nodes";
-
-// if (process.env.NODE_ENV !== 'production') {
-//   const { whyDidYouUpdate } = require('why-did-you-update');
-//   whyDidYouUpdate(React);
-// }
-
-// Node component receives all the data we created in the `treeWalker` +
-// internal openness state (`isOpen`), function to change internal openness
-// state (`toggle`) and `style` parameter that should be added to the root div.
 
 @observer
 class Node extends React.Component {
@@ -84,65 +70,6 @@ class Node extends React.Component {
   }
 }
 
-// const Deepness = ({
-//   onChangee,
-//   style,
-//   node,
-//   onClick,
-//   children,
-//   setChecked,
-//   isChecked,
-//   selected
-// }) => {
-//   const { isExpanded } = getNodeRenderOptions(node);
-//   const handleChange = () => {
-//     onChangee(node.id, !isExpanded);
-//   };
-
-//   // Change style marginLeft to paddingLeft to works with bulma level
-//   // See https://github.com/diogofcunha/react-virtualized-tree/issues/49
-//   style.paddingLeft = style.marginLeft;
-//   delete style.marginLeft;
-
-//   return (
-//     <div style={style}>
-//       <TreeLine
-//         node={node}
-//         handleChange={handleChange}
-//         isExpanded={isExpanded}
-//         children={children}
-//         onClick={onClick}
-//         onChecked={setChecked}
-//         isChecked={isChecked}
-//         selected={selected}
-//       />
-//     </div>
-//   );
-// };
-
-// class Renderers extends Component {
-//   render() {
-//     return (
-//       <div style={{ flex: "1 1 auto", flexDirection: "column", height: 600 }}>
-//         <Tree nodes={this.props.nodes}>
-//           {({ style, node, ...rest }) => (
-//             <Deepness
-//               key={node.id}
-//               style={style}
-//               node={node}
-//               onClick={this.props.onClick}
-//               onChangee={this.props.handleChange}
-//               setChecked={this.props.onChecked}
-//               isChecked={this.props.isChecked}
-//               selected={node.id == this.props.currentlySelected}
-//               {...rest}
-//             />
-//           )}
-//         </Tree>
-//       </div >
-//     );
-//   }
-// }
 
 @observer
 class Main extends Component {

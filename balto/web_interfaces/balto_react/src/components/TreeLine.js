@@ -1,6 +1,3 @@
-import "react-virtualized/styles.css";
-import "react-virtualized-tree/lib/main.css";
-
 import React, { PureComponent } from "react";
 import { Icon, Level, Tag } from "react-bulma-components";
 
