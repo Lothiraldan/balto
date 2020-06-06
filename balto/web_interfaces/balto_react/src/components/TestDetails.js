@@ -54,8 +54,10 @@ export class FileViewer extends Component {
 export class TestViewer extends Component {
   static propTypes = {
     id: PropTypes.string,
+    name: PropTypes.string,
     test: PropTypes.object,
     suite: PropTypes.string,
+    editFile: PropTypes.func.isRequired,
   };
 
   render() {
@@ -79,15 +81,6 @@ export class TestViewer extends Component {
     }
 
     if (test.error && test.error.diff && test.error.diff.diff) {
-      /*      const paddingMetaInfo = "diff --git a/a b/b";
-      const paddingIndexInfo = "index 1111111..2222222 100644";
-      const diffBody = formatLines(
-        diffLines(test.error.diff.expected, test.error.diff.got)
-      );
-      const diffText = [paddingMetaInfo, paddingIndexInfo, diffBody].join("\n");
-      var result = parseDiff(diffText);
-      console.log("RESULT", result);*/
-
       tablist.push(
         <Tab>
           <a>Diff</a>
@@ -219,6 +212,7 @@ export class TestViewer extends Component {
     const edit_callback = () => {
       this.props.editFile(this.props.suite, this.props.id);
     };
+
     let last_updated = (
       <Moment fromNow withTitle>
         {this.props.last_updated}
