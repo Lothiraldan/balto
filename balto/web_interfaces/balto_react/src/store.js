@@ -268,17 +268,18 @@ export class TestFileNode extends BaseNode {
   @observable id_path;
   @observable childrens = observable.map();
 
-  constructor(name, id, id_path, parent) {
+  constructor(name, id, id_path, file_path, parent) {
     super();
     this.name = name;
     this.id = id;
     this.id_path = id_path;
+    this.file_path = file_path;
     this.parent = parent;
   }
 
   @computed get selected_nodes() {
     if (this.selected === "true") {
-      return { suites: [], files: [this.id], tests: [] };
+      return { suites: [], files: [this.file_path], tests: [] };
     }
 
     let selected_suites = [];
@@ -308,17 +309,18 @@ export class TestDirectoryNode extends BaseNode {
   @observable id_path;
   @observable childrens = observable.map();
 
-  constructor(name, id, id_path, parent) {
+  constructor(name, id, id_path, file_path, parent) {
     super();
     this.name = name;
     this.id = id;
     this.id_path = id_path;
+    this.file_path = file_path;
     this.parent = parent;
   }
 
   @computed get selected_nodes() {
     if (this.selected === "true") {
-      return { suites: [], files: [this.id], tests: [] };
+      return { suites: [], files: [this.file_path], tests: [] };
     }
 
     let selected_suites = [];
@@ -445,16 +447,19 @@ export class AllSuites extends BaseNode {
       let children_id = subpath.join("/");
       var children = node.get_children(children_id);
 
+      let directory_file_path = splitted.slice(0, index);
+
       if (children === undefined) {
         if (index === 0) {
           children = new TestSuiteNode(path_part, children_id, subpath, node);
         } else if (index === full_path.length - 2) {
-          children = new TestFileNode(path_part, children_id, subpath, node);
+          children = new TestFileNode(path_part, children_id, subpath, test_file_path, node);
         } else {
           children = new TestDirectoryNode(
             path_part,
             children_id,
             subpath,
+            directory_file_path.join("/"),
             node
           );
         }

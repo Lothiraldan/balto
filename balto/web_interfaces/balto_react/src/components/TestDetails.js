@@ -39,7 +39,8 @@ export class SuiteViewer extends Component {
 
 export class FileViewer extends Component {
   static propTypes = {
-    id: PropTypes.string,
+    id: PropTypes.string.isRequired,
+    suite: PropTypes.string.isRequired,
   };
 
   render() {

@@ -30,7 +30,7 @@ function expected_status_map(expected) {
 function get_test_leaf() {
   return new SingleTestLeaf(
     "my_test",
-    "my_test_dir::my_test_file::my_test",
+    "my_suite/my_test_dir/my_test_file/my_test",
     ["my_suite", "my_test_dir", "my_test_file", "my_test.py"],
     "passed",
     1
@@ -38,18 +38,20 @@ function get_test_leaf() {
 }
 
 function get_test_file() {
-  return new TestFileNode("my_test_file", "my_test_dir::my_test_file", [
+  return new TestFileNode("my_test_file", "my_suite/my_test_dir/my_test_file", [
     "my_suite",
     "my_test_dir",
     "my_test_file",
-  ]);
+  ],
+  "my_test_dir/my_test_file");
 }
 
 function get_test_dir() {
   return new TestDirectoryNode("my_test_dir", "my_test_dir", [
     "my_suite",
     "my_test_dir",
-  ]);
+  ],
+  "my_test_dir");
 }
 
 function get_suite() {
@@ -521,7 +523,7 @@ test("We can select and deselect a test file", () => {
   ).toEqual("false");
   expect(suites.selected_nodes).toEqual({
     my_suite: {
-      files: ["my_suite/my_test_dir/my_test_file.py"],
+      files: ["my_test_dir/my_test_file.py"],
       nodeids: [],
     },
   });
@@ -574,7 +576,7 @@ test("We can select and deselect a test directory", () => {
   ).toEqual("false");
   expect(suites.selected_nodes).toEqual({
     my_suite: {
-      files: ["my_suite/my_test_dir"],
+      files: ["my_test_dir"],
       nodeids: [],
     },
   });
@@ -679,7 +681,7 @@ test("We can expand the selection of a test file", () => {
   ).toEqual("false");
   expect(suites.selected_nodes).toEqual({
     my_suite: {
-      files: ["my_suite/my_test_dir/my_test_file.py"],
+      files: ["my_test_dir/my_test_file.py"],
       nodeids: [],
     },
   });
@@ -737,7 +739,7 @@ test("We can expand the selection of a test directory", () => {
   ).toEqual("false");
   expect(suites.selected_nodes).toEqual({
     my_suite: {
-      files: ["my_suite/my_test_dir"],
+      files: ["my_test_dir"],
       nodeids: [],
     },
   });
@@ -764,7 +766,7 @@ test("We can expand the selection of a test directory", () => {
   ).toEqual("false");
   expect(suites.selected_nodes).toEqual({
     my_suite: {
-      files: ["my_suite/my_test_dir/my_test_file.py"],
+      files: ["my_test_dir/my_test_file.py"],
       nodeids: [],
     },
   });
@@ -817,7 +819,7 @@ test("We can expand the selection of a test suite", () => {
   ).toEqual("parent");
   expect(suites.selected_nodes).toEqual({
     my_suite: {
-      files: ["my_suite/my_test_dir", "my_suite/my_test_file.py"],
+      files: ["my_test_dir", "my_test_file.py"],
       nodeids: [],
     },
   });
@@ -850,7 +852,7 @@ test("We can deselect a parent-selected test", () => {
   ).toEqual("false");
   expect(suites.selected_nodes).toEqual({
     my_suite: {
-      files: ["my_suite/my_test_dir/my_test_file.py"],
+      files: ["my_test_dir/my_test_file.py"],
       nodeids: [],
     },
   });
@@ -906,7 +908,7 @@ test("We can deselect a grandparent-selected test", () => {
   ).toEqual("false");
   expect(suites.selected_nodes).toEqual({
     my_suite: {
-      files: ["my_suite/my_test_dir"],
+      files: ["my_test_dir"],
       nodeids: [],
     },
   });
@@ -986,7 +988,7 @@ test("We can deselect a grandgrandparent-selected test", () => {
   ).toEqual("parent");
   expect(suites.selected_nodes).toEqual({
     my_suite: {
-      files: ["my_suite/my_test_file.py"],
+      files: ["my_test_file.py"],
       nodeids: [],
     },
   });
@@ -1016,7 +1018,7 @@ test("We can deselect a grandgrandparent-selected dir", () => {
   ).toEqual("false");
   expect(suites.selected_nodes).toEqual({
     my_suite: {
-      files: ["my_suite/my_test_dir"],
+      files: ["my_test_dir"],
       nodeids: [],
     },
   });
