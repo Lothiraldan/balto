@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "balto"
-version = "0.2.1"
+version = "0.3.0"
 description = "BAlto is a Language independent Test Orchestrator"
 license = "MIT"
 authors = ["Boris Feld <lothiraldan@gmail.com>"]
