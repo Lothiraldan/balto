@@ -1,6 +1,3 @@
-import "flexboxgrid/css/flexboxgrid.css";
-import "font-awesome/css/font-awesome.min.css";
-
 import { observer } from "mobx-react";
 import React, { Component } from "react";
 
