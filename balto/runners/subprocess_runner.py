@@ -14,7 +14,12 @@ LOGGER = logging.getLogger(__name__)
 
 async def _read_stream(stream, cb):
     while True:
-        line = await stream.readline()
+        try:
+            line = await stream.readline()
+        except ValueError:
+            LOGGER.error("Error reading line", exc_info=True)
+            continue
+
         if line:
             await cb(line)
         elif stream.at_eof():
