@@ -122,7 +122,7 @@ app.add_middleware(
 async def collect_all():
     LOGGER.info("Collect ALL")
     tasks = [
-        app.suite.collect_all(app.directory, app.em, loop=app.loop)
+        suite.collect_all(app.directory, app.em, loop=app.loop)
         for suite in app.suites.values()
     ]
     await asyncio.gather(*tasks, loop=app.loop)
