@@ -1,3 +1,5 @@
+// Copyright 2018-2021 by Boris Feld
+
 import React, { PureComponent } from "react";
 import { Icon, Level, Tag } from "react-bulma-components";
 

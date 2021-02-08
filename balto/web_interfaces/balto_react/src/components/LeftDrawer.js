@@ -1,10 +1,12 @@
-import React, { PropTypes } from "react";
-import Drawer from "material-ui/Drawer";
-import { spacing, typography } from "material-ui/styles";
-import { white, blue600 } from "material-ui/styles/colors";
-import MenuItem from "material-ui/MenuItem";
-import { Link } from "react-router";
+// Copyright 2018-2021 by Boris Feld
+
 import Avatar from "material-ui/Avatar";
+import Drawer from "material-ui/Drawer";
+import MenuItem from "material-ui/MenuItem";
+import { spacing, typography } from "material-ui/styles";
+import { blue600, white } from "material-ui/styles/colors";
+import React, { PropTypes } from "react";
+import { Link } from "react-router";
 
 const LeftDrawer = props => {
   let { navDrawerOpen } = props;

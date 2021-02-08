@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2018-2020 by Boris Feld
+# Copyright 2018-2021 by Boris Feld
 
 from __future__ import print_function, unicode_literals
 

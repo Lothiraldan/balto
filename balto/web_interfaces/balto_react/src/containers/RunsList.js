@@ -1,3 +1,5 @@
+// Copyright 2018-2021 by Boris Feld
+
 import { observer } from "mobx-react";
 import React from "react";
 

@@ -1,6 +1,9 @@
-import React, { PropTypes } from "react";
-import Paper from "material-ui/Paper";
+// Copyright 2018-2021 by Boris Feld
+
 import Divider from "material-ui/Divider";
+import Paper from "material-ui/Paper";
+import React, { PropTypes } from "react";
+
 import globalStyles from "../styles";
 
 const PageBase = props => {

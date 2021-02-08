@@ -1,3 +1,5 @@
+// Copyright 2018-2021 by Boris Feld
+
 import './App.sass';
 import "./App.css";
 

@@ -1,3 +1,5 @@
+// Copyright 2018-2021 by Boris Feld
+
 import "react-bulma-components/dist/react-bulma-components.min.css";
 
 import { observer } from "mobx-react";

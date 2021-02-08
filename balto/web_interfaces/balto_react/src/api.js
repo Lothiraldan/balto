@@ -1,3 +1,5 @@
+// Copyright 2018-2021 by Boris Feld
+
 export function collectAllApi() {
     fetch("http://localhost:8889/collect_all/", {
         method: 'Post', headers: {

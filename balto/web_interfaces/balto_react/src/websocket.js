@@ -1,3 +1,5 @@
+// Copyright 2018-2021 by Boris Feld
+
 export const socket = new WebSocket("ws://localhost:8889/ws");
 
 socket.onopen = () => {

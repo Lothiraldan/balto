@@ -1,3 +1,5 @@
+// Copyright 2018-2021 by Boris Feld
+
 import PropTypes from "prop-types";
 import React from "react";
 import { Card, Modal, Section } from "react-bulma-components";

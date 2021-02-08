@@ -1,3 +1,5 @@
+// Copyright 2018-2021 by Boris Feld
+
 import "react-diff-view/index.css";
 
 import PropTypes from "prop-types";

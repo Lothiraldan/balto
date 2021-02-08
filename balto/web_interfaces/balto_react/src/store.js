@@ -1,3 +1,5 @@
+// Copyright 2018-2021 by Boris Feld
+
 import FlexSearch from "flexsearch/dist/flexsearch.es5";
 import { action, computed, configure, observable } from "mobx";
 

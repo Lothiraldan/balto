@@ -1,3 +1,5 @@
+// Copyright 2018-2021 by Boris Feld
+
 import React from "react";
 
 import { FileViewer, SuiteViewer, TestViewer } from "../components/TestDetails";

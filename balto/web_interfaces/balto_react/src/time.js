@@ -1,3 +1,5 @@
+// Copyright 2018-2021 by Boris Feld
+
 export function convert(duration_in_seconds) {
   let duration_in_ns = duration_in_seconds * 1e9;
   if (duration_in_ns > 1e9) {
