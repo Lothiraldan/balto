@@ -38,7 +38,7 @@ async def process_notification(message):
     elif msg_type == "test_result":
         process_test_result(message, SUITES)
     else:
-        print("Message", message)
+        LOGGER.info("Unprocessed message: %r", message)
 
 
 def process_test_collection(message, suites):
@@ -180,7 +180,6 @@ async def websocket_endpoint(websocket: WebSocket):
     try:
         while True:
             data = await websocket.receive_text()
-            print("DATA", data)
     except WebSocketDisconnect:
         app.ws_client.remove(websocket)
 

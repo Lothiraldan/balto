@@ -8,7 +8,8 @@ VERBOSE_LOG_FORMAT = "[%(asctime)s] %(pathname)s:%(lineno)d: %(message)s"
 
 def setup_logging(verbose=False, debug=False):
     logger = logging.getLogger("balto")
-    logger.setLevel(logging.DEBUG)
+    logger.propagate = False
+    logger.setLevel(logging.DEBUG)  
 
     # Reset handlers
     logger.handlers = []

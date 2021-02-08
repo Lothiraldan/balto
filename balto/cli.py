@@ -14,7 +14,7 @@ import time
 import webbrowser
 from multiprocessing import Process
 
-from balto.new_server import setup_app_and_run
+from balto.server import setup_app_and_run
 from balto.start import start
 
 LOGGER = logging.getLogger(__name__)
