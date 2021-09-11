@@ -1,6 +1,6 @@
 // Copyright 2018-2021 by Boris Feld
 
-import "react-diff-view/index.css";
+import "react-diff-view/style/index.css";
 
 import PropTypes from "prop-types";
 import React, { Component } from "react";

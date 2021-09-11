@@ -11,7 +11,7 @@ build_app: clean
 	poetry build
 
 develop: build_react build_app
-	pipx install --spec ~/project/balto/balto/dist/balto-*.tar.gz balto
+	pipx install --force dist/*.whl
 
 publish:
 	poetry publish

@@ -14,17 +14,16 @@ include = ["balto/web_interfaces/balto_react/build/**/*"]
 exclude = ["balto/web_interfaces/balto_react/node_modules/**/*", "balto/web_interfaces/simple/src/elm-stuff/**/*"]
 
 [tool.poetry.dependencies]
-python = "^3.6 || ^3.7 || ^3.8 || ^3.9"
+python = "^3.7 || ^3.8 || ^3.9"
 aiodocker = "^0.19.1"
 docker = "^4.4.1"
 npyscreen = "^4.10"
 prompt_toolkit = "^2.0"
 urwid = "^2.0"
-dataclasses = {version = "^0.6.0",python = "~3.6"}
 tomlkit = "^0.7.0"
-fastapi = "^0.63.0"
-aiofiles = "^0.6.0"
-uvicorn = "^0.13.3"
+fastapi = "^0.68.1"
+aiofiles = "^0.7.0"
+uvicorn = {extras = ["standard"], version = "^0.15.0"}
 
 [tool.poetry.dev-dependencies]
 pytest = "^3.0"
