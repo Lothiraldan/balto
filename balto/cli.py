@@ -38,15 +38,7 @@ def main():
         time.sleep(1)
 
         # Launch the interface
-        if args.interface == "curses":
-            balto_interface = shutil.which("balto-curses")
-
-            env = os.environ.copy()
-            env["BALTO_PORT"] = "%d" % port
-
-            interface = subprocess.Popen([balto_interface], env=env)
-            interface.join()
-        elif args.interface == "web":
+        if args.interface == "web":
             webbrowser.open(
                 "http://localhost:%d/interface/balto_react/build/index.html" % port
             )

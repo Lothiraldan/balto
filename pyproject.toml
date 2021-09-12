@@ -17,9 +17,6 @@ exclude = ["balto/web_interfaces/balto_react/node_modules/**/*", "balto/web_inte
 python = "^3.7 || ^3.8 || ^3.9"
 aiodocker = "^0.19.1"
 docker = "^4.4.1"
-npyscreen = "^4.10"
-prompt_toolkit = "^2.0"
-urwid = "^2.0"
 tomlkit = "^0.7.0"
 fastapi = "^0.68.1"
 aiofiles = "^0.7.0"
@@ -30,8 +27,7 @@ pytest = "^3.0"
 
 [tool.poetry.scripts]
 balto = "balto.cli:main"
-balto-server = "balto.new_server:main"
-balto-curses = "balto.interfaces.curses:main"
+balto-server = "balto.server:main"
 
 [build-system]
 requires = ["poetry>=0.12.17"]
